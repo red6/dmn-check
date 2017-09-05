@@ -1,8 +1,7 @@
 DMN-Check maven plugin
 ======================
 		
-	</plugin>
-            <plugin>
+	        <plugin>
                 <groupId>de.red6-es</groupId>
                 <artifactId>dmn-check</artifactId>
                 <version>1.0-SNAPSHOT</version>
