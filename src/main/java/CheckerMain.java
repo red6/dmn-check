@@ -2,6 +2,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -23,6 +24,10 @@ import java.util.List;
 public class CheckerMain extends AbstractMojo {
 
 
+    @Parameter
+    private String[] excludes;
+
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final ArrayList arrayList = new ArrayList();
@@ -30,7 +35,12 @@ public class CheckerMain extends AbstractMojo {
         for(String filename : fileNames) {
             getLog().info(filename);
             try {
-                testDmnDuplicates(filename);
+                final File file = new File(filename);
+                if(!Arrays.asList(excludes).contains(file.getName())) {
+                    getLog().info("Skipped File: "+filename);
+
+                    testDmnDuplicates(file);
+                }
             } catch (JDOMException e) {
                 getLog().error("Error while processing file: "+filename, e);
             } catch (IOException e) {
@@ -40,8 +50,8 @@ public class CheckerMain extends AbstractMojo {
 
     }
 
-    public void testDmnDuplicates(String filename) throws JDOMException, IOException {
-        final File file = new File(filename);
+    public void testDmnDuplicates(File file) throws JDOMException, IOException {
+
         final SAXBuilder builder = new SAXBuilder();
         final Namespace ns = Namespace.getNamespace("http://www.omg.org/spec/DMN/20151101/dmn11.xsd");
         final Document document = builder.build(file);
@@ -57,15 +67,13 @@ public class CheckerMain extends AbstractMojo {
             final List<Element> inputEntries = rule.getChildren("inputEntry", ns);
             final List<String> rowElements = new ArrayList<>();
             for (Element child : inputEntries) {
-                if (child.getAttribute("id").getValue().toLowerCase().contains("test")) {
-                    final Element text = child.getChild("text", ns);
-                    rowElements.add(text.getValue());
-                }
+                final Element text = child.getChild("text", ns);
+                rowElements.add(text.getValue());
             }
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add("Rule is defined more than once " + rowElements + " in File:" + filename);
+                result.add("Rule is defined more than once " + rowElements + " in File:" + file.getAbsolutePath());
             }
         }
         Assert.assertTrue(result.toString(), result.isEmpty());
