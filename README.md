@@ -1,7 +1,7 @@
 DMN-Check maven plugin
 ======================
 
-Checks for ambiguous dmn rules in current project
+Checks for ambiguous rules in [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files in the current project.
 
 
 Configure:
