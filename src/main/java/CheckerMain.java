@@ -3,6 +3,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -19,38 +20,50 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mojo( name = "check-dmn")
-public class CheckerMain extends AbstractMojo {
-
+@Mojo(name = "check-dmn")
+class CheckerMain extends AbstractMojo {
 
     @Parameter
     private String[] excludes;
 
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final ArrayList arrayList = new ArrayList();
-        final List<String> fileNames = getFileNames(".dmn", arrayList, Paths.get("src/main/resources/")); //make as a paremeter (list)
-        for(String filename : fileNames) {
-            getLog().info(filename);
-            try {
-                final File file = new File(filename);
-                if(!Arrays.asList(excludes).contains(file.getName())) {
-                    getLog().info("Skipped File: "+filename);
+        final ArrayList<String> arrayList = new ArrayList<>();
+        final List<String> fileNames = getFileNames(".dmn", arrayList, Paths.get(""));
+        List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
 
+        testFiles(collect);
+
+    }
+
+    void testFiles(final List<File> files) {
+        for (File file : files) {
+            getLog().info(file.getName());
+            try {
+                if (getExcludeListOrNull().contains(file.getName())) {
+                    getLog().info("Skipped File: " + file);
+                } else {
                     testDmnDuplicates(file);
                 }
             } catch (JDOMException e) {
-                getLog().error("Error while processing file: "+filename, e);
+                getLog().error("Error while processing file: " + file, e);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
-    public void testDmnDuplicates(File file) throws JDOMException, IOException {
+    private List<String> getExcludeListOrNull() {
+        if (excludes != null) {
+            return Arrays.asList(excludes);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private void testDmnDuplicates(File file) throws JDOMException, IOException {
 
         final SAXBuilder builder = new SAXBuilder();
         final Namespace ns = Namespace.getNamespace("http://www.omg.org/spec/DMN/20151101/dmn11.xsd");
@@ -59,43 +72,52 @@ public class CheckerMain extends AbstractMojo {
 
         final Element decision = rootNode.getChild("decision", ns);
         final Element decisionTable = decision.getChild("decisionTable", ns);
-        final List<Element> rules = decisionTable.getChildren("rule", ns);
-        final List<List<String>> expressions = new ArrayList<>();
-        final List<String> result= new ArrayList<>();
+        final Attribute hitPolicy = decisionTable.getAttribute("hitPolicy");
 
-        for (Element rule : rules) {
-            final List<Element> inputEntries = rule.getChildren("inputEntry", ns);
-            final List<String> rowElements = new ArrayList<>();
-            for (Element child : inputEntries) {
-                final Element text = child.getChild("text", ns);
-                rowElements.add(text.getValue());
+        if (hitPolicy == null || !hitPolicy.getValue().equalsIgnoreCase("collect")) {
+            final List<Element> rules = decisionTable.getChildren("rule", ns);
+            final List<List<String>> expressions = new ArrayList<>();
+            final List<String> result = new ArrayList<>();
+
+            for (Element rule : rules) {
+                final List<Element> inputEntries = rule.getChildren("inputEntry", ns);
+                final List<String> rowElements = new ArrayList<>();
+                for (Element child : inputEntries) {
+                    final Element text = child.getChild("text", ns);
+                    rowElements.add(text.getValue());
+                }
+                if (!expressions.contains(rowElements)) {
+                    expressions.add(rowElements);
+                } else {
+                    result.add("Rule is defined more than once " + rowElements + " in File:" + file.getAbsolutePath());
+                }
             }
-            if (!expressions.contains(rowElements)) {
-                expressions.add(rowElements);
-            } else {
-                result.add("Rule is defined more than once " + rowElements + " in File:" + file.getAbsolutePath());
-            }
+
+            Assert.assertTrue(result.toString(), result.isEmpty());
         }
-        Assert.assertTrue(result.toString(), result.isEmpty());
 
     }
 
-
     /*https://stackoverflow.com/questions/2534632/list-all-files-from-a-directory-recursively-with-java*/
     private List<String> getFileNames(String suffix, List<String> result, Path dir) {
-        try(DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (Path path : stream) {
-                if(path.toFile().isDirectory()) {
+                if (path.toFile().isDirectory()) {
                     getFileNames(suffix, result, path);
                 } else {
-                    if(path.toFile().getName().endsWith(suffix)) {
+                    if (path.toFile().getName().endsWith(suffix)) {
                         result.add(path.toAbsolutePath().toString());
                     }
                 }
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
     }
+
+    void setExcludes(final String[] excludes) {
+        this.excludes = excludes;
+    }
+
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn11.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="decision" name="">
+    <decisionTable id="decisionTable">
+      <input id="input1" label="">
+        <inputExpression id="inputExpression1" typeRef="string">        <text>PROPERTY1</text>
+</inputExpression>
+      </input>
+      <input id="InputClause_0vknz3r" label="">
+        <inputExpression id="LiteralExpression_0sye3l4" typeRef="string">        <text>PROPERTY2</text>
+</inputExpression>
+      </input>
+      <output id="output1" label="" name="OUTPUT" typeRef="string" />
+      <rule id="row-242424255-1">
+        <inputEntry id="UnaryTests_1m10s9w">        <text>INPUT1</text>
+</inputEntry>
+        <inputEntry id="UnaryTests_0bkcllv">        <text>INPUT2</text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_0s7u63t">        <text>output</text>
+</outputEntry>
+      </rule>
+      <rule id="row-242424255-2">
+        <inputEntry id="UnaryTests_1yxwoay">        <text>INPUT1</text>
+</inputEntry>
+        <inputEntry id="UnaryTests_1jvnq4g">        <text>INPUT2</text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_0oa7qzn">        <text>output2</text>
+</outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
