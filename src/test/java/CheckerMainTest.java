@@ -12,25 +12,24 @@ public class CheckerMainTest {
     final private CheckerMain testee = new CheckerMain();
 
     @Test
-    public void shoudDetectSimpleDublicateInFile() {
+    public void shouldDetectSimpleDuplicateInFile() {
         try {
-            testee.testFiles(Arrays.asList(getFile("dublicate_unique.dmn")));
+            testee.testFiles(Arrays.asList(getFile("duplicate_unique.dmn")));
         } catch (AssertionError assertionError) {
             assertThat(assertionError.getMessage().contains("Rule is defined more than once"), is(true));
         }
     }
 
-
     @Test
-    public void shoudlSkipFileIfItsExcluded() {
-        testee.setExcludes(new String[]{"dublicate_unique.dmn"});
-        testee.testFiles(Arrays.asList(getFile("dublicate_unique.dmn")));
+    public void shouldSkipFileIfItsExcluded() {
+        testee.setExcludes(new String[]{"duplicate_unique.dmn"});
+        testee.testFiles(Arrays.asList(getFile("duplicate_unique.dmn")));
     }
 
 
     @Test
-    public void shoudlSkipFileIfHitpolicyIsCollect() {
-        testee.testFiles(Arrays.asList(getFile("dublicate_collect.dmn")));
+    public void shouldSkipFileIfHitpolicyIsCollect() {
+        testee.testFiles(Arrays.asList(getFile("duplicate_collect.dmn")));
     }
 
     private File getFile(final String filename) {

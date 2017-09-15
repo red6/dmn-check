@@ -1,7 +1,7 @@
 DMN-Check maven plugin
 ======================
 
-Checks for ambuguous dmn rules in current project
+Checks for ambiguous dmn rules in current project
 
 
 Configure:
