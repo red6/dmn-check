@@ -32,7 +32,7 @@ class CheckerMain extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         final ArrayList<String> arrayList = new ArrayList<>();
         final List<String> fileNames = getFileNames(".dmn", arrayList, Paths.get(""));
-        List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
+        final List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
 
         testFiles(collect);
 
@@ -42,7 +42,7 @@ class CheckerMain extends AbstractMojo {
         for (File file : files) {
             getLog().info(file.getName());
             try {
-                if (getExcludeListOrNull().contains(file.getName())) {
+                if (getExcludeList().contains(file.getName())) {
                     getLog().info("Skipped File: " + file);
                 } else {
                     testDmnDuplicates(file);
@@ -55,7 +55,7 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    private List<String> getExcludeListOrNull() {
+    private List<String> getExcludeList() {
         if (excludes != null) {
             return Arrays.asList(excludes);
         } else {
