@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/red6/dmn-check.svg?branch=master)](https://travis-ci.org/red6/dmn-check)
+
 DMN-Check maven plugin
 ======================
 
