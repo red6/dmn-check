@@ -1,4 +1,9 @@
+package de.redsix.dmncheck;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Rule;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
@@ -6,18 +11,11 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnableRuleMigrationSupport
 public class CheckerMainTest {
@@ -47,19 +45,19 @@ public class CheckerMainTest {
 
         for (String fileName : allFileNames) {
             File file = new File(fileName);
-            assertTrue(file.createNewFile());
+            Assertions.assertTrue(file.createNewFile());
         }
 
         final List<String> result = testee.getFileNames("dmn", temporaryFolder.getRoot().getAbsoluteFile().toPath());
 
-        assertThat(result, containsInAnyOrder(dmnFileNames.toArray()));
+        MatcherAssert.assertThat(result, Matchers.containsInAnyOrder(dmnFileNames.toArray()));
     }
 
     @Test
     public void shouldDetectSimpleDuplicateInFile() {
-        AssertionError assertionError = assertThrows(AssertionError.class,
+        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
-        assertTrue(assertionError.getMessage().contains("Rule is defined more than once"));
+        Assertions.assertTrue(assertionError.getMessage().contains("Rule is defined more than once"));
     }
 
     @Test
@@ -76,7 +74,7 @@ public class CheckerMainTest {
     private File getFile(final String filename) {
         ClassLoader classLoader = getClass().getClassLoader();
         final URL url = classLoader.getResource(filename);
-        assertNotNull(url, String.format("No such file %s", filename));
+        Assertions.assertNotNull(url, String.format("No such file %s", filename));
         return new File(url.getFile());
     }
 
