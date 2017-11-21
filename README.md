@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/red6/dmn-check.svg?branch=master)](https://travis-ci.org/red6/dmn-check)
+[![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
 
 DMN-Check maven plugin
 ======================
