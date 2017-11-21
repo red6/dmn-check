@@ -12,7 +12,6 @@ import org.jdom2.input.SAXBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,8 +28,7 @@ class CheckerMain extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final ArrayList<String> arrayList = new ArrayList<>();
-        final List<String> fileNames = getFileNames(".dmn", arrayList, Paths.get(""));
+        final List<String> fileNames = getFileNames(".dmn", Paths.get(""));
         final List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
 
         testFiles(collect);
@@ -99,22 +97,14 @@ class CheckerMain extends AbstractMojo {
 
     }
 
-    /*https://stackoverflow.com/questions/2534632/list-all-files-from-a-directory-recursively-with-java*/
-    protected List<String> getFileNames(String suffix, List<String> result, Path dir) {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (Path path : stream) {
-                if (path.toFile().isDirectory()) {
-                    getFileNames(suffix, result, path);
-                } else {
-                    if (path.toFile().getName().endsWith(suffix)) {
-                        result.add(path.toAbsolutePath().toString());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    protected List<String> getFileNames(String suffix, Path dir) {
+        try {
+            return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
+                    .filter(absolutePath -> absolutePath.endsWith(suffix)).collect(Collectors.toList());
         }
-        return result;
+        catch (IOException e) {
+            throw new RuntimeException("Could not determine DMN files.", e);
+        }
     }
 
     void setExcludes(final String[] excludes) {

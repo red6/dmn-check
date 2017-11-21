@@ -50,7 +50,7 @@ public class CheckerMainTest {
             assertTrue(file.createNewFile());
         }
 
-        final List<String> result = testee.getFileNames("dmn", new ArrayList<>(), temporaryFolder.getRoot().getAbsoluteFile().toPath());
+        final List<String> result = testee.getFileNames("dmn", temporaryFolder.getRoot().getAbsoluteFile().toPath());
 
         assertThat(result, containsInAnyOrder(dmnFileNames.toArray()));
     }
