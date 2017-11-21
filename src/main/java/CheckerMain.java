@@ -100,7 +100,7 @@ class CheckerMain extends AbstractMojo {
     }
 
     /*https://stackoverflow.com/questions/2534632/list-all-files-from-a-directory-recursively-with-java*/
-    private List<String> getFileNames(String suffix, List<String> result, Path dir) {
+    protected List<String> getFileNames(String suffix, List<String> result, Path dir) {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (Path path : stream) {
                 if (path.toFile().isDirectory()) {
