@@ -1,11 +1,10 @@
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheckerMainTest {
 
@@ -13,11 +12,9 @@ public class CheckerMainTest {
 
     @Test
     public void shouldDetectSimpleDuplicateInFile() {
-        try {
-            testee.testFiles(Arrays.asList(getFile("duplicate_unique.dmn")));
-        } catch (AssertionError assertionError) {
-            assertThat(assertionError.getMessage().contains("Rule is defined more than once"), is(true));
-        }
+        AssertionError assertionError = assertThrows(AssertionError.class,
+                () -> testee.testFiles(Arrays.asList(getFile("duplicate_unique.dmn"))));
+        assertTrue(assertionError.getMessage().contains("Rule is defined more than once"));
     }
 
     @Test
