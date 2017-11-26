@@ -1,5 +1,8 @@
 package de.redsix.dmncheck;
 
+import de.redsix.dmncheck.validators.DuplicateRuleValidator;
+import de.redsix.dmncheck.validators.ValidationResult;
+import de.redsix.dmncheck.validators.Validator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -7,12 +10,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.DrgElement;
-import org.camunda.bpm.model.dmn.instance.Rule;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +18,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn")
 class CheckerMain extends AbstractMojo {
+
+    private final static List<? extends Validator> validators = Arrays.asList(DuplicateRuleValidator.instance);
 
     @Parameter
     private String[] excludes;
@@ -46,12 +44,13 @@ class CheckerMain extends AbstractMojo {
                 getLog().info("Skipped File: " + file);
             } else {
                 final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-                final Collection<DrgElement> drgElements = dmnModelInstance.getDefinitions().getDrgElements();
+                    final List<ValidationResult> validationResults = validators.stream().flatMap(validator -> ((List<ValidationResult>)validator.apply(dmnModelInstance)).stream()).
+                            collect(Collectors.toList());
 
-                for (DrgElement drgElement : drgElements) {
-                    DecisionTable decisionTable = (DecisionTable) ((Decision) drgElement).getExpression();
-                    testDmnDuplicates(decisionTable);
-                }
+                    if (!validationResults.isEmpty()) {
+                        throw new AssertionError(validationResults.toString());
+                    }
+
             }
         }
     }
@@ -62,29 +61,6 @@ class CheckerMain extends AbstractMojo {
         } else {
             return new ArrayList<>();
         }
-    }
-
-    private void testDmnDuplicates(DecisionTable decisionTable) {
-        if (!HitPolicy.COLLECT.equals(decisionTable.getHitPolicy())) {
-
-            final Collection<Rule> rules = decisionTable.getRules();
-            final List<List<String>> expressions = new ArrayList<>();
-            final List<String> result = new ArrayList<>();
-
-            for (Rule rule : rules) {
-                final List<String> rowElements = rule.getInputEntries().stream().
-                        map(ModelElementInstance::getTextContent).collect(Collectors.toList());
-                if (!expressions.contains(rowElements)) {
-                    expressions.add(rowElements);
-                } else {
-                    result.add("Rule is defined more than once " + rowElements);
-                }
-            }
-            if (!result.isEmpty()) {
-                throw new AssertionError(result.toString());
-            }
-        }
-
     }
 
     protected List<String> getFileNames(String suffix, Path dir) {
