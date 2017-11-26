@@ -5,12 +5,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.dmn.HitPolicy;
+import org.camunda.bpm.model.dmn.instance.Decision;
+import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.camunda.bpm.model.dmn.instance.DrgElement;
+import org.camunda.bpm.model.dmn.instance.Rule;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,17 +42,16 @@ class CheckerMain extends AbstractMojo {
 
     void testFiles(final List<File> files) {
         for (File file : files) {
-            getLog().info(file.getName());
-            try {
-                if (getExcludeList().contains(file.getName())) {
-                    getLog().info("Skipped File: " + file);
-                } else {
-                    testDmnDuplicates(file);
+            if (getExcludeList().contains(file.getName())) {
+                getLog().info("Skipped File: " + file);
+            } else {
+                final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
+                final Collection<DrgElement> drgElements = dmnModelInstance.getDefinitions().getDrgElements();
+
+                for (DrgElement drgElement : drgElements) {
+                    DecisionTable decisionTable = (DecisionTable) ((Decision) drgElement).getExpression();
+                    testDmnDuplicates(decisionTable);
                 }
-            } catch (JDOMException e) {
-                getLog().error("Error while processing file: " + file, e);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -62,36 +64,22 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    private void testDmnDuplicates(File file) throws JDOMException, IOException {
+    private void testDmnDuplicates(DecisionTable decisionTable) {
+        if (!HitPolicy.COLLECT.equals(decisionTable.getHitPolicy())) {
 
-        final SAXBuilder builder = new SAXBuilder();
-        final Namespace ns = Namespace.getNamespace("http://www.omg.org/spec/DMN/20151101/dmn11.xsd");
-        final Document document = builder.build(file);
-        final Element rootNode = document.getRootElement();
-
-        final Element decision = rootNode.getChild("decision", ns);
-        final Element decisionTable = decision.getChild("decisionTable", ns);
-        final Attribute hitPolicy = decisionTable.getAttribute("hitPolicy");
-
-        if (hitPolicy == null || !hitPolicy.getValue().equalsIgnoreCase("collect")) {
-            final List<Element> rules = decisionTable.getChildren("rule", ns);
+            final Collection<Rule> rules = decisionTable.getRules();
             final List<List<String>> expressions = new ArrayList<>();
             final List<String> result = new ArrayList<>();
 
-            for (Element rule : rules) {
-                final List<Element> inputEntries = rule.getChildren("inputEntry", ns);
-                final List<String> rowElements = new ArrayList<>();
-                for (Element child : inputEntries) {
-                    final Element text = child.getChild("text", ns);
-                    rowElements.add(text.getValue());
-                }
+            for (Rule rule : rules) {
+                final List<String> rowElements = rule.getInputEntries().stream().
+                        map(ModelElementInstance::getTextContent).collect(Collectors.toList());
                 if (!expressions.contains(rowElements)) {
                     expressions.add(rowElements);
                 } else {
-                    result.add("Rule is defined more than once " + rowElements + " in File:" + file.getAbsolutePath());
+                    result.add("Rule is defined more than once " + rowElements);
                 }
             }
-
             if (!result.isEmpty()) {
                 throw new AssertionError(result.toString());
             }
