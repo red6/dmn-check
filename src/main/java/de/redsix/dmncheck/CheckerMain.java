@@ -2,7 +2,7 @@ package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.validators.DuplicateRuleValidator;
 import de.redsix.dmncheck.validators.ValidationResult;
-import de.redsix.dmncheck.validators.Validator;
+import de.redsix.dmncheck.validators.GenericValidator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Mojo(name = "check-dmn")
 class CheckerMain extends AbstractMojo {
 
-    private final static List<? extends Validator> validators = Arrays.asList(DuplicateRuleValidator.instance);
+    private final static List<? extends GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance);
 
     @Parameter
     private String[] excludes;
@@ -44,8 +44,9 @@ class CheckerMain extends AbstractMojo {
                 getLog().info("Skipped File: " + file);
             } else {
                 final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-                    final List<ValidationResult> validationResults = validators.stream().flatMap(validator -> ((List<ValidationResult>)validator.apply(dmnModelInstance)).stream()).
-                            collect(Collectors.toList());
+                final List<ValidationResult> validationResults = validators.stream()
+                        .flatMap(validator -> ((List<ValidationResult>) validator.apply(dmnModelInstance)).stream()).
+                                collect(Collectors.toList());
 
                     if (!validationResults.isEmpty()) {
                         throw new AssertionError(validationResults.toString());
