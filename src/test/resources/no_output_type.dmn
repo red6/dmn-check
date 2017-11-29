@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn11.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="decision" name="">
+    <decisionTable id="decisionTable">
+      <input id="input1" label="">
+        <inputExpression id="inputExpression1" typeRef="string">        <text>PROPERTY1</text>
+</inputExpression>
+      </input>
+      <input id="InputClause_0vknz3r" label="">
+        <inputExpression id="LiteralExpression_0sye3l4" typeRef="integer">        <text>PROPERTY2</text>
+</inputExpression>
+      </input>
+      <output id="output1" label="" name="OUTPUT" />
+    </decisionTable>
+  </decision>
+</definitions>

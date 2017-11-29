@@ -4,7 +4,9 @@ import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.DuplicateRuleValidator;
+import de.redsix.dmncheck.validators.InputExpressionTypeValidator;
 import de.redsix.dmncheck.validators.GenericValidator;
+import de.redsix.dmncheck.validators.OutputTypeValidator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -29,7 +31,8 @@ import java.util.stream.Stream;
 @Mojo(name = "check-dmn")
 class CheckerMain extends AbstractMojo {
 
-    private final static List<? extends GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance);
+    private final static List<GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance,
+            InputExpressionTypeValidator.instance, OutputTypeValidator.instance);
 
     @Parameter
     private String[] excludes;
