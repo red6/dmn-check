@@ -1,6 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;

@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.model.ExpressionTypeEnum;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.instance.Expression;
 
 import java.util.Collections;

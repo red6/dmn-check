@@ -1,4 +1,4 @@
-package de.redsix.dmncheck.validators;
+package de.redsix.dmncheck.validators.core;
 
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
