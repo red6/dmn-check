@@ -1,4 +1,4 @@
-package de.redsix.dmncheck.validators;
+package de.redsix.dmncheck.result;
 
 public enum ValidationResultType {
     WARNING,

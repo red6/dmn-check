@@ -1,7 +1,9 @@
 package de.redsix.dmncheck;
 
+import de.redsix.dmncheck.result.PrettyPrintValidationResults;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.DuplicateRuleValidator;
-import de.redsix.dmncheck.validators.ValidationResult;
 import de.redsix.dmncheck.validators.GenericValidator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,6 +12,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +22,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Mojo(name = "check-dmn")
 class CheckerMain extends AbstractMojo {
@@ -44,14 +49,14 @@ class CheckerMain extends AbstractMojo {
                 getLog().info("Skipped File: " + file);
             } else {
                 final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-                final List<ValidationResult> validationResults = validators.stream()
-                        .flatMap(validator -> ((List<ValidationResult>) validator.apply(dmnModelInstance)).stream()).
-                                collect(Collectors.toList());
+                final Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults = validators.stream()
+                        .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream()).
+                                collect(Collectors.groupingBy(ValidationResult::getElement,
+                                        Collectors.groupingBy(ValidationResult::getValidationResultType)));
 
                     if (!validationResults.isEmpty()) {
-                        throw new AssertionError(validationResults.toString());
+                        throw new AssertionError(PrettyPrintValidationResults.prettify(file, validationResults));
                     }
-
             }
         }
     }

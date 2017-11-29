@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -35,7 +36,10 @@ public enum DuplicateRuleValidator implements Validator<DecisionTable> {
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add(ValidationResult.from("Rule is defined more than once " + rowElements));
+                result.add(ValidationResult.Builder.instance.with($ -> {
+                    $.message = "Rule is defined more than once";
+                    $.element = rule;
+                }).build());
             }
         }
         return result;

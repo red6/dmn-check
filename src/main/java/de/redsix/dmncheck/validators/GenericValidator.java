@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
