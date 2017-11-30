@@ -37,7 +37,7 @@ public enum DuplicateRuleValidator implements Validator<DecisionTable> {
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add(ValidationResult.Builder.instance.with($ -> {
+                result.add(ValidationResult.Builder.with($ -> {
                     $.message = "Rule is defined more than once";
                     $.element = rule;
                 }).build());

@@ -24,12 +24,12 @@ public enum OutputTypeValidator implements Validator<Output> {
     public List<ValidationResult> validate(Output output) {
         final String outputType = output.getTypeRef();
         if (Objects.isNull(outputType)) {
-            return Collections.singletonList(ValidationResult.Builder.instance.with($ -> {
+            return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Output has no type";
                 $.element = output;
             }).build());
         } else if (ExpressionTypeEnum.isValid(outputType)) {
-            return Collections.singletonList(ValidationResult.Builder.instance.with($ -> {
+            return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Output uses an unsupported type";
                 $.element = output;
             }).build());

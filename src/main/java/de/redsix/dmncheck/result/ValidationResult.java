@@ -35,16 +35,20 @@ public class  ValidationResult {
         return message;
     }
 
-    public enum Builder {
-        instance;
+    public final static class Builder {
 
         public ValidationResultType validationResultType = ValidationResultType.ERROR;
         public String message;
         public ModelElementInstance element;
 
-        public Builder with(Consumer<Builder> builderConsumer) {
-            builderConsumer.accept(this);
-            return this;
+        private Builder() {
+
+        }
+
+        public static Builder with(Consumer<Builder> builderConsumer) {
+            final Builder builder = new Builder();
+            builderConsumer.accept(builder);
+            return builder;
         }
 
         public ValidationResult build() {

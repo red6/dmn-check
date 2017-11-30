@@ -22,7 +22,7 @@ public enum AggregationValidator implements Validator<DecisionTable> {
     public List<ValidationResult> validate(DecisionTable decisionTable) {
         final BuiltinAggregator builtinAggregator = decisionTable.getAggregation();
         if (Objects.nonNull(builtinAggregator)) {
-            return Collections.singletonList(ValidationResult.Builder.instance.with($ -> {
+            return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Aggregations are only valid with HitPolicy " + HitPolicy.COLLECT;
                 $.element = decisionTable;
             }).build());

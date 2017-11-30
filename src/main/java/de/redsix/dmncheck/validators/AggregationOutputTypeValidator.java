@@ -26,7 +26,7 @@ public enum AggregationOutputTypeValidator implements GenericValidator<DecisionT
     @Override
     public List<ValidationResult> validate(Output output) {
         if (!ExpressionTypeEnum.isNumeric(output.getTypeRef())) {
-            return Collections.singletonList(ValidationResult.Builder.instance.with($ -> {
+            return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Aggregations MAX, MIN, SUM are only valid with numeric output types";
                 $.element = output;
             }).build());
