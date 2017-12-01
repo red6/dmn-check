@@ -7,6 +7,7 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -23,7 +24,7 @@ public enum ConflictingRuleValidator implements Validator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {
-        return !HitPolicy.COLLECT.equals(decisionTable.getHitPolicy());
+        return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
     }
 
     @Override
