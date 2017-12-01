@@ -37,7 +37,7 @@ public class  ValidationResult {
 
     public final static class Builder {
 
-        public ValidationResultType validationResultType = ValidationResultType.ERROR;
+        public ValidationResultType type = ValidationResultType.ERROR;
         public String message;
         public ModelElementInstance element;
 
@@ -52,7 +52,7 @@ public class  ValidationResult {
         }
 
         public ValidationResult build() {
-            return new ValidationResult(message, validationResultType, element);
+            return new ValidationResult(message, type, element);
         }
     }
 }

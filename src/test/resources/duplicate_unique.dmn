@@ -24,7 +24,7 @@
 </inputEntry>
         <inputEntry id="UnaryTests_1jvnq4g">        <text>INPUT2</text>
 </inputEntry>
-        <outputEntry id="LiteralExpression_0oa7qzn">        <text>output2</text>
+        <outputEntry id="LiteralExpression_0oa7qzn">        <text>output</text>
 </outputEntry>
       </rule>
     </decisionTable>

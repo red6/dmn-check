@@ -1,6 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum DuplicateRuleValidator implements Validator<DecisionTable> {
     instance;
@@ -32,7 +34,7 @@ public enum DuplicateRuleValidator implements Validator<DecisionTable> {
         final List<ValidationResult> result = new ArrayList<>();
 
         for (Rule rule : rules) {
-            final List<String> rowElements = rule.getInputEntries().stream().
+            final List<String> rowElements = Stream.concat(rule.getInputEntries().stream(), rule.getOutputEntries().stream()).
                     map(ModelElementInstance::getTextContent).collect(Collectors.toList());
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
@@ -40,6 +42,7 @@ public enum DuplicateRuleValidator implements Validator<DecisionTable> {
                 result.add(ValidationResult.Builder.with($ -> {
                     $.message = "Rule is defined more than once";
                     $.element = rule;
+                    $.type = ValidationResultType.WARNING;
                 }).build());
             }
         }
