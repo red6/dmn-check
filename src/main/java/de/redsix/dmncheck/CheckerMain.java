@@ -30,7 +30,8 @@ import java.util.stream.Stream;
 class CheckerMain extends AbstractMojo {
 
     private final static List<GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance,
-            InputExpressionTypeValidator.instance, OutputTypeValidator.instance, AggregationValidator.instance);
+            InputExpressionTypeValidator.instance, OutputTypeValidator.instance, AggregationValidator.instance,
+            AggregationOutputTypeValidator.instance);
 
     @Parameter
     private String[] excludes;
