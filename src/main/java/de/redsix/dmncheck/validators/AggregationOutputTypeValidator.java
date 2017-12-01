@@ -4,7 +4,6 @@ import de.redsix.dmncheck.model.ExpressionTypeEnum;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 

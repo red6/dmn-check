@@ -2,39 +2,17 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Definitions;
 import org.camunda.bpm.model.dmn.instance.Output;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AggregationOutputTypeValidatorTest {
-    private DmnModelInstance modelInstance;
-    private Definitions definitions;
-    private Decision decision;
-    private DecisionTable decisionTable;
-
-    @BeforeEach
-    public void prepareDecisionTable() {
-        modelInstance = Dmn.createEmptyModel();
-        definitions = modelInstance.newInstance(Definitions.class);
-        modelInstance.setDefinitions(definitions);
-        decision = modelInstance.newInstance(Decision.class);
-        definitions.addChildElement(decision);
-        decisionTable = modelInstance.newInstance(DecisionTable.class);
-        decision.addChildElement(decisionTable);
-    }
-
+public class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     @Test
     public void shouldErrorOnStringOutputWithMaxAggregator() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);

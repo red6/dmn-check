@@ -19,13 +19,13 @@ public interface ExpressionTypeValidator<T extends Expression> extends Validator
         final String expressionType = expression.getTypeRef();
         if(Objects.isNull(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                $.message = getClassUnderValidation() + " has no type";
+                $.message = getClassUnderValidation().getSimpleName() + " has no type";
                 $.element = expression;
             }).build());
         } else
         if (ExpressionTypeEnum.isValid(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                $.message = getClassUnderValidation() + " uses an unsupported type";
+                $.message = getClassUnderValidation().getSimpleName() + " uses an unsupported type";
                 $.element = expression;
             }).build());
         } else {

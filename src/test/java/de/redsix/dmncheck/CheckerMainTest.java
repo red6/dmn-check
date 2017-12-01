@@ -61,36 +61,6 @@ public class CheckerMainTest {
     }
 
     @Test
-    public void shouldDetectInvaildTypeInInputExpression() {
-        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
-                () -> testee.testFiles(Collections.singletonList(getFile("illegal_inputexpression_type.dmn"))));
-        Assertions.assertTrue(assertionError.getMessage().contains("InputExpression uses an unsupported type"));
-    }
-
-    @Test
-    public void shouldDetectInvaildTypeInOutput() {
-        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
-                () -> testee.testFiles(Collections.singletonList(getFile("illegal_output_type.dmn"))));
-        Assertions.assertTrue(assertionError.getMessage().contains("Output uses an unsupported type"));
-    }
-
-
-    @Test
-    public void shouldDetectNoTypeForInputExpression() {
-        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
-                () -> testee.testFiles(Collections.singletonList(getFile("no_inputexpression_type.dmn"))));
-        Assertions.assertTrue(assertionError.getMessage().contains("InputExpression has no type"));
-    }
-
-    @Test
-    public void shouldDetectNoTypeForOutput() {
-        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
-                () -> testee.testFiles(Collections.singletonList(getFile("no_output_type.dmn"))));
-        Assertions.assertTrue(assertionError.getMessage().contains("Output has no type"));
-    }
-
-
-    @Test
     public void shouldSkipFileIfItsExcluded() {
         testee.setExcludes(new String[] {"duplicate_unique.dmn"});
         testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
