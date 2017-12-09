@@ -124,5 +124,10 @@
             <artifactId>maven-plugin-annotations</artifactId>
             <version>3.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.jparsec</groupId>
+            <artifactId>jparsec</artifactId>
+            <version>3.0</version>
+        </dependency>
     </dependencies>
 </project>
