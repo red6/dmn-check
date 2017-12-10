@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public interface ExpressionTypeValidator<T extends Expression> extends Validator<T> {
+public interface ExpressionTypeDeclarationValidator<T extends Expression> extends Validator<T> {
 
     default boolean isApplicable(T expression) {
         return true;
@@ -23,7 +23,7 @@ public interface ExpressionTypeValidator<T extends Expression> extends Validator
                 $.element = expression;
             }).build());
         } else
-        if (ExpressionTypeEnum.isValid(expressionType)) {
+        if (ExpressionTypeEnum.isNotValid(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = getClassUnderValidation().getSimpleName() + " uses an unsupported type";
                 $.element = expression;

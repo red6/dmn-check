@@ -28,7 +28,7 @@ public enum OutputTypeValidator implements Validator<Output> {
                 $.message = "Output has no type";
                 $.element = output;
             }).build());
-        } else if (ExpressionTypeEnum.isValid(outputType)) {
+        } else if (ExpressionTypeEnum.isNotValid(outputType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Output uses an unsupported type";
                 $.element = output;
