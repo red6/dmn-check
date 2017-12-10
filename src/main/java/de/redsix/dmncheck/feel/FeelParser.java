@@ -1,6 +1,5 @@
 package de.redsix.dmncheck.feel;
 
-import de.redsix.dmncheck.feel.model.*;
 import org.jparsec.*;
 import org.jparsec.pattern.Patterns;
 
@@ -30,22 +29,34 @@ public class FeelParser {
     );
 
     private static final Parser<FeelExpression> INTEGER = Terminals.IntegerLiteral.PARSER.map(Integer::valueOf).map(
-            IntegerLiteral::new);
+            FeelExpressions::IntegerLiteral);
 
     private static final Parser<FeelExpression> DOUBLE = Terminals.DecimalLiteral.PARSER.map(Double::valueOf).map(
-            DoubleLiteral::new);
+            FeelExpressions::DoubleLiteral);
 
-    private static final Parser<FeelExpression> DATE = Terminals.fragment("datefragment").map(
-            string -> new DateLiteral(LocalDateTime.parse(string)));
+    private static final Parser<FeelExpression> DATE = Terminals.fragment("datefragment")
+            .map(LocalDateTime::parse).map(FeelExpressions::DateLiteral);
 
     private static final Parser<FeelExpression> VARIABLE = Terminals.fragment("variablefragment").map(
-            VariableLiteral::new);
+            FeelExpressions::VariableLiteral);
 
     private static final Parser<FeelExpression> STRING = Terminals.fragment("stringfragment")
-            .map(s -> s.substring(1, s.length() -1 )).map(StringLiteral::new);
+            .map(s -> s.substring(1, s.length() -1 )).map(FeelExpressions::StringLiteral);
 
     private static final Parser<FeelExpression> BOOLEAN = Terminals.fragment("booleanfragment")
-            .map(Boolean::new).map(BooleanLiteral::new);
+            .map(Boolean::new).map(FeelExpressions::BooleanLiteral);
+
+    private static final Parser<FeelExpression> dateParser = Parsers.between(term("date and time(\""),
+            DATE, term("\")"));
+
+    private static final Parser<FeelExpression> boundExpression = Parsers.or(INTEGER, DOUBLE, dateParser, VARIABLE);
+
+
+    private static Parser<FeelExpression> parseRangeExpression(final Parser<Boolean> leftBound, final Parser<Boolean> rightBound) {
+        return Parsers.sequence(leftBound, boundExpression, term("..").skipTimes(1), boundExpression, rightBound,
+                (isLeftInclusive, lowerBound, aVoid, upperBound, isRightInclusive) -> FeelExpressions.RangeExpression(
+                        isLeftInclusive, lowerBound, upperBound, isRightInclusive));
+    }
 
     private static Parser<Token> term(final String... names) {
         return OPERATORS.token(names);
@@ -58,40 +69,35 @@ public class FeelParser {
     private static Parser<FeelExpression> parser() {
         final Parser.Reference<FeelExpression> reference = Parser.newReference();
 
-        final Parser<FeelExpression> dateParser = Parsers.between(term("date and time(\""),
-                DATE, term("\")"));
-
-        final Parser<FeelExpression> boundExpression = Parsers.or(INTEGER, DOUBLE, dateParser, VARIABLE);
-
         final Parser<FeelExpression> rangeExpressionParser = Parsers.or(
-                Parsers.sequence(term("[").retn(true), boundExpression, term("..").skipTimes(1), boundExpression, term("]").retn(true), RangeExpression::new),
-                Parsers.sequence(term("]").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term("]").retn(true), RangeExpression::new),
-                Parsers.sequence(term("[").retn(true), boundExpression, term("..").skipTimes(1), boundExpression, term("[").retn(false), RangeExpression::new),
-                Parsers.sequence(term("(").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term("]").retn(true), RangeExpression::new),
-                Parsers.sequence(term("[").retn(true), boundExpression, term("..").skipTimes(1), boundExpression, term(")").retn(false), RangeExpression::new),
-                Parsers.sequence(term("(").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term(")").retn(false), RangeExpression::new),
-                Parsers.sequence(term("]").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term(")").retn(false), RangeExpression::new),
-                Parsers.sequence(term("(").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term("[").retn(false), RangeExpression::new),
-                Parsers.sequence(term("]").retn(false), boundExpression, term("..").skipTimes(1), boundExpression, term("[").retn(false), RangeExpression::new)
+                parseRangeExpression(term("[").retn(true), term("]").retn(true)),
+                parseRangeExpression(term("]").retn(false),term("]").retn(true)),
+                parseRangeExpression(term("[").retn(true), term("[").retn(false)),
+                parseRangeExpression(term("(").retn(false), term("]").retn(true)),
+                parseRangeExpression(term("[").retn(true), term(")").retn(false)),
+                parseRangeExpression(term("(").retn(false), term(")").retn(false)),
+                parseRangeExpression(term("]").retn(false), term(")").retn(false)),
+                parseRangeExpression(term("(").retn(false), term("[").retn(false)),
+                parseRangeExpression(term("]").retn(false), term("[").retn(false))
                 );
 
         final Parser<FeelExpression> parseNot = Parsers.between(term("not("), reference.lazy(), term(")"))
-                .map(expression -> new UnaryExpression(Operator.NOT, expression));
+                .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
 
         final Parser<FeelExpression> binaryExpressionParser = new OperatorTable<FeelExpression>()
-                .infixr(op(",", DisjunctionExpression::new), 0)
-                .prefix(op("<", v -> new UnaryExpression(Operator.LT, v)), 5)
-                .prefix(op(">", v -> new UnaryExpression(Operator.GT, v)), 5)
-                .prefix(op("<=", v -> new UnaryExpression(Operator.LE, v)), 5)
-                .prefix(op(">=", v -> new UnaryExpression(Operator.GE, v)), 5)
-                .infixl(op("or", (l, r) -> new BinaryExpression(l, Operator.OR, r)), 8)
-                .infixl(op("and", (l, r) -> new BinaryExpression(l, Operator.AND, r)), 8)
-                .infixl(op("+", (l, r) -> new BinaryExpression(l, Operator.ADD, r)), 10)
-                .infixl(op("-", (l, r) -> new BinaryExpression(l, Operator.SUB, r)), 10)
-                .infixl(op("*", (l, r) -> new BinaryExpression(l, Operator.MUL, r)), 20)
-                .infixl(op("**", (l, r) -> new BinaryExpression(l, Operator.EXP, r)), 20)
-                .infixl(op("/", (l, r) -> new BinaryExpression(l, Operator.DIV, r)), 20)
-                .prefix(op("-", v -> new UnaryExpression(Operator.SUB, v)), 30)
+                .infixr(op(",", FeelExpressions::DisjunctionExpression), 0)
+                .prefix(op("<", v -> FeelExpressions.UnaryExpression(Operator.LT, v)), 5)
+                .prefix(op(">", v -> FeelExpressions.UnaryExpression(Operator.GT, v)), 5)
+                .prefix(op("<=", v -> FeelExpressions.UnaryExpression(Operator.LE, v)), 5)
+                .prefix(op(">=", v -> FeelExpressions.UnaryExpression(Operator.GE, v)), 5)
+                .infixl(op("or", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.OR, r)), 8)
+                .infixl(op("and", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.AND, r)), 8)
+                .infixl(op("+", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.ADD, r)), 10)
+                .infixl(op("-", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.SUB, r)), 10)
+                .infixl(op("*", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.MUL, r)), 20)
+                .infixl(op("**", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.EXP, r)), 20)
+                .infixl(op("/", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.DIV, r)), 20)
+                .prefix(op("-", v -> FeelExpressions.UnaryExpression(Operator.SUB, v)), 30)
                 .build(Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, parseNot, rangeExpressionParser, dateParser));
 
         reference.set(binaryExpressionParser);

@@ -1,4 +1,4 @@
-package de.redsix.dmncheck.feel.model;
+package de.redsix.dmncheck.feel;
 
 public enum  Operator {
     ADD("+"),
