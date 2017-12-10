@@ -57,7 +57,8 @@ public enum InputExpressionTypeValidator implements Validator<DecisionTable> {
                                 }));
                             }
                         })
-                        .right(Collections::singletonList);
+                        .right(validationResultBuilder -> Collections.singletonList(
+                                validationResultBuilder.extend($ -> $.element = rule)));
             }).flatMap(List::stream).map(ValidationResult.Builder::build);
         }).collect(Collectors.toList());
     }
