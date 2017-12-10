@@ -10,14 +10,14 @@ public abstract class FeelExpression {
     public interface Cases<R> {
         R BooleanLiteral(Boolean aBoolean);
         R DateLiteral(LocalDateTime dateTime);
-        R DisjunctionExpression(FeelExpression head, FeelExpression tail);
         R DoubleLiteral(Double aDouble);
         R IntegerLiteral(Integer aInteger);
-        R RangeExpression(boolean isLeftInclusive, FeelExpression lowerBound, FeelExpression upperBound, boolean isRightInclusive);
         R StringLiteral(String string);
+        R VariableLiteral(String name);
+        R RangeExpression(boolean isLeftInclusive, FeelExpression lowerBound, FeelExpression upperBound, boolean isRightInclusive);
         R UnaryExpression(Operator operator, FeelExpression expression);
         R BinaryExpression(FeelExpression left, Operator operator, FeelExpression right);
-        R VariableLiteral(String name);
+        R DisjunctionExpression(FeelExpression head, FeelExpression tail);
     }
 
     public abstract <R> R match(Cases<R> cases);

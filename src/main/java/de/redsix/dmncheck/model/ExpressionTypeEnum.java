@@ -19,4 +19,7 @@ public enum ExpressionTypeEnum {
         return Stream.of(INTEGER, LONG, DOUBLE).anyMatch(type -> type.name().equalsIgnoreCase(givenType));
     }
 
+    public static boolean isNumeric(final ExpressionTypeEnum givenType) {
+        return isNumeric(givenType.name());
+    }
 }
