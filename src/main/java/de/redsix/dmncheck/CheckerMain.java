@@ -40,7 +40,7 @@ class CheckerMain extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final List<String> fileNames = getFileNames(".dmn", Paths.get(""));
-        final List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
+        final List<File> collect = fileNames.stream().map(File::new).collect(Collectors.toList());
 
         testFiles(collect);
 

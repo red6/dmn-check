@@ -5,7 +5,6 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.stream.Stream;
 

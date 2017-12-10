@@ -97,18 +97,18 @@ public class FeelParserTest {
     public void shouldParseComparisonExpressions(String input, Operator operator, int number) throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expecedExpression = UnaryExpression(operator, IntegerLiteral(number));
+        final FeelExpression expectedExpression = UnaryExpression(operator, IntegerLiteral(number));
 
-        assertEquals(expecedExpression, expression);
+        assertEquals(expectedExpression, expression);
     }
 
     @Test
     public void shouldParseComparisonExpressionWithVariable() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("> y");
 
-        final FeelExpression expecedExpression = UnaryExpression(Operator.GT, VariableLiteral("y"));
+        final FeelExpression expectedExpression = UnaryExpression(Operator.GT, VariableLiteral("y"));
 
-        assertEquals(expecedExpression, expression);
+        assertEquals(expectedExpression, expression);
     }
 
     @ParameterizedTest
@@ -143,7 +143,7 @@ public class FeelParserTest {
     }
 
     @Test
-    public void shouldParseDisjunctionExpressionWithComparsions() throws Exception {
+    public void shouldParseDisjunctionExpressionWithComparisons() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,>100,42");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
