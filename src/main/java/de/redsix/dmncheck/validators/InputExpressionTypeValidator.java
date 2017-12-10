@@ -10,8 +10,6 @@ import de.redsix.dmncheck.util.Util;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.InputExpression;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.Collections;
 import java.util.List;
