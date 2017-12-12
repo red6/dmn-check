@@ -51,6 +51,11 @@ public class  ValidationResult {
             return builder;
         }
 
+        public Builder extend(Consumer<Builder> builderConsumer) {
+            builderConsumer.accept(this);
+            return this;
+        }
+
         public ValidationResult build() {
             return new ValidationResult(message, type, element);
         }

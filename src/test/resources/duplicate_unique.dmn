@@ -12,19 +12,19 @@
       </input>
       <output id="output1" label="" name="OUTPUT" typeRef="string" />
       <rule id="row-242424255-1">
-        <inputEntry id="UnaryTests_1m10s9w">        <text>INPUT1</text>
+        <inputEntry id="UnaryTests_1m10s9w">        <text>"INPUT1"</text>
 </inputEntry>
-        <inputEntry id="UnaryTests_0bkcllv">        <text>INPUT2</text>
+        <inputEntry id="UnaryTests_0bkcllv">        <text>"INPUT2"</text>
 </inputEntry>
-        <outputEntry id="LiteralExpression_0s7u63t">        <text>output</text>
+        <outputEntry id="LiteralExpression_0s7u63t">        <text>"output"</text>
 </outputEntry>
       </rule>
       <rule id="row-242424255-2">
-        <inputEntry id="UnaryTests_1yxwoay">        <text>INPUT1</text>
+        <inputEntry id="UnaryTests_1yxwoay">        <text>"INPUT1"</text>
 </inputEntry>
-        <inputEntry id="UnaryTests_1jvnq4g">        <text>INPUT2</text>
+        <inputEntry id="UnaryTests_1jvnq4g">        <text>"INPUT2"</text>
 </inputEntry>
-        <outputEntry id="LiteralExpression_0oa7qzn">        <text>output</text>
+        <outputEntry id="LiteralExpression_0oa7qzn">        <text>"output"</text>
 </outputEntry>
       </rule>
     </decisionTable>

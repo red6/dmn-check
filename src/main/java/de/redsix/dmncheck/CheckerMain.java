@@ -30,8 +30,9 @@ import java.util.stream.Stream;
 class CheckerMain extends AbstractMojo {
 
     private final static List<GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance,
-            InputExpressionTypeValidator.instance, OutputTypeValidator.instance, AggregationValidator.instance,
-            AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance);
+            InputExpressionTypeDeclarationValidator.instance, OutputTypeValidator.instance, AggregationValidator.instance,
+            AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
+            InputExpressionTypeValidator.instance);
 
     @Parameter
     private String[] excludes;
@@ -39,7 +40,7 @@ class CheckerMain extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final List<String> fileNames = getFileNames(".dmn", Paths.get(""));
-        final List<File> collect = fileNames.stream().map(name -> new File(name)).collect(Collectors.toList());
+        final List<File> collect = fileNames.stream().map(File::new).collect(Collectors.toList());
 
         testFiles(collect);
 

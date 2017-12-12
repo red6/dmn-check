@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class InputExpressionTypeValidatorTest extends WithDecisionTable {
+public class InputExpressionTypeDeclarationValidatorTest extends WithDecisionTable {
 
     @Test
     public void shouldDetectThatOutputHasNoType() {
@@ -22,7 +22,7 @@ public class InputExpressionTypeValidatorTest extends WithDecisionTable {
         input.setInputExpression(inputExpression);
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputExpressionTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = InputExpressionTypeDeclarationValidator.instance.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -41,7 +41,7 @@ public class InputExpressionTypeValidatorTest extends WithDecisionTable {
         inputExpression.setTypeRef("unsupportedType");
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputExpressionTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = InputExpressionTypeDeclarationValidator.instance.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -60,7 +60,7 @@ public class InputExpressionTypeValidatorTest extends WithDecisionTable {
         inputExpression.setTypeRef("integer");
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputExpressionTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = InputExpressionTypeDeclarationValidator.instance.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }

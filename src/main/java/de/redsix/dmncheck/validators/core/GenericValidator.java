@@ -23,9 +23,11 @@ public interface GenericValidator<S extends ModelElementInstance, T extends Mode
     default List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
         final ModelElementType elementType = dmnModelInstance.getModel().getType(getClassUnderValidation());
         final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());
-        return elements.stream().filter(this::isApplicable).flatMap(element -> Stream
-                .concat(element.getChildElementsByType(getClassUnderValidation()).stream(),
+        return elements.stream()
+                .filter(this::isApplicable)
+                .flatMap(element -> Stream.concat(element.getChildElementsByType(getClassUnderValidation()).stream(),
                         element.getElementType().equals(elementType) ? Stream.of((T) element) : Stream.empty()))
-                .flatMap(element -> validate(element).stream()).collect(Collectors.toList());
+                .flatMap(element -> validate(element).stream())
+                .collect(Collectors.toList());
     }
 }

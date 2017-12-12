@@ -71,6 +71,11 @@ public class CheckerMainTest {
         testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn")));
     }
 
+    @Test
+    public void shouldAcceptDishDecisionExample() {
+        testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn")));
+    }
+
     private File getFile(final String filename) {
         ClassLoader classLoader = getClass().getClassLoader();
         final URL url = classLoader.getResource(filename);
