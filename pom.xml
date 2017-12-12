@@ -66,6 +66,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.9</version>
+                <configuration>
+                    <excludes>
+                        <exclude>de/redsix/dmncheck/feel/FeelExpressions.class</exclude>
+                        <exclude>de/redsix/dmncheck/util/Eithers.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
