@@ -68,14 +68,56 @@ public class FeelParserTest {
         assertEquals(expectedExpression, expression);
     }
 
+    @Test
+    public void shouldParseNegativeNumbers() {
+        final FeelExpression expression = FeelParser.PARSER.parse("- 3");
 
-    @ParameterizedTest
-    @ValueSource(strings = {"2*3", "2  * 3"})
-    public void shouldParseArithmeticExpressions(String input) throws Exception {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expectedExpression = UnaryExpression(Operator.SUB, IntegerLiteral(3));
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    public void shouldRespectPrecedenceOfMinus() {
+        final FeelExpression expression = FeelParser.PARSER.parse("2 * -3");
+
+        final FeelExpression expectedExpression = BinaryExpression(
+                IntegerLiteral(2), Operator.MUL, UnaryExpression(Operator.SUB, IntegerLiteral(3))
+        );
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    public void shouldHandleWhitespaceCorrectly() {
+        final FeelExpression expression = FeelParser.PARSER.parse("2 * 3");
 
         final FeelExpression expectedExpression = BinaryExpression(
                 IntegerLiteral(2), Operator.MUL, IntegerLiteral(3)
+        );
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"2*3, MUL", "2+3, ADD", "2-3, SUB", "2**3, EXP", "2/3, DIV"})
+    public void shouldParseArithmeticExpressions(String input, Operator expectedOperator) throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse(input);
+
+        final FeelExpression expectedExpression = BinaryExpression(
+                IntegerLiteral(2), expectedOperator, IntegerLiteral(3)
+        );
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true and false, AND", "true or false, OR"})
+    public void shouldParseConjunctionAndDisjunction(String input, Operator expectedOperator) {
+        final FeelExpression expression = FeelParser.PARSER.parse(input);
+
+        final FeelExpression expectedExpression = BinaryExpression(
+                BooleanLiteral(true), expectedOperator, BooleanLiteral(false)
         );
 
         assertEquals(expectedExpression, expression);
