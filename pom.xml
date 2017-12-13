@@ -68,8 +68,10 @@
                 <version>0.7.9</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/FeelExpressions.class</exclude>
-                        <exclude>**/Eithers.class</exclude>
+                        <exclude>**/FeelExpressions.*</exclude>
+                        <exclude>**/FeelExpressions$*.*</exclude>
+                        <exclude>**/Eithers.*</exclude>
+                        <exclude>**/Eithers$*.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
