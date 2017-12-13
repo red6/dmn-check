@@ -8,11 +8,26 @@
     <artifactId>dmn-check</artifactId>
     <packaging>maven-plugin</packaging>
     <version>1.0-SNAPSHOT</version>
+    <name>dmn-check</name>
+    <url>https://github.com/red6/dmn-check</url>
+    <description>Checks consistency of Decision Model Notation (DMN) files</description>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <organization>
+        <name>red6 enterprise software GmbH</name>
+        <url>http://redsix.de</url>
+    </organization>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/red6/dmn-check/issues</url>
+    </issueManagement>
+
     <build>
         <pluginManagement>
             <plugins>
