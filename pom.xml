@@ -61,6 +61,8 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <!-- We cannot upgrade to 2.20.x because of incompatibilities with junit5
+                     see https://github.com/junit-team/junit5/issues/809 -->
                 <version>2.19.1</version>
                 <dependencies>
                     <dependency>
