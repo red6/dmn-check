@@ -175,6 +175,16 @@ public class FeelParserTest {
     }
 
     @Test
+    public void shouldParseDoublesInRangeExpression() {
+        final FeelExpression expression = FeelParser.PARSER.parse("[0.5..1.5]");
+
+        final FeelExpression expectedExpression = RangeExpression(true, DoubleLiteral(0.5),
+                DoubleLiteral(1.5), true);
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     public void shouldParseRangeExpressionWithVariable() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("[1..x]");
 

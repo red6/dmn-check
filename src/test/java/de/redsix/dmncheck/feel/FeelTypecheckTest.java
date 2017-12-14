@@ -133,4 +133,22 @@ public class FeelTypecheckTest {
         assertEquals("Types of head and tail do not match.",
                 Eithers.getRight(type).orElseThrow(AssertionError::new).message);
     }
+
+    @Test
+    public void rangeOfIntegersIsWellTyped() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("[3..42]");
+        final Either<ExpressionTypeEnum, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(left(ExpressionTypeEnum.INTEGER), type);
+    }
+
+    @Test
+    public void rangeFromIntegerToDoubleIsNotTypeable() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("[1..1.5]");
+        final Either<ExpressionTypeEnum, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(Optional.empty(), Eithers.getLeft(type));
+        assertEquals("Types of lower and upper bound do not match.",
+                Eithers.getRight(type).orElseThrow(AssertionError::new).message);
+    }
 }
