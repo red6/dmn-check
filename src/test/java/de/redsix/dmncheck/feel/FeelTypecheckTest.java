@@ -148,7 +148,17 @@ public class FeelTypecheckTest {
         final Either<ExpressionTypeEnum, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Types of lower and upper bound do not match.",
+        assertEquals("Types of lower and upper bound do not match or are unsupported for RangeExpressions.",
+                Eithers.getRight(type).orElseThrow(AssertionError::new).message);
+    }
+
+    @Test
+    public void rangeExpressionContainingStringsIsIlltyped() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("[\"A\"..\"Z\"]");
+        final Either<ExpressionTypeEnum, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(Optional.empty(), Eithers.getLeft(type));
+        assertEquals("Types of lower and upper bound do not match or are unsupported for RangeExpressions.",
                 Eithers.getRight(type).orElseThrow(AssertionError::new).message);
     }
 }

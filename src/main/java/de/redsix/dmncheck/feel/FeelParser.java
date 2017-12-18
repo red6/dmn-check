@@ -1,6 +1,11 @@
 package de.redsix.dmncheck.feel;
 
-import org.jparsec.*;
+import org.jparsec.OperatorTable;
+import org.jparsec.Parser;
+import org.jparsec.Parsers;
+import org.jparsec.Scanners;
+import org.jparsec.Terminals;
+import org.jparsec.Tokens;
 import org.jparsec.pattern.Patterns;
 
 import java.time.LocalDateTime;
@@ -45,10 +50,9 @@ public class FeelParser {
     private static final Parser<FeelExpression> DATE = Parsers.between(OPERATORS.token("date and time(\""),
             Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpressions::DateLiteral), OPERATORS.token("\")"));
 
-    private static final Parser<FeelExpression> boundExpression = Parsers.or(INTEGER, DOUBLE, DATE, VARIABLE);
-
-    private static Parser<FeelExpression> parseRangeExpression(final Parser<Boolean> leftBound, final Parser<Boolean> rightBound) {
-        return Parsers.sequence(leftBound, boundExpression, OPERATORS.token("..").skipTimes(1), boundExpression, rightBound,
+    private static Parser<FeelExpression> parseRangeExpression(final Parser<Boolean> leftBound, final Parser<FeelExpression> expression,
+            final Parser<Boolean> rightBound) {
+        return Parsers.sequence(leftBound, expression, OPERATORS.token("..").skipTimes(1), expression, rightBound,
                 (isLeftInclusive, lowerBound, __, upperBound, isRightInclusive) -> FeelExpressions
                         .RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
     }
@@ -61,15 +65,15 @@ public class FeelParser {
         final Parser.Reference<FeelExpression> reference = Parser.newReference();
 
         final Parser<FeelExpression> parseRangeExpression = Parsers.or(
-                parseRangeExpression(op("[", true),  op("]", true)),
-                parseRangeExpression(op("]", false), op("]", true)),
-                parseRangeExpression(op("[", true),  op("[", false)),
-                parseRangeExpression(op("(", false), op("]", true)),
-                parseRangeExpression(op("[", true),  op(")", false)),
-                parseRangeExpression(op("(", false), op(")", false)),
-                parseRangeExpression(op("]", false), op(")", false)),
-                parseRangeExpression(op("(", false), op("[", false)),
-                parseRangeExpression(op("]", false), op("[", false))
+                parseRangeExpression(op("[", true), reference.lazy(), op("]", true)),
+                parseRangeExpression(op("]", false), reference.lazy(), op("]", true)),
+                parseRangeExpression(op("[", true), reference.lazy(), op("[", false)),
+                parseRangeExpression(op("(", false), reference.lazy(), op("]", true)),
+                parseRangeExpression(op("[", true), reference.lazy(), op(")", false)),
+                parseRangeExpression(op("(", false), reference.lazy(), op(")", false)),
+                parseRangeExpression(op("]", false), reference.lazy(), op(")", false)),
+                parseRangeExpression(op("(", false), reference.lazy(), op("[", false)),
+                parseRangeExpression(op("]", false), reference.lazy(), op("[", false))
                 );
 
         final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), reference.lazy(), OPERATORS.token(")"))

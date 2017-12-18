@@ -5,7 +5,9 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
@@ -81,15 +83,16 @@ public class FeelTypecheck {
     }
 
     private static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
+        final List<ExpressionTypeEnum> allowedTypes = Arrays
+                .asList(ExpressionTypeEnum.INTEGER, ExpressionTypeEnum.DOUBLE, ExpressionTypeEnum.LONG, ExpressionTypeEnum.DATE);
         return typecheck(context, lowerBound).bind(lowerBoundType ->
                 typecheck(context, upperBound).bind(upperBoundType -> {
-                    if (lowerBoundType.equals(upperBoundType)) {
+                    if (lowerBoundType.equals(upperBoundType) && allowedTypes.contains(lowerBoundType)) {
                         return Eithers.left(lowerBoundType);
                     } else {
-                        return Eithers.right(
-                                ValidationResult.Builder.with($ ->
-                                        $.message = "Types of lower and upper bound do not match."));
+                        return Eithers.right(ValidationResult.Builder
+                                .with($ -> $.message = "Types of lower and upper bound do not match or are unsupported for RangeExpressions."));
                     }
-                }));
+        }));
     }
 }
