@@ -95,7 +95,7 @@ public class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Expression has wrong type.", Eithers.getRight(type).orElseThrow(AssertionError::new).message);
+        assertEquals("Non-numeric type in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).message);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Types of lower and upper bound do not match or are unsupported for RangeExpressions.",
+        assertEquals("Types of lower and upper bound do not match.",
                 Eithers.getRight(type).orElseThrow(AssertionError::new).message);
     }
 
@@ -158,7 +158,7 @@ public class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Types of lower and upper bound do not match or are unsupported for RangeExpressions.",
+        assertEquals("Type is unsupported for RangeExpressions.",
                 Eithers.getRight(type).orElseThrow(AssertionError::new).message);
     }
 }
