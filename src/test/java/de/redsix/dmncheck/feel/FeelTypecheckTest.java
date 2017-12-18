@@ -16,6 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FeelTypecheckTest {
 
     @Test
+    public void emptyHasTypeTop() {
+        final FeelExpression expression = FeelParser.PARSER.parse("");
+        final Either<ExpressionType, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(left(ExpressionType.TOP), type);
+    }
+
+    @Test
     public void integerHasTypeInteger() {
         final FeelExpression expression = FeelParser.PARSER.parse("42");
         final Either<ExpressionType, ValidationResult.Builder> type = FeelTypecheck.typecheck(expression);

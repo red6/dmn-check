@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public abstract class FeelExpression {
 
     public interface Cases<R> {
+        R Empty();
         R BooleanLiteral(Boolean aBoolean);
         R DateLiteral(LocalDateTime dateTime);
         R DoubleLiteral(Double aDouble);

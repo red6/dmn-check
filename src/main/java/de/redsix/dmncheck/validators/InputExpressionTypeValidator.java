@@ -38,15 +38,11 @@ public enum InputExpressionTypeValidator implements Validator<DecisionTable> {
                     ExpressionType::valueOf);
 
             return Util.zip(inputExpressions, inputTypes, (inputEntry, expectedType) -> {
-                // FIXME: 12/10/17 This should be in the responsibility of the parser and typechecker
-                if (inputEntry.getTextContent().isEmpty()) {
-                    return Collections.<ValidationResult.Builder>emptyList();
-                }
                 final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelTypecheck.typecheck(
                         FeelParser.PARSER.parse(inputEntry.getTextContent()));
                 return Eithers.caseOf(typedcheckResult)
                         .left(type -> {
-                            if (type.equals(expectedType)) {
+                            if (type.equals(expectedType) || type.equals(ExpressionType.TOP)) {
                                 return Collections.<ValidationResult.Builder>emptyList();
                             } else {
                                 return Collections.singletonList(ValidationResult.Builder.with($ -> {

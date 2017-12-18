@@ -57,6 +57,10 @@ public class FeelParser {
                         .RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
     }
 
+    private static Parser<FeelExpression> parseEmpty() {
+        return Parsers.EOF.map((anything) -> FeelExpressions.Empty());
+    }
+
     private static <T> Parser<T> op(final String name, final T value) {
         return OPERATORS.token(name).retn(value);
     }
@@ -100,7 +104,7 @@ public class FeelParser {
         return reference.lazy();
     }
 
-    public static final Parser<FeelExpression> PARSER = parser().from(TOKENIZER, IGNORED);
+    public static final Parser<FeelExpression> PARSER = Parsers.or(parseEmpty(), parser()).from(TOKENIZER, IGNORED);
 }
 
 

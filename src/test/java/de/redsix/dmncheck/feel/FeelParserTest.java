@@ -14,6 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FeelParserTest {
 
     @Test
+    public void shouldParseEmpty() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("");
+
+        final FeelExpression expectedExpression = Empty();
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     public void shouldParseNumberLiterals() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("42");
 

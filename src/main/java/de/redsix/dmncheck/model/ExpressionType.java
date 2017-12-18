@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public enum ExpressionType {
+    TOP,
     STRING,
     BOOLEAN,
     INTEGER,
