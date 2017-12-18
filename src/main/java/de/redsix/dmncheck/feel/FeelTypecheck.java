@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.feel;
 
-import de.redsix.dmncheck.model.ExpressionTypeEnum;
+import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
@@ -15,20 +15,20 @@ import static de.redsix.dmncheck.util.Eithers.right;
 
 public class FeelTypecheck {
 
-    public final static class Context extends HashMap<String, ExpressionTypeEnum> { }
+    public final static class Context extends HashMap<String, ExpressionType> { }
 
-    public static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheck(final FeelExpression expression) {
+    public static Either<ExpressionType, ValidationResult.Builder> typecheck(final FeelExpression expression) {
         return typecheck(new Context(), expression);
     }
 
-    public static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheck(final Context context, final FeelExpression expression) {
+    public static Either<ExpressionType, ValidationResult.Builder> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
-                .<Either<ExpressionTypeEnum, ValidationResult.Builder>>BooleanLiteral(bool -> left(ExpressionTypeEnum.BOOLEAN))
-                .DateLiteral(dateTime -> left(ExpressionTypeEnum.DATE))
-                .DoubleLiteral(aDouble -> left(ExpressionTypeEnum.DOUBLE))
-                .IntegerLiteral(integer -> left(ExpressionTypeEnum.INTEGER))
-                .StringLiteral(string -> left(ExpressionTypeEnum.STRING))
+                .<Either<ExpressionType, ValidationResult.Builder>>BooleanLiteral(bool -> left(ExpressionType.BOOLEAN))
+                .DateLiteral(dateTime -> left(ExpressionType.DATE))
+                .DoubleLiteral(aDouble -> left(ExpressionType.DOUBLE))
+                .IntegerLiteral(integer -> left(ExpressionType.INTEGER))
+                .StringLiteral(string -> left(ExpressionType.STRING))
                 .VariableLiteral(name -> {
                     if (context.containsKey(name)) {
                         return left(context.get(name));
@@ -44,7 +44,7 @@ public class FeelTypecheck {
                 );
     }
 
-    private static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheckDisjunctionExpression(final Context context, final FeelExpression head, final FeelExpression tail) {
+    private static Either<ExpressionType, ValidationResult.Builder> typecheckDisjunctionExpression(final Context context, final FeelExpression head, final FeelExpression tail) {
         return typecheck(context, head).bind(headType ->
                 typecheck(context, tail).bind(tailType -> {
                     if (headType.equals(tailType)) {
@@ -56,7 +56,7 @@ public class FeelTypecheck {
                 }));
     }
 
-    private static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheckBinaryExpression(final Context context, final FeelExpression left, final Operator operator, final FeelExpression right) {
+    private static Either<ExpressionType, ValidationResult.Builder> typecheckBinaryExpression(final Context context, final FeelExpression left, final Operator operator, final FeelExpression right) {
         return typecheck(context, left).bind(leftType ->
                 typecheck(context, right).bind(rightType -> {
                     if (leftType.equals(rightType)) {
@@ -69,11 +69,11 @@ public class FeelTypecheck {
                 }));
     }
 
-    private static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
+    private static Either<ExpressionType, ValidationResult.Builder> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
         return typecheck(context, operand).bind(type -> {
             if (Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE).anyMatch(
                     operator::equals) &&
-                    ExpressionTypeEnum.isNumeric(type)) {
+                    ExpressionType.isNumeric(type)) {
                 return Eithers.left(type);
             } else {
                 return Eithers.right(ValidationResult.Builder.with($ ->
@@ -82,9 +82,9 @@ public class FeelTypecheck {
         });
     }
 
-    private static Either<ExpressionTypeEnum, ValidationResult.Builder> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
-        final List<ExpressionTypeEnum> allowedTypes = Arrays
-                .asList(ExpressionTypeEnum.INTEGER, ExpressionTypeEnum.DOUBLE, ExpressionTypeEnum.LONG, ExpressionTypeEnum.DATE);
+    private static Either<ExpressionType, ValidationResult.Builder> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
+        final List<ExpressionType> allowedTypes = Arrays
+                .asList(ExpressionType.INTEGER, ExpressionType.DOUBLE, ExpressionType.LONG, ExpressionType.DATE);
         return typecheck(context, lowerBound).bind(lowerBoundType ->
                 typecheck(context, upperBound).bind(upperBoundType -> {
                     if (lowerBoundType.equals(upperBoundType) && allowedTypes.contains(lowerBoundType)) {

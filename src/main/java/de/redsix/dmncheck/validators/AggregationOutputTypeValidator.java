@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.model.ExpressionTypeEnum;
+import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
@@ -24,7 +24,7 @@ public enum AggregationOutputTypeValidator implements GenericValidator<DecisionT
 
     @Override
     public List<ValidationResult> validate(Output output) {
-        if (!ExpressionTypeEnum.isNumeric(output.getTypeRef())) {
+        if (!ExpressionType.isNumeric(output.getTypeRef())) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = "Aggregations MAX, MIN, SUM are only valid with numeric output types";
                 $.element = output;

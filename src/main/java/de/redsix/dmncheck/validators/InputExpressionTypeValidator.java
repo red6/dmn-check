@@ -2,7 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
-import de.redsix.dmncheck.model.ExpressionTypeEnum;
+import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
@@ -24,7 +24,7 @@ public enum InputExpressionTypeValidator implements Validator<DecisionTable> {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getInputs().stream().allMatch(input -> {
             final String expressionType = input.getInputExpression().getTypeRef();
-            return Objects.nonNull(expressionType) && ExpressionTypeEnum.isValid(expressionType);
+            return Objects.nonNull(expressionType) && ExpressionType.isValid(expressionType);
         });
     }
 
@@ -33,16 +33,16 @@ public enum InputExpressionTypeValidator implements Validator<DecisionTable> {
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
-            final Stream<ExpressionTypeEnum> inputTypes = decisionTable.getInputs().stream().map(
+            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream().map(
                     input -> input.getInputExpression().getTypeRef()).map(String::toUpperCase).map(
-                    ExpressionTypeEnum::valueOf);
+                    ExpressionType::valueOf);
 
             return Util.zip(inputExpressions, inputTypes, (inputEntry, expectedType) -> {
                 // FIXME: 12/10/17 This should be in the responsibility of the parser and typechecker
                 if (inputEntry.getTextContent().isEmpty()) {
                     return Collections.<ValidationResult.Builder>emptyList();
                 }
-                final Either<ExpressionTypeEnum, ValidationResult.Builder> typedcheckResult = FeelTypecheck.typecheck(
+                final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelTypecheck.typecheck(
                         FeelParser.PARSER.parse(inputEntry.getTextContent()));
                 return Eithers.caseOf(typedcheckResult)
                         .left(type -> {

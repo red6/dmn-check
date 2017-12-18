@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.model.ExpressionTypeEnum;
+import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
@@ -25,7 +25,7 @@ public interface ElementTypeDeclarationValidator<T extends DmnElement> extends V
                 $.element = expression;
             }).build());
         } else
-        if (ExpressionTypeEnum.isNotValid(expressionType)) {
+        if (ExpressionType.isNotValid(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = getClassUnderValidation().getSimpleName() + " uses an unsupported type";
                 $.element = expression;
