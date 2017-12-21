@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class InputExpressionTypeValidatorTest extends WithDecisionTable {
+class InputEntryTypeValidatorTest extends WithDecisionTable {
 
     @Test
     public void shouldAcceptWellTypedInputExpression() {
@@ -31,7 +31,7 @@ class InputExpressionTypeValidatorTest extends WithDecisionTable {
             rule.getInputEntries().add(inputEntry);
             decisionTable.getRules().add(rule);
 
-            final List<ValidationResult> validationResults = InputExpressionTypeValidator.instance.apply(modelInstance);
+            final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
 
             assertTrue(validationResults.isEmpty());
     }
@@ -50,7 +50,7 @@ class InputExpressionTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputExpressionTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

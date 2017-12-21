@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum InputExpressionTypeValidator implements Validator<DecisionTable> {
+public enum InputEntryTypeValidator implements Validator<DecisionTable> {
     instance;
 
     @Override
