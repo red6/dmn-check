@@ -37,6 +37,25 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    public void shouldAcceptEmptyExpression() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("integer");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent(null);
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
     public void shouldRejectIllTypedInputExpression() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);

@@ -3,20 +3,21 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
+import org.camunda.bpm.model.dmn.instance.OutputClause;
+import org.camunda.bpm.model.dmn.instance.OutputEntry;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum InputEntryTypeValidator implements TypeValidator {
+public enum  OutputEntryTypeValidator implements TypeValidator {
     instance;
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {
-        return decisionTable.getInputs().stream().allMatch(input -> {
-            final String expressionType = input.getInputExpression().getTypeRef();
+        return decisionTable.getOutputs().stream().allMatch(output -> {
+            final String expressionType = output.getTypeRef();
             return Objects.nonNull(expressionType) && ExpressionType.isValid(expressionType);
         });
     }
@@ -24,23 +25,24 @@ public enum InputEntryTypeValidator implements TypeValidator {
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
         return decisionTable.getRules().stream().flatMap(rule -> {
-            final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
+            final Stream<OutputEntry> outputEntry = rule.getOutputEntries().stream();
 
-            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream().map(
-                    input -> input.getInputExpression().getTypeRef()).map(String::toUpperCase).map(
-                    ExpressionType::valueOf);
+            final Stream<ExpressionType> outputTypes = decisionTable.getOutputs().stream()
+                    .map(OutputClause::getTypeRef)
+                    .map(String::toUpperCase)
+                    .map(ExpressionType::valueOf);
 
-            return typecheck(rule, inputExpressions, inputTypes);
+            return typecheck(rule, outputEntry, outputTypes);
         }).collect(Collectors.toList());
     }
 
     @Override
     public boolean isEmptyAllowed() {
-        return true;
+        return false;
     }
 
     @Override
     public String errorMessage() {
-        return "Type of input entry does not match type of input expression";
+        return "Type of output entry does not match type of output expression";
     }
 }
