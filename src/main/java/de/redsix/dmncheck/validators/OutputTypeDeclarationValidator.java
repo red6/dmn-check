@@ -2,7 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Output;
 
-public enum OutputTypeValidator implements ElementTypeDeclarationValidator<Output> {
+public enum OutputTypeDeclarationValidator implements ElementTypeDeclarationValidator<Output> {
     instance;
 
     @Override

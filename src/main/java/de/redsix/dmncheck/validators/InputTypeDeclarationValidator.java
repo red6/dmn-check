@@ -2,7 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.InputExpression;
 
-public enum InputExpressionTypeDeclarationValidator implements ElementTypeDeclarationValidator<InputExpression> {
+public enum InputTypeDeclarationValidator implements ElementTypeDeclarationValidator<InputExpression> {
     instance;
 
     @Override

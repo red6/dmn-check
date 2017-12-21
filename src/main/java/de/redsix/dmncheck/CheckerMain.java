@@ -29,10 +29,10 @@ import java.util.stream.Stream;
 @Mojo(name = "check-dmn")
 class CheckerMain extends AbstractMojo {
 
-    private final static List<GenericValidator> validators = Arrays.asList(DuplicateRuleValidator.instance,
-            InputExpressionTypeDeclarationValidator.instance, OutputTypeValidator.instance, AggregationValidator.instance,
-            AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
-            InputEntryTypeValidator.instance, OutputTypeValidator.instance);
+    private final static List<GenericValidator> validators = Arrays
+            .asList(DuplicateRuleValidator.instance, InputTypeDeclarationValidator.instance, OutputTypeDeclarationValidator.instance,
+                    AggregationValidator.instance, AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
+                    InputEntryTypeValidator.instance, OutputTypeDeclarationValidator.instance);
 
     @Parameter
     private String[] excludes;
