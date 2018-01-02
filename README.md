@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/red6/dmn-check.svg?branch=master)](https://travis-ci.org/red6/dmn-check)
 [![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
 [![Dependency Status](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78)
+[![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
+
 
 DMN-Check maven plugin
 ======================
