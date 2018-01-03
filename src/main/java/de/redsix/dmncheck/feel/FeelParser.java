@@ -25,8 +25,8 @@ public class FeelParser {
     private static final Parser<?> TOKENIZER = Parsers.or(
             Patterns.regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}").toScanner("date").source()
                     .map(s -> Tokens.fragment(s, "datefragment")),
-            Patterns.regex("\"[\\w]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             OPERATORS.tokenizer(),
+            Patterns.regex("\"[^\"]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source().map(s ->
                     Tokens.fragment(s, "booleanfragment")),
             Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source().map(s ->

@@ -87,6 +87,15 @@ public class FeelParserTest {
     }
 
     @Test
+    public void shouldParseStringLiteralContainingSpecialCharacters() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("\"x.y.z=false\"");
+
+        final FeelExpression expectedExpression = FeelExpressions.StringLiteral("x.y.z=false");
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     public void shouldParseNegativeNumbers() {
         final FeelExpression expression = FeelParser.PARSER.parse("- 3");
 
