@@ -114,7 +114,7 @@ public class FeelParser {
         try {
             return Eithers.left(PARSER.parse(charSequence));
         } catch (final ParserException e) {
-            return Eithers.right(ValidationResult.Builder.with($ -> $.message = "Could not parse " + charSequence + ": " + e.getMessage()));
+            return Eithers.right(ValidationResult.Builder.with($ -> $.message = "Could not parse '" + charSequence + "': " + e.getMessage()));
         }
     }
 }

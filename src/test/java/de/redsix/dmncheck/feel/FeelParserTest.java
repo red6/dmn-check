@@ -1,5 +1,8 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -19,6 +22,7 @@ import static de.redsix.dmncheck.feel.FeelExpressions.StringLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.UnaryExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.VariableLiteral;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FeelParserTest {
 
@@ -312,5 +316,16 @@ public class FeelParserTest {
                 DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)),
                 DateLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)), true);
         assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    public void shouldTreatParsingErrorsAsValidationErrors() throws Exception {
+        final Either<FeelExpression, ValidationResult.Builder> result = FeelParser.parse("[1..");
+
+        final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
+                + "<, >, <=, >=, -, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, date and time(\", not(, [, ] or ( expected, EOF encountered.";
+
+        assertTrue(Eithers.getRight(result).isPresent());
+        assertEquals(expectedErrorMessage, Eithers.getRight(result).get().message);
     }
 }
