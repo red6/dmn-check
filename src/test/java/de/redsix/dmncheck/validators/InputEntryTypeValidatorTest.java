@@ -56,6 +56,52 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    public void shouldAcceptBoundVariable() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setCamundaInputVariable("x");
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("integer");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("x");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
+    public void shouldRejectUnboundVariable() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setCamundaInputVariable("y");
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("integer");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("x");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Variable 'x' has no type.", validationResult.getMessage()),
+                () -> assertEquals(rule, validationResult.getElement()),
+                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+        );
+    }
+
+    @Test
     public void shouldRejectIllTypedInputExpression() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);

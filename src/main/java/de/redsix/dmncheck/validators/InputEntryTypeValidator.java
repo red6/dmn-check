@@ -3,6 +3,7 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 
 import java.util.List;
@@ -23,14 +24,17 @@ public enum InputEntryTypeValidator implements TypeValidator {
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
+
         return decisionTable.getRules().stream().flatMap(rule -> {
+            final Stream<String> inputVariables = decisionTable.getInputs().stream().map(Input::getCamundaInputVariable);
+
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
             final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream().map(
                     input -> input.getInputExpression().getTypeRef()).map(String::toUpperCase).map(
                     ExpressionType::valueOf);
 
-            return typecheck(rule, inputExpressions, inputTypes);
+            return typecheck(rule, inputExpressions, inputVariables, inputTypes);
         }).collect(Collectors.toList());
     }
 

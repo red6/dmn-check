@@ -23,24 +23,39 @@ public interface TypeValidator extends Validator<DecisionTable> {
     boolean isEmptyAllowed();
 
     default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<ExpressionType> types) {
-        return Util.zip(expressions, types, (inputEntry, expectedType) -> {
+            final Stream<String> variables, final Stream<ExpressionType> types) {
+        return Util.zip(expressions, variables, types, (expression, variable, type) -> {
+            final FeelTypecheck.Context context = new FeelTypecheck.Context();
+            context.put(variable, type);
 
-            final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelTypecheck
-                    .typecheck(FeelParser.PARSER.parse(inputEntry.getTextContent()));
-
-            return Eithers.caseOf(typedcheckResult)
-                    .left(type -> {
-                        if (type.equals(expectedType) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
-                            return Collections.<ValidationResult.Builder>emptyList();
-                        } else {
-                            return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                                $.message = errorMessage();
-                                $.element = rule;
-                            }));
-                        }})
-                    .right(validationResultBuilder -> Collections.singletonList(validationResultBuilder.extend($ -> $.element = rule)));
+            return typecheckExpression(rule, expression, context, type);
         }).flatMap(List::stream).map(ValidationResult.Builder::build);
+    }
+
+    default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
+            final Stream<ExpressionType> types) {
+        return Util.zip(expressions, types, (expression, type) -> {
+            final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
+
+            return typecheckExpression(rule, expression, emptyContext, type);
+        }).flatMap(List::stream).map(ValidationResult.Builder::build);
+    }
+
+    default List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
+            ExpressionType expectedType) {
+        final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelTypecheck
+                .typecheck(context, FeelParser.PARSER.parse(inputEntry.getTextContent()));
+
+        return Eithers.caseOf(typedcheckResult).left(type -> {
+            if (type.equals(expectedType) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
+                return Collections.<ValidationResult.Builder>emptyList();
+            } else {
+                return Collections.singletonList(ValidationResult.Builder.with($ -> {
+                    $.message = errorMessage();
+                    $.element = rule;
+                }));
+            }
+        }).right(validationResultBuilder -> Collections.singletonList(validationResultBuilder.extend($ -> $.element = rule)));
     }
 
     @Override
