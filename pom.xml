@@ -169,11 +169,28 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
             <version>3.5</version>
+
+            <!-- Work around vulnerability PLXUTILS-161 !-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-artifact</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <!-- Work around vulnerability PLXUTILS-161 !-->
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>3.5.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jparsec</groupId>
             <artifactId>jparsec</artifactId>
