@@ -1,11 +1,15 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
 import org.jparsec.OperatorTable;
 import org.jparsec.Parser;
 import org.jparsec.Parsers;
 import org.jparsec.Scanners;
 import org.jparsec.Terminals;
 import org.jparsec.Tokens;
+import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;
 
 import java.time.LocalDateTime;
@@ -104,7 +108,15 @@ public class FeelParser {
         return reference.lazy();
     }
 
-    public static final Parser<FeelExpression> PARSER = Parsers.or(parseEmpty(), parser()).from(TOKENIZER, IGNORED);
+    static final Parser<FeelExpression> PARSER = Parsers.or(parseEmpty(), parser()).from(TOKENIZER, IGNORED);
+
+    public static Either<FeelExpression, ValidationResult.Builder> parse(final CharSequence charSequence) {
+        try {
+            return Eithers.left(PARSER.parse(charSequence));
+        } catch (final ParserException e) {
+            return Eithers.right(ValidationResult.Builder.with($ -> $.message = "Could not parse " + charSequence + ": " + e.getMessage()));
+        }
+    }
 }
 
 

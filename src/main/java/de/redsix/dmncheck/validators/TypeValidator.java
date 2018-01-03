@@ -43,8 +43,8 @@ public interface TypeValidator extends Validator<DecisionTable> {
 
     default List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
             ExpressionType expectedType) {
-        final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelTypecheck
-                .typecheck(context, FeelParser.PARSER.parse(inputEntry.getTextContent()));
+        final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
+                .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
             if (type.equals(expectedType) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
