@@ -5,18 +5,13 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 
-import javax.enterprise.inject.spi.Producer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
-import static de.redsix.dmncheck.util.Eithers.right;
 
 public class FeelTypecheck {
 

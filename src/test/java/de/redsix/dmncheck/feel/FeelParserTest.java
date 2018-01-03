@@ -3,12 +3,21 @@ package de.redsix.dmncheck.feel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import static de.redsix.dmncheck.feel.FeelExpressions.*;
+import static de.redsix.dmncheck.feel.FeelExpressions.BinaryExpression;
+import static de.redsix.dmncheck.feel.FeelExpressions.BooleanLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.DateLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.DisjunctionExpression;
+import static de.redsix.dmncheck.feel.FeelExpressions.DoubleLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.Empty;
+import static de.redsix.dmncheck.feel.FeelExpressions.IntegerLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.RangeExpression;
+import static de.redsix.dmncheck.feel.FeelExpressions.StringLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.UnaryExpression;
+import static de.redsix.dmncheck.feel.FeelExpressions.VariableLiteral;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FeelParserTest {
