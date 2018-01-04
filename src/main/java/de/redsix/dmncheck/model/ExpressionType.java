@@ -17,11 +17,13 @@ public enum ExpressionType {
     }
 
     public static boolean isValid(final String givenType) {
-        return Arrays.stream(ExpressionType.values()).anyMatch(type -> type.name().equalsIgnoreCase(givenType));
+        return !TOP.name().equalsIgnoreCase(givenType) && Arrays.stream(ExpressionType.values())
+                .anyMatch(type -> type.name().equalsIgnoreCase(givenType));
     }
 
     public static boolean isNumeric(final String givenType) {
-        return Stream.of(INTEGER, LONG, DOUBLE).anyMatch(type -> type.name().equalsIgnoreCase(givenType));
+        return !TOP.name().equalsIgnoreCase(givenType) && Stream.of(INTEGER, LONG, DOUBLE)
+                .anyMatch(type -> type.name().equalsIgnoreCase(givenType));
     }
 
     public static boolean isNumeric(final ExpressionType givenType) {
