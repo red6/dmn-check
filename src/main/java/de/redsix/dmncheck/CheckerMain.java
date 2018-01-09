@@ -46,7 +46,8 @@ class CheckerMain extends AbstractMojo {
 
     }
 
-    void testFiles(final List<File> files) {
+    void testFiles(final List<File> files) throws MojoExecutionException {
+        boolean encounteredError = false;
         for (File file : files) {
             if (getExcludeList().contains(file.getName())) {
                 getLog().info("Skipped File: " + file);
@@ -58,9 +59,14 @@ class CheckerMain extends AbstractMojo {
                                         Collectors.groupingBy(ValidationResult::getValidationResultType)));
 
                     if (!validationResults.isEmpty()) {
-                        throw new AssertionError(PrettyPrintValidationResults.prettify(file, validationResults));
+                        getLog().error(PrettyPrintValidationResults.prettify(file, validationResults));
+                        encounteredError = true;
                     }
             }
+        }
+
+        if (encounteredError) {
+            throw new MojoExecutionException("Some files are not valid, see previous logs.");
         }
     }
 

@@ -1,5 +1,6 @@
 package de.redsix.dmncheck;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -55,24 +56,24 @@ public class CheckerMainTest {
 
     @Test
     public void shouldDetectSimpleDuplicateInFile() {
-        AssertionError assertionError = Assertions.assertThrows(AssertionError.class,
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
-        Assertions.assertTrue(assertionError.getMessage().contains("Rule is defined more than once"));
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
     }
 
     @Test
-    public void shouldSkipFileIfItsExcluded() {
+    public void shouldSkipFileIfItsExcluded() throws Exception {
         testee.setExcludes(new String[] {"duplicate_unique.dmn"});
         testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
     }
 
     @Test
-    public void shouldSkipFileIfHitpolicyIsCollect() {
+    public void shouldSkipFileIfHitpolicyIsCollect() throws Exception {
         testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn")));
     }
 
     @Test
-    public void shouldAcceptDishDecisionExample() {
+    public void shouldAcceptDishDecisionExample() throws Exception {
         testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn")));
     }
 
