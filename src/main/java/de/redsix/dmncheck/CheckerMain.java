@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,9 +38,13 @@ class CheckerMain extends AbstractMojo {
     @Parameter
     private String[] excludes;
 
+    @Parameter
+    private String[] searchPaths;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final List<String> fileNames = getFileNames(".dmn", Paths.get(""));
+        final List<Path> searchPathList = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+        final List<String> fileNames = getFileNames(".dmn", searchPathList);
         final List<File> collect = fileNames.stream().map(File::new).collect(Collectors.toList());
 
         testFiles(collect);
@@ -78,18 +83,32 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    protected List<String> getFileNames(String suffix, Path dir) {
-        try {
-            return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
-                    .filter(absolutePath -> absolutePath.endsWith(suffix)).collect(Collectors.toList());
+    private List<String> getSearchPathList() {
+        if (searchPaths != null) {
+            return Arrays.asList(searchPaths);
+        } else {
+            return Collections.singletonList("");
         }
-        catch (IOException e) {
-            throw new RuntimeException("Could not determine DMN files.", e);
-        }
+    }
+
+    protected List<String> getFileNames(final String suffix, final List<Path> dirs) {
+            return dirs.stream().flatMap(dir -> {
+                try {
+                    return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
+                            .filter(absolutePath -> absolutePath.endsWith(suffix));
+                }
+                catch (IOException e) {
+                    throw new RuntimeException("Could not determine DMN files.", e);
+                }
+            }).collect(Collectors.toList());
     }
 
     void setExcludes(final String[] excludes) {
         this.excludes = excludes;
+    }
+
+    void setSearchPaths(final String[] searchPaths) {
+        this.searchPaths = searchPaths;
     }
 
 }

@@ -49,7 +49,8 @@ public class CheckerMainTest {
             Assertions.assertTrue(file.createNewFile());
         }
 
-        final List<String> result = testee.getFileNames("dmn", temporaryFolder.getRoot().getAbsoluteFile().toPath());
+        final List<String> result = testee
+                .getFileNames("dmn", Collections.singletonList(temporaryFolder.getRoot().getAbsoluteFile().toPath()));
 
         MatcherAssert.assertThat(result, Matchers.containsInAnyOrder(dmnFileNames.toArray()));
     }
@@ -65,6 +66,26 @@ public class CheckerMainTest {
     public void shouldSkipFileIfItsExcluded() throws Exception {
         testee.setExcludes(new String[] {"duplicate_unique.dmn"});
         testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
+    }
+
+    @Test
+    public void shouldSkipFileIfIsNotOnSearchPath() throws Exception {
+        testee.setSearchPaths(new String[] {"src/main/java"});
+        testee.execute();
+    }
+
+    @Test
+    public void shouldDetectIfFileIsOnSearchPath() {
+        testee.setSearchPaths(new String[] {"src/"});
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class, testee::execute);
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+    }
+
+    @Test
+    public void shouldDetectIfFileIsOnSearchPathWithMultiplePaths() {
+        testee.setSearchPaths(new String[] {"src/main/java","src/"});
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class, testee::execute);
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
     }
 
     @Test
