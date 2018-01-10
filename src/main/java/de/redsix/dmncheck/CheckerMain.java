@@ -33,7 +33,7 @@ class CheckerMain extends AbstractMojo {
     private final static List<GenericValidator> validators = Arrays
             .asList(DuplicateRuleValidator.instance, InputTypeDeclarationValidator.instance, OutputTypeDeclarationValidator.instance,
                     AggregationValidator.instance, AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
-                    InputEntryTypeValidator.instance, OutputTypeDeclarationValidator.instance);
+                    InputEntryTypeValidator.instance, OutputTypeDeclarationValidator.instance, ShadowedRuleValidator.instance);
 
     @Parameter
     private String[] excludes;

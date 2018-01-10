@@ -3,6 +3,7 @@ package de.redsix.dmncheck.feel;
 import org.derive4j.Data;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 public abstract class FeelExpression {
@@ -31,4 +32,8 @@ public abstract class FeelExpression {
 
     @Override
     public abstract String toString();
+
+    public Optional<Boolean> subsumes(final FeelExpression expression) {
+        return Subsumption.subsumes(this, expression, Subsumption.Comparison.EQ);
+    }
 }
