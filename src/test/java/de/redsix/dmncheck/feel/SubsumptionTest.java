@@ -37,28 +37,19 @@ class SubsumptionTest {
     @ParameterizedTest
     @CsvSource({"[1..2], [1..2]", "[1..9], [4..5]", "[1..5], (1..5)", "[1..5], [4..5]", "[1..5], [1..2]"})
     public void rangeExpressionsThatSubsumeEachOther(final String subsumingInput, final String subsumedInput) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
-
-        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
     @CsvSource({"[5..5], [1..9]", "(1..5), [1..5]", "[4..5], [1..5]", "[1..2], [1..5]"})
     public void rangeExpressionsThatDoNotSubsumeEachOther(final String subsumingInput, final String subsumedInput) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
-
-        assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
     @CsvSource({"<5, [1..5)", "<5, [1..4]", "<=5, [1..5]", ">5, (5..9]", ">5, [6..9]", ">=5, [5..9]"})
     public void comparisonExpressionsThatSubsumesRangeExpression(final String subsumingInput, final String subsumedInput) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
-
-        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
@@ -66,10 +57,7 @@ class SubsumptionTest {
                 "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
                 "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")", "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"})
     public void comparisonExpressionsThatSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
-
-        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
@@ -77,28 +65,32 @@ class SubsumptionTest {
                 "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
                 "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")", "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"})
     public void comparisonExpressionsThatDoNotSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
-
-        assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
     public void subsumptionForBooleanIsEqualityPositiveCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true, false", "false, true"})
+    public void subsumptionForBooleanIsEqualityNegativeCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
+    private static void assertLeftIsSubsumedByRight(String subsumingInput, String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
         assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
     }
 
-    @ParameterizedTest
-    @CsvSource({"true, false", "false, true"})
-    public void subsumptionForBooleanIsEqualityNegativeCases(final String subsumingInput, final String subsumedInput) {
+    private static void assertLeftIsNotSubsumedByRight(String subsumingInput, String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
         assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
     }
-
 }
