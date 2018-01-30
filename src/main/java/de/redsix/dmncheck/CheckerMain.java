@@ -57,22 +57,34 @@ class CheckerMain extends AbstractMojo {
             if (getExcludeList().contains(file.getName())) {
                 getLog().info("Skipped File: " + file);
             } else {
-                final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-                final Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults = validators.stream()
-                        .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream()).
-                                collect(Collectors.groupingBy(ValidationResult::getElement,
-                                        Collectors.groupingBy(ValidationResult::getValidationResultType)));
-
-                    if (!validationResults.isEmpty()) {
-                        getLog().error(PrettyPrintValidationResults.prettify(file, validationResults));
-                        encounteredError = true;
-                    }
+                encounteredError |= testFile(file);
             }
         }
 
         if (encounteredError) {
             throw new MojoExecutionException("Some files are not valid, see previous logs.");
         }
+    }
+
+    private boolean testFile(final File file) {
+        boolean encounteredError = false;
+        final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
+        final Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults = applyValidatorsAndExtractResults(
+                dmnModelInstance);
+
+        if (!validationResults.isEmpty()) {
+            getLog().error(PrettyPrintValidationResults.prettify(file, validationResults));
+            encounteredError = true;
+        }
+        return encounteredError;
+    }
+
+    private Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> applyValidatorsAndExtractResults(
+            final DmnModelInstance dmnModelInstance) {
+        return validators.stream()
+                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream()).
+                        collect(Collectors.groupingBy(ValidationResult::getElement,
+                                Collectors.groupingBy(ValidationResult::getValidationResultType)));
     }
 
     private List<String> getExcludeList() {
