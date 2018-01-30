@@ -16,7 +16,7 @@ class SubsumptionTest {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
 
-        assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, expression, Subsumption.Comparison.EQ));
+        assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, expression, Subsumption.eq));
     }
 
     @ParameterizedTest
@@ -25,13 +25,13 @@ class SubsumptionTest {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
 
-        assertEquals(Optional.of(false), Subsumption.subsumes(expression, emptyExpression, Subsumption.Comparison.EQ));
+        assertEquals(Optional.of(false), Subsumption.subsumes(expression, emptyExpression, Subsumption.eq));
     }
 
     @Test
     public void emptySubsumesEmpty() {
         final FeelExpression emptyExpression = FeelExpressions.Empty();
-        assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, emptyExpression, Subsumption.Comparison.EQ));
+        assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, emptyExpression, Subsumption.eq));
     }
 
     @ParameterizedTest
@@ -84,13 +84,13 @@ class SubsumptionTest {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
-        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.eq));
     }
 
     private static void assertLeftIsNotSubsumedByRight(String subsumingInput, String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
-        assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+        assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.eq));
     }
 }
