@@ -9,10 +9,10 @@ final class Subsumption {
     static Optional<Boolean> subsumes(final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
         return FeelExpressions.caseOf(expression)
                 .Empty(() -> Optional.of(true))
-                .BooleanLiteral((aBool) -> subsumesBooleanLiteral(aBool, otherExpression, comparison))
-                .DateLiteral((dateTime) -> subsumesDateTime(dateTime, otherExpression, comparison))
-                .DoubleLiteral((aDouble) -> subsumesDouble(aDouble, otherExpression, comparison))
-                .IntegerLiteral((integer) -> subsumesInteger(integer, otherExpression, comparison))
+                .BooleanLiteral((aBool) -> Optional.of(subsumesBooleanLiteral(aBool, otherExpression, comparison)))
+                .DateLiteral((dateTime) -> Optional.of(subsumesDateTime(dateTime, otherExpression, comparison)))
+                .DoubleLiteral((aDouble) -> Optional.of(subsumesDouble(aDouble, otherExpression, comparison)))
+                .IntegerLiteral((integer) -> Optional.of(subsumesInteger(integer, otherExpression, comparison)))
                 .StringLiteral((__) -> Optional.of(false))
                 .VariableLiteral((__) -> Optional.of(true))
                 .RangeExpression((leftInc, lowerBound, upperBound, rightInc) ->
@@ -60,28 +60,28 @@ final class Subsumption {
                 .otherwise_(Optional.of(false));
     }
 
-    private static Optional<Boolean> subsumesInteger(Integer integer, FeelExpression otherExpression, Comparison comparison) {
+    private static Boolean subsumesInteger(Integer integer, FeelExpression otherExpression, Comparison comparison) {
         return FeelExpressions.getAInteger(otherExpression)
-                .map(otherInteger -> Optional.of(comparison.apply(integer, otherInteger)))
-                .orElse(Optional.of(false));
+                .map(otherInteger -> comparison.apply(integer, otherInteger))
+                .orElse(false);
     }
 
-    private static Optional<Boolean> subsumesDouble(Double aDouble, FeelExpression otherExpression, Comparison comparison) {
+    private static Boolean subsumesDouble(Double aDouble, FeelExpression otherExpression, Comparison comparison) {
         return FeelExpressions.getADouble(otherExpression)
-                .map(otherDouble -> Optional.of(comparison.apply(aDouble, otherDouble)))
-                .orElse(Optional.of(false));
+                .map(otherDouble -> comparison.apply(aDouble, otherDouble))
+                .orElse(false);
     }
 
-    private static Optional<Boolean> subsumesDateTime(LocalDateTime dateTime, FeelExpression otherExpression, Comparison comparison) {
+    private static Boolean subsumesDateTime(LocalDateTime dateTime, FeelExpression otherExpression, Comparison comparison) {
         return FeelExpressions.getDateTime(otherExpression)
-                .map(otherDateTime -> Optional.of(comparison.apply(dateTime, otherDateTime)))
-                .orElse(Optional.of(false));
+                .map(otherDateTime -> comparison.apply(dateTime, otherDateTime))
+                .orElse(false);
     }
 
-    private static Optional<Boolean> subsumesBooleanLiteral(Boolean aBool, FeelExpression otherExpression, Comparison comparison) {
+    private static Boolean subsumesBooleanLiteral(Boolean aBool, FeelExpression otherExpression, Comparison comparison) {
         return FeelExpressions.getABoolean(otherExpression)
-                .map(otherBool -> Optional.of(comparison.apply(aBool, otherBool)))
-                .orElse(Optional.of(false));
+                .map(otherBool -> comparison.apply(aBool, otherBool))
+                .orElse(false);
     }
 
     enum Comparison {
