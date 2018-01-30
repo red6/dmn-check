@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
 [![Dependency Status](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78)
 [![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/de1a1aa377520c44c3a7/maintainability)](https://codeclimate.com/github/red6/dmn-check/maintainability)
 
 DMN-Check maven plugin
 ======================
