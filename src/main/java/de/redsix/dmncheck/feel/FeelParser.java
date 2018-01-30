@@ -14,7 +14,7 @@ import org.jparsec.pattern.Patterns;
 
 import java.time.LocalDateTime;
 
-public class FeelParser {
+public final class FeelParser {
 
     private static final Terminals OPERATORS = Terminals
             .operators("+", "-", "*", "**", "/", "(", ")", "[", "]", "..", ",", "not(", "and", "or", "<", ">", "<=", ">=",

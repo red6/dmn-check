@@ -62,7 +62,9 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1"})
+    @CsvSource({"<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1",
+                "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
+                "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")", "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"})
     public void comparisonExpressionsThatSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
@@ -71,11 +73,32 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"<5, <=5", ">5, >=5", ">5, >1", "<1, <5"})
+    @CsvSource({"<5, <=5", ">5, >=5", ">5, >1", "<1, <5",
+                "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
+                "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")", "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"})
     public void comparisonExpressionsThatDoNotSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
         assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
     }
+
+    @ParameterizedTest
+    @CsvSource({"true, true", "false, false"})
+    public void subsumptionForBooleanIsEqualityPositiveCases(final String subsumingInput, final String subsumedInput) {
+        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
+        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
+
+        assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true, false", "false, true"})
+    public void subsumptionForBooleanIsEqualityNegativeCases(final String subsumingInput, final String subsumedInput) {
+        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
+        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
+
+        assertEquals(Optional.of(false), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.Comparison.EQ));
+    }
+
 }

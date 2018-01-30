@@ -24,6 +24,10 @@ public abstract class FeelExpression {
 
     public abstract <R> R match(Cases<R> cases);
 
+    public Optional<Boolean> subsumes(final FeelExpression expression) {
+        return Subsumption.subsumes(this, expression, Subsumption.Comparison.EQ);
+    }
+
     @Override
     public abstract int hashCode();
 
@@ -32,8 +36,4 @@ public abstract class FeelExpression {
 
     @Override
     public abstract String toString();
-
-    public Optional<Boolean> subsumes(final FeelExpression expression) {
-        return Subsumption.subsumes(this, expression, Subsumption.Comparison.EQ);
-    }
 }
