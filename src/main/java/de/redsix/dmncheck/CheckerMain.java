@@ -103,16 +103,16 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    protected List<String> getFileNames(final String suffix, final List<Path> dirs) {
-            return dirs.stream().flatMap(dir -> {
-                try {
-                    return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
-                            .filter(absolutePath -> absolutePath.endsWith(suffix));
-                }
-                catch (IOException e) {
-                    throw new RuntimeException("Could not determine DMN files.", e);
-                }
-            }).collect(Collectors.toList());
+    List<String> getFileNames(final String suffix, final List<Path> dirs) {
+        return dirs.stream().flatMap(dir -> {
+            try {
+                return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
+                        .filter(absolutePath -> absolutePath.endsWith(suffix));
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Could not determine DMN files.", e);
+            }
+        }).collect(Collectors.toList());
     }
 
     void setExcludes(final String[] excludes) {

@@ -8,11 +8,11 @@ final class Subsumption {
 
     private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}
 
-    static Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
-    private static Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
-    private static Comparison<?> lt = (a, b) -> a.compareTo(b) < 0;
-    private static Comparison<?> ge = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) > 0;
-    private static Comparison<?> le = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) < 0;
+    static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
+    private static final Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
+    private static final Comparison<?> lt = (a, b) -> a.compareTo(b) < 0;
+    private static final Comparison<?> ge = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) > 0;
+    private static final Comparison<?> le = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) < 0;
 
     static Optional<Boolean> subsumes(final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
         return FeelExpressions.caseOf(expression)
