@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Mojo(name = "check-dmn")
+@Mojo(name = "check-dmn", requiresProject = false)
 class CheckerMain extends AbstractMojo {
 
     private final static List<GenericValidator> validators = Arrays
