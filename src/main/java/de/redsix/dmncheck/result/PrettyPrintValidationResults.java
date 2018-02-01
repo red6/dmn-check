@@ -6,6 +6,7 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,19 +14,19 @@ import java.util.stream.Stream;
 
 public final class PrettyPrintValidationResults {
 
-    public static String prettify(File file, Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults) {
-        final StringBuilder sb = new StringBuilder();
+    public static List<String> prettify(File file, Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults) {
+        final List<String> errorMessages = new ArrayList<>();
 
         for (Map.Entry<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResult : validationResults
                 .entrySet()) {
-            sb.append("Element '").append(delegate(validationResult.getKey())).append("'");
-            sb.append(" of type '").append(validationResult.getKey().getElementType().getTypeName()).append("'");
-            sb.append(" in file ").append(file.getName());
-            sb.append(" has the following validation results ");
-            sb.append(validationResult.getValue());
+            String errorMessage = "Element '" + delegate(validationResult.getKey()) + "'" + " of type '" + validationResult.getKey().getElementType()
+                    .getTypeName() + "'" + " in file " + file.getName() + " has the following validation results " + validationResult
+                    .getValue();
+
+            errorMessages.add(errorMessage);
         }
 
-        return sb.toString();
+        return errorMessages;
     }
 
     private static String delegate(final ModelElementInstance element) {

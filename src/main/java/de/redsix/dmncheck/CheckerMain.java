@@ -3,7 +3,14 @@ package de.redsix.dmncheck;
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
-import de.redsix.dmncheck.validators.*;
+import de.redsix.dmncheck.validators.AggregationOutputTypeValidator;
+import de.redsix.dmncheck.validators.AggregationValidator;
+import de.redsix.dmncheck.validators.ConflictingRuleValidator;
+import de.redsix.dmncheck.validators.DuplicateRuleValidator;
+import de.redsix.dmncheck.validators.InputEntryTypeValidator;
+import de.redsix.dmncheck.validators.InputTypeDeclarationValidator;
+import de.redsix.dmncheck.validators.OutputTypeDeclarationValidator;
+import de.redsix.dmncheck.validators.ShadowedRuleValidator;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -73,7 +80,7 @@ class CheckerMain extends AbstractMojo {
                 dmnModelInstance);
 
         if (!validationResults.isEmpty()) {
-            getLog().error(PrettyPrintValidationResults.prettify(file, validationResults));
+            PrettyPrintValidationResults.prettify(file, validationResults).forEach(getLog()::error);
             encounteredError = true;
         }
         return encounteredError;
