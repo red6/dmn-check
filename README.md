@@ -20,7 +20,11 @@ Below you find a complete list with detailed descriptions of what they do.
 
 This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
 
-## Configuration
+## Usage
+
+`dmn-check` can be used either as a normal plugin inside your projects `pom.xml` or as a standalone program.
+
+### Configuration in POM
 
 The following example shows the basic configuration of the plugin:
 		
@@ -50,6 +54,12 @@ Using this configuration the plugin will search all folders of the current proje
                     </excludes>
                 </configuration>
                 
+### Standalone usage
+
+To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
+
+        mvn de.red6-es:dmn-check:check-dmn
+
 ## Validations
 
 The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an example on [camunda.org](https://camunda.org/). Inputs are marked with `(I)` and outputs with `(O)` in the table headers.
