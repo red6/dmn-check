@@ -17,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConflictingRuleValidatorTest extends WithDecisionTable {
+class ConflictingRuleValidatorTest extends WithDecisionTable {
 
     @ParameterizedTest
     @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
-    public void shouldDetectConflictingRulesForGivenHitPolicies(final HitPolicy hitPolicy) {
+    void shouldDetectConflictingRulesForGivenHitPolicies(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
@@ -62,7 +62,7 @@ public class ConflictingRuleValidatorTest extends WithDecisionTable {
 
     @ParameterizedTest
     @EnumSource(value = HitPolicy.class, names = { "COLLECT", "RULE_ORDER"})
-    public void shouldAllowConflictingRulesForGivenHitPolicies(final HitPolicy hitPolicy) {
+    void shouldAllowConflictingRulesForGivenHitPolicies(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
@@ -95,7 +95,7 @@ public class ConflictingRuleValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowDuplicateRules() {
+    void shouldAllowDuplicateRules() {
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
         inputEntry.setTextContent("foo");
 

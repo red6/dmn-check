@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
+class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldDetectThatOutputHasNoType() {
+    void shouldDetectThatOutputHasNoType() {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
 
@@ -31,7 +31,7 @@ public class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldDetectThatOutputHasUnsupportedType() {
+    void shouldDetectThatOutputHasUnsupportedType() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("unsupportedType");
         decisionTable.getOutputs().add(output);
@@ -48,7 +48,7 @@ public class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowOutputWithSupportedType() {
+    void shouldAllowOutputWithSupportedType() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);

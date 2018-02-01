@@ -20,7 +20,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
 
     @ParameterizedTest
     @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
-    public void ruleIsShadowedByFirstRule(final HitPolicy hitPolicy) {
+    void ruleIsShadowedByFirstRule(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
         final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
@@ -50,7 +50,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void detectsAndReportsParsingErrors() {
+    void detectsAndReportsParsingErrors() {
         final String invalidText = "\"invalid Text";
 
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);

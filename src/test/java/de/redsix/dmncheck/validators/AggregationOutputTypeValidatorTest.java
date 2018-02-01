@@ -12,9 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AggregationOutputTypeValidatorTest extends WithDecisionTable {
+class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     @Test
-    public void shouldErrorOnStringOutputWithMaxAggregator() {
+    void shouldErrorOnStringOutputWithMaxAggregator() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.MAX);
         final Output output = modelInstance.newInstance(Output.class);
@@ -33,7 +33,7 @@ public class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowAggregatorMaxWithIntegerOutputs() {
+    void shouldAllowAggregatorMaxWithIntegerOutputs() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.MAX);
         final Output output = modelInstance.newInstance(Output.class);

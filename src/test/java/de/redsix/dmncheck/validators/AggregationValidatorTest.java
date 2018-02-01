@@ -11,10 +11,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AggregationValidatorTest extends WithDecisionTable {
+class AggregationValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldErrorOnHitPolicyUniqueWithAggregatorCount() {
+    void shouldErrorOnHitPolicyUniqueWithAggregatorCount() {
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 
@@ -30,7 +30,7 @@ public class AggregationValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowAggregatorCountWithHitPolicyCollect() {
+    void shouldAllowAggregatorCountWithHitPolicyCollect() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 

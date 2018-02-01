@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DuplicateRuleValidatorTest extends WithDecisionTable {
+class DuplicateRuleValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldDetectDuplicateRule() {
+    void shouldDetectDuplicateRule() {
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
         inputEntry.setTextContent("foo");
 
@@ -54,7 +54,7 @@ public class DuplicateRuleValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowDistinguishableRules() {
+    void shouldAllowDistinguishableRules() {
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
         inputEntry.setTextContent("foo1");
 
@@ -85,7 +85,7 @@ public class DuplicateRuleValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowConflictingRules() {
+    void shouldAllowConflictingRules() {
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
         inputEntry.setTextContent("foo");
 

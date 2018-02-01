@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class InputTypeDeclarationValidatorTest extends WithDecisionTable {
+class InputTypeDeclarationValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldDetectThatOutputHasNoType() {
+    void shouldDetectThatOutputHasNoType() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);
@@ -34,7 +34,7 @@ public class InputTypeDeclarationValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldDetectThatOutputHasUnsupportedType() {
+    void shouldDetectThatOutputHasUnsupportedType() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);
@@ -53,7 +53,7 @@ public class InputTypeDeclarationValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAllowOutputWithSupportedType() {
+    void shouldAllowOutputWithSupportedType() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);

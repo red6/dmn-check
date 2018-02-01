@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class InputEntryTypeValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldAcceptWellTypedInputExpression() {
+    void shouldAcceptWellTypedInputExpression() {
             final Input input = modelInstance.newInstance(Input.class);
             final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
             input.setInputExpression(inputExpression);
@@ -37,7 +37,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAcceptEmptyExpression() {
+    void shouldAcceptEmptyExpression() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);
@@ -56,7 +56,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAcceptBoundVariable() {
+    void shouldAcceptBoundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setCamundaInputVariable("x");
@@ -76,7 +76,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldRejectUnboundVariable() {
+    void shouldRejectUnboundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setCamundaInputVariable("y");
@@ -102,7 +102,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldRejectIllTypedInputExpression() {
+    void shouldRejectIllTypedInputExpression() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);

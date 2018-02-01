@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OutputEntryValidatorTest extends WithDecisionTable {
+class OutputEntryValidatorTest extends WithDecisionTable {
 
     @Test
-    public void shouldAcceptWellTypedInputExpression() {
+    void shouldAcceptWellTypedInputExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
@@ -35,7 +35,7 @@ public class OutputEntryValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldAcceptEmptyExpression() {
+    void shouldAcceptEmptyExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
@@ -52,7 +52,7 @@ public class OutputEntryValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    public void shouldRejectIllTypedInputExpression() {
+    void shouldRejectIllTypedInputExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
