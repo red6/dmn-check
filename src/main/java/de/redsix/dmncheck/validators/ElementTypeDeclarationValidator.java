@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
@@ -23,6 +24,7 @@ public interface ElementTypeDeclarationValidator<T extends DmnElement> extends V
             return Collections.singletonList(ValidationResult.Builder.with($ -> {
                 $.message = getClassUnderValidation().getSimpleName() + " has no type";
                 $.element = expression;
+                $.type = ValidationResultType.WARNING;
             }).build());
         } else
         if (ExpressionType.isNotValid(expressionType)) {

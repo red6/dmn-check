@@ -26,7 +26,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Output has no type", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
         );
     }
 

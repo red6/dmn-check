@@ -29,7 +29,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("InputExpression has no type", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
         );
     }
 
