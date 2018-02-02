@@ -49,7 +49,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is defined more than once", validationResult.getMessage()),
                 () -> assertEquals(rule2, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
         );
     }
 
