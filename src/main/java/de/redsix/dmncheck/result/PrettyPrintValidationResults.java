@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.result;
 
+import org.apache.maven.plugin.logging.Log;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -9,24 +10,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class PrettyPrintValidationResults {
 
-    public static List<String> prettify(File file, Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults) {
-        final List<String> errorMessages = new ArrayList<>();
-
-        for (Map.Entry<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResult : validationResults
-                .entrySet()) {
-            String errorMessage = "Element '" + delegate(validationResult.getKey()) + "'" + " of type '" + validationResult.getKey().getElementType()
-                    .getTypeName() + "'" + " in file " + file.getName() + " has the following validation results " + validationResult
-                    .getValue();
-
-            errorMessages.add(errorMessage);
+    public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
+        for (ValidationResult validationResult : validationResults) {
+            final String errorMessage =
+                    "Element '" + delegate(validationResult.getElement()) + "'" + " of type '" + validationResult.getElement()
+                            .getElementType().getTypeName() + "'" + " in file " + file.getName() + " has the following validation results "
+                            + validationResult.getMessage();
+            getLoggingMethod(validationResult.getValidationResultType(), log).accept(errorMessage);
         }
-
-        return errorMessages;
     }
 
     private static String delegate(final ModelElementInstance element) {
@@ -40,5 +38,13 @@ public final class PrettyPrintValidationResults {
     private static String prettify(final Rule rule) {
         return Stream.concat(rule.getInputEntries().stream().map(InputEntry::getTextContent),
                 rule.getOutputEntries().stream().map(OutputEntry::getTextContent)).collect(Collectors.joining(","));
+    }
+
+    private static Consumer<CharSequence> getLoggingMethod(final ValidationResultType validationResultType, final Log log) {
+        switch (validationResultType) {
+            case ERROR: return log::error;
+            case WARNING: return log::warn;
+            default: return log::error;
+        }
     }
 }

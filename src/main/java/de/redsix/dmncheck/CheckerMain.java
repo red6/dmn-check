@@ -19,7 +19,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,7 +53,6 @@ class CheckerMain extends AbstractMojo {
         final List<File> collect = fileNames.stream().map(File::new).collect(Collectors.toList());
 
         testFiles(collect);
-
     }
 
     void testFiles(final List<File> files) throws MojoExecutionException {
@@ -76,22 +73,17 @@ class CheckerMain extends AbstractMojo {
     private boolean testFile(final File file) {
         boolean encounteredError = false;
         final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-        final Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> validationResults = applyValidatorsAndExtractResults(
-                dmnModelInstance);
+        final List<ValidationResult> validationResults = validators.stream()
+                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
+                .collect(Collectors.toList());
 
         if (!validationResults.isEmpty()) {
-            PrettyPrintValidationResults.prettify(file, validationResults).forEach(getLog()::error);
-            encounteredError = true;
+            PrettyPrintValidationResults.logPrettified(file, validationResults, getLog());
+            encounteredError = validationResults.stream()
+                    .anyMatch(result -> ValidationResultType.ERROR.equals(result.getValidationResultType()));
         }
-        return encounteredError;
-    }
 
-    private Map<ModelElementInstance, Map<ValidationResultType, List<ValidationResult>>> applyValidatorsAndExtractResults(
-            final DmnModelInstance dmnModelInstance) {
-        return validators.stream()
-                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream()).
-                        collect(Collectors.groupingBy(ValidationResult::getElement,
-                                Collectors.groupingBy(ValidationResult::getValidationResultType)));
+        return encounteredError;
     }
 
     private List<String> getExcludeList() {
