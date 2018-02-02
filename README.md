@@ -14,7 +14,7 @@ Currently the plugin checks among others for the following:
 * Shadowed rules
 * Types of the expressions
 
-Below you find a complete list with detailed descriptions of what they do.
+In section [Validations](#validations) you find a complete list with detailed descriptions of what they do.
 
 ## Prerequisites
 
