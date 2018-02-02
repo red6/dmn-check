@@ -6,7 +6,6 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 
-import javax.management.openmbean.OpenDataException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
