@@ -49,6 +49,39 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         );
     }
 
+    @ParameterizedTest
+    @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
+    void ruleIsNotShadowedByFirstRuleBecauseOfSecondInput(final HitPolicy hitPolicy) {
+        decisionTable.setHitPolicy(hitPolicy);
+
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        catchAllInputEntry.setTextContent("");
+
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        shadowedInputEntry.setTextContent("");
+
+        final InputEntry textInputEntry = modelInstance.newInstance(InputEntry.class);
+        textInputEntry.setTextContent("\"foo\"");
+
+        final InputEntry differentTextInputEntry = modelInstance.newInstance(InputEntry.class);
+        differentTextInputEntry.setTextContent("\"bar\"");
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final Rule otherRule = modelInstance.newInstance(Rule.class);
+
+        rule.getInputEntries().add(catchAllInputEntry);
+        rule.getInputEntries().add(textInputEntry);
+        otherRule.getInputEntries().add(shadowedInputEntry);
+        otherRule.getInputEntries().add(differentTextInputEntry);
+
+        decisionTable.getRules().add(rule);
+        decisionTable.getRules().add(otherRule);
+
+        final List<ValidationResult> validationResults = ShadowedRuleValidator.instance.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
+    }
+
     @Test
     void detectsAndReportsParsingErrors() {
         final String invalidText = "\"invalid Text";
