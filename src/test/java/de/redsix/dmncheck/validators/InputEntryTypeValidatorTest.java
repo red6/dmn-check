@@ -37,6 +37,24 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldAcceptWellTypedInputExpressionWithoutTypeDeclaration() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("42");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
     void shouldAcceptEmptyExpression() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
@@ -121,6 +139,30 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
                 () -> assertEquals("Type of input entry does not match type of input expression", validationResult.getMessage()),
+                () -> assertEquals(rule, validationResult.getElement()),
+                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+        );
+    }
+
+    @Test
+    void shouldRejectIllTypedInputExpressionWithoutTypeDeclaration() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("[1..true]");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
                 () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
         );

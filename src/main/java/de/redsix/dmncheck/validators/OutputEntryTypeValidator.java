@@ -6,8 +6,10 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 
+import javax.management.openmbean.OpenDataException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +20,7 @@ public enum  OutputEntryTypeValidator implements TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
-            return Objects.nonNull(expressionType) && ExpressionType.isValid(expressionType);
+            return Objects.isNull(expressionType) || ExpressionType.isValid(expressionType);
         });
     }
 
@@ -27,10 +29,9 @@ public enum  OutputEntryTypeValidator implements TypeValidator {
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<OutputEntry> outputEntry = rule.getOutputEntries().stream();
 
-            final Stream<ExpressionType> outputTypes = decisionTable.getOutputs().stream()
+            final Stream<Optional<ExpressionType>> outputTypes = decisionTable.getOutputs().stream()
                     .map(OutputClause::getTypeRef)
-                    .map(String::toUpperCase)
-                    .map(ExpressionType::valueOf);
+                    .map(typeRef -> Optional.ofNullable(typeRef).map(String::toUpperCase).map(ExpressionType::valueOf));
 
             return typecheck(rule, outputEntry, outputTypes);
         }).collect(Collectors.toList());

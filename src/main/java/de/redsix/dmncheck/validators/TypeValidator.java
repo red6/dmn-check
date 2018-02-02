@@ -14,6 +14,7 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface TypeValidator extends Validator<DecisionTable> {
@@ -23,17 +24,18 @@ public interface TypeValidator extends Validator<DecisionTable> {
     boolean isEmptyAllowed();
 
     default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<String> variables, final Stream<ExpressionType> types) {
-        return Util.zip(expressions, variables, types, (expression, variable, type) -> {
+            final Stream<String> variables, final Stream<Optional<ExpressionType>> types) {
+        return Util.zip(expressions, variables, types, (expression, variable, optionalType) -> {
             final FeelTypecheck.Context context = new FeelTypecheck.Context();
-            context.put(variable, type);
 
-            return typecheckExpression(rule, expression, context, type);
+            optionalType.ifPresent(type -> context.put(variable, type));
+
+            return typecheckExpression(rule, expression, context, optionalType);
         }).flatMap(List::stream).map(ValidationResult.Builder::build);
     }
 
     default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<ExpressionType> types) {
+            final Stream<Optional<ExpressionType>> types) {
         return Util.zip(expressions, types, (expression, type) -> {
             final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
@@ -42,12 +44,12 @@ public interface TypeValidator extends Validator<DecisionTable> {
     }
 
     default List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
-            ExpressionType expectedType) {
+            Optional<ExpressionType> expectedType) {
         final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
-            if (type.equals(expectedType) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
+            if (expectedType.map(type::equals).orElse(true) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
                 return Collections.<ValidationResult.Builder>emptyList();
             } else {
                 return Collections.singletonList(ValidationResult.Builder.with($ -> {

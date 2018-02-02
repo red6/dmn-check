@@ -8,6 +8,7 @@ import org.camunda.bpm.model.dmn.instance.InputEntry;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +19,7 @@ public enum InputEntryTypeValidator implements TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getInputs().stream().allMatch(input -> {
             final String expressionType = input.getInputExpression().getTypeRef();
-            return Objects.nonNull(expressionType) && ExpressionType.isValid(expressionType);
+            return Objects.isNull(expressionType) || ExpressionType.isValid(expressionType);
         });
     }
 
@@ -30,9 +31,9 @@ public enum InputEntryTypeValidator implements TypeValidator {
 
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
-            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream().map(
-                    input -> input.getInputExpression().getTypeRef()).map(String::toUpperCase).map(
-                    ExpressionType::valueOf);
+            final Stream<Optional<ExpressionType>> inputTypes = decisionTable.getInputs().stream()
+                    .map(input -> input.getInputExpression().getTypeRef())
+                    .map(typeRef -> Optional.ofNullable(typeRef).map(String::toUpperCase).map(ExpressionType::valueOf));
 
             return typecheck(rule, inputExpressions, inputVariables, inputTypes);
         }).collect(Collectors.toList());
