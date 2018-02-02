@@ -72,18 +72,29 @@ class CheckerMain extends AbstractMojo {
 
     private boolean testFile(final File file) {
         boolean encounteredError = false;
-        final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-        final List<ValidationResult> validationResults = validators.stream()
-                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
-                .collect(Collectors.toList());
 
-        if (!validationResults.isEmpty()) {
-            PrettyPrintValidationResults.logPrettified(file, validationResults, getLog());
-            encounteredError = validationResults.stream()
-                    .anyMatch(result -> ValidationResultType.ERROR.equals(result.getValidationResultType()));
+        try {
+            final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
+            final List<ValidationResult> validationResults = runValidators(dmnModelInstance);
+
+            if (!validationResults.isEmpty()) {
+                PrettyPrintValidationResults.logPrettified(file, validationResults, getLog());
+                encounteredError = validationResults.stream()
+                        .anyMatch(result -> ValidationResultType.ERROR.equals(result.getValidationResultType()));
+            }
+        }
+        catch (Exception e) {
+            getLog().error(e);
+            encounteredError = true;
         }
 
         return encounteredError;
+    }
+
+    private List<ValidationResult> runValidators(DmnModelInstance dmnModelInstance) {
+        return validators.stream()
+                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
+                .collect(Collectors.toList());
     }
 
     private List<String> getExcludeList() {

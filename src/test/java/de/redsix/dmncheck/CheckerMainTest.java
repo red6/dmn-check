@@ -3,6 +3,7 @@ package de.redsix.dmncheck;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -96,6 +97,13 @@ public class CheckerMainTest {
     @Test
     void shouldAcceptDishDecisionExample() throws Exception {
         testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn")));
+    }
+
+    @Test
+    void shouldHandleInvalidDMNFiles() {
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
+                () -> testee.testFiles(Collections.singletonList(getFile("empty.dmn"))));
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
     }
 
     private File getFile(final String filename) {
