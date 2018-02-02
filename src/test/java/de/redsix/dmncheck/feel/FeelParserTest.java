@@ -36,6 +36,15 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldParseEmptyRepresentedAsDash() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("-");
+
+        final FeelExpression expectedExpression = Empty();
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     void shouldParseNumberLiterals() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("42");
 

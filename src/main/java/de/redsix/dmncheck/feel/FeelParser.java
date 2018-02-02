@@ -25,6 +25,7 @@ public final class FeelParser {
     private static final Parser<?> TOKENIZER = Parsers.or(
             Patterns.regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}").toScanner("date").source()
                     .map(s -> Tokens.fragment(s, "datefragment")),
+            Patterns.regex("^-$").toScanner("empty").source().map(s -> Tokens.fragment(s, "emptyfragment")),
             OPERATORS.tokenizer(),
             Patterns.regex("\"[^\"]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source().map(s ->
@@ -62,7 +63,8 @@ public final class FeelParser {
     }
 
     private static Parser<FeelExpression> parseEmpty() {
-        return Parsers.EOF.map((anything) -> FeelExpressions.Empty());
+        return Parsers.EOF.map((anything) -> FeelExpressions.Empty())
+                .or(Terminals.fragment("emptyfragment").map((antything) -> FeelExpressions.Empty()));
     }
 
     private static <T> Parser<T> op(final String name, final T value) {
