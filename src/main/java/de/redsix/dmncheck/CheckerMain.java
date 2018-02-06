@@ -48,11 +48,11 @@ class CheckerMain extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final List<Path> searchPathList = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
-        final List<String> fileNames = getFileNames(".dmn", searchPathList);
-        final List<File> collect = fileNames.stream().map(File::new).collect(Collectors.toList());
+        final List<Path> searchPaths = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+        final List<String> fileNames = getFileNames(".dmn", searchPaths);
+        final List<File> files = fileNames.stream().map(File::new).collect(Collectors.toList());
 
-        testFiles(collect);
+        testFiles(files);
     }
 
     void testFiles(final List<File> files) throws MojoExecutionException {
@@ -91,7 +91,7 @@ class CheckerMain extends AbstractMojo {
         return encounteredError;
     }
 
-    private List<ValidationResult> runValidators(DmnModelInstance dmnModelInstance) {
+    private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return validators.stream()
                 .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
                 .collect(Collectors.toList());
@@ -116,10 +116,11 @@ class CheckerMain extends AbstractMojo {
     List<String> getFileNames(final String suffix, final List<Path> dirs) {
         return dirs.stream().flatMap(dir -> {
             try {
-                return Files.walk(dir).filter(Files::isRegularFile).map(path -> path.toAbsolutePath().toString())
+                return Files.walk(dir)
+                        .filter(Files::isRegularFile)
+                        .map(path -> path.toAbsolutePath().toString())
                         .filter(absolutePath -> absolutePath.endsWith(suffix));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not determine DMN files.", e);
             }
         }).collect(Collectors.toList());
