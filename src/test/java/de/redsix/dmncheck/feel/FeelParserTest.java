@@ -64,9 +64,9 @@ class FeelParserTest {
 
     @Test
     void shouldParseDoubleLiteral() throws Exception {
-        final FeelExpression expression = FeelParser.PARSER.parse("3.14159265359");
+        final FeelExpression expression = FeelParser.PARSER.parse(String.valueOf(Math.PI));
 
-        final FeelExpression expectedExpression = FeelExpressions.DoubleLiteral(3.14159265359);
+        final FeelExpression expectedExpression = FeelExpressions.DoubleLiteral(Math.PI);
 
         assertEquals(expectedExpression, expression);
     }
