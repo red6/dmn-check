@@ -28,23 +28,22 @@ public final class FeelParser {
             Patterns.regex("^-$").toScanner("empty").source().map(s -> Tokens.fragment(s, "emptyfragment")),
             OPERATORS.tokenizer(),
             Patterns.regex("\"[^\"]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
-            Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source().map(s ->
-                    Tokens.fragment(s, "booleanfragment")),
-            Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source().map(s ->
-                    Tokens.fragment(s, "variablefragment")),
-            Patterns.regex("[0-9]+\\.[0-9]+").toScanner("strict-decimal").source().map(s ->
-                    Tokens.fragment(s, Tokens.Tag.DECIMAL)),
+            Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source()
+                    .map(s -> Tokens.fragment(s, "booleanfragment")),
+            Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source()
+                    .map(s -> Tokens.fragment(s, "variablefragment")),
+            Patterns.regex("[0-9]+\\.[0-9]+").toScanner("strict-decimal").source()
+                    .map(s -> Tokens.fragment(s, Tokens.Tag.DECIMAL)),
             Terminals.IntegerLiteral.TOKENIZER.or(Terminals.IntegerLiteral.TOKENIZER)
     );
 
-    private static final Parser<FeelExpression> INTEGER = Terminals.IntegerLiteral.PARSER.map(Integer::valueOf).map(
-            FeelExpressions::IntegerLiteral);
+    private static final Parser<FeelExpression> INTEGER = Terminals.IntegerLiteral.PARSER.map(Integer::valueOf)
+            .map(FeelExpressions::IntegerLiteral);
 
-    private static final Parser<FeelExpression> DOUBLE = Terminals.DecimalLiteral.PARSER.map(Double::valueOf).map(
-            FeelExpressions::DoubleLiteral);
+    private static final Parser<FeelExpression> DOUBLE = Terminals.DecimalLiteral.PARSER.map(Double::valueOf)
+            .map(FeelExpressions::DoubleLiteral);
 
-    private static final Parser<FeelExpression> VARIABLE = Terminals.fragment("variablefragment").map(
-            FeelExpressions::VariableLiteral);
+    private static final Parser<FeelExpression> VARIABLE = Terminals.fragment("variablefragment").map(FeelExpressions::VariableLiteral);
 
     private static final Parser<FeelExpression> STRING = Terminals.fragment("stringfragment")
             .map(s -> s.substring(1, s.length() -1 )).map(FeelExpressions::StringLiteral);
@@ -62,19 +61,8 @@ public final class FeelParser {
                         .RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
     }
 
-    private static Parser<FeelExpression> parseEmpty() {
-        return Parsers.EOF.map((anything) -> FeelExpressions.Empty())
-                .or(Terminals.fragment("emptyfragment").map((antything) -> FeelExpressions.Empty()));
-    }
-
-    private static <T> Parser<T> op(final String name, final T value) {
-        return OPERATORS.token(name).retn(value);
-    }
-
-    private static Parser<FeelExpression> parser() {
-        final Parser.Reference<FeelExpression> reference = Parser.newReference();
-
-        final Parser<FeelExpression> parseRangeExpression = Parsers.or(
+    private static Parser<FeelExpression> createRangeExpressionParser(final Parser.Reference<FeelExpression> reference) {
+        return Parsers.or(
                 parseRangeExpression(op("[", true), reference.lazy(), op("]", true)),
                 parseRangeExpression(op("]", false), reference.lazy(), op("]", true)),
                 parseRangeExpression(op("[", true), reference.lazy(), op("[", false)),
@@ -84,12 +72,12 @@ public final class FeelParser {
                 parseRangeExpression(op("]", false), reference.lazy(), op(")", false)),
                 parseRangeExpression(op("(", false), reference.lazy(), op("[", false)),
                 parseRangeExpression(op("]", false), reference.lazy(), op("[", false))
-                );
+        );
+    }
 
-        final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), reference.lazy(), OPERATORS.token(")"))
-                .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
-
-        final Parser<FeelExpression> parseBinaryExpression = new OperatorTable<FeelExpression>()
+    private static Parser<FeelExpression> createBinaryExpressionParser(final Parser<FeelExpression> parseRangeExpression,
+            final Parser<FeelExpression> parseNot) {
+        return new OperatorTable<FeelExpression>()
                 .infixr(op(",", FeelExpressions::DisjunctionExpression), 0)
                 .prefix(op("<", v -> FeelExpressions.UnaryExpression(Operator.LT, v)), 5)
                 .prefix(op(">", v -> FeelExpressions.UnaryExpression(Operator.GT, v)), 5)
@@ -104,6 +92,26 @@ public final class FeelParser {
                 .infixl(op("/", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.DIV, r)), 20)
                 .prefix(op("-", v -> FeelExpressions.UnaryExpression(Operator.SUB, v)), 30)
                 .build(Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE, parseNot, parseRangeExpression));
+    }
+
+    private static Parser<FeelExpression> parseEmpty() {
+        return Parsers.EOF.map((__) -> FeelExpressions.Empty())
+                .or(Terminals.fragment("emptyfragment").map((__) -> FeelExpressions.Empty()));
+    }
+
+    private static <T> Parser<T> op(final String name, final T value) {
+        return OPERATORS.token(name).retn(value);
+    }
+
+    private static Parser<FeelExpression> parser() {
+        final Parser.Reference<FeelExpression> reference = Parser.newReference();
+
+        final Parser<FeelExpression> parseRangeExpression = createRangeExpressionParser(reference);
+
+        final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), reference.lazy(), OPERATORS.token(")"))
+                .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
+
+        final Parser<FeelExpression> parseBinaryExpression = createBinaryExpressionParser(parseRangeExpression, parseNot);
 
         reference.set(parseBinaryExpression);
 
