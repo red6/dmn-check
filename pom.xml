@@ -16,6 +16,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <checker.framework.version>2.3.2</checker.framework.version>
     </properties>
 
     <organization>
@@ -122,6 +124,49 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>checkerframework</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.7.0</version>
+                        <configuration>
+                            <useIncrementalCompilation>false</useIncrementalCompilation>
+                            <annotationProcessors>
+                                <annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>
+                            </annotationProcessors>
+
+                            <compilerArgs>
+                                <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
+                                <arg>-Astubs=checkerframework/stubs</arg>
+                                <arg>-AstubWarnIfNotFound</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.checkerframework</groupId>
+                    <artifactId>checker</artifactId>
+                    <version>${checker.framework.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.checkerframework</groupId>
+                    <artifactId>jdk8</artifactId>
+                    <version>${checker.framework.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.camunda.bpm.model</groupId>
@@ -218,5 +263,12 @@
             <version>0.12.3</version>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>${checker.framework.version}</version>
+        </dependency>
+
     </dependencies>
 </project>
