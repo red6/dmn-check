@@ -139,6 +139,7 @@
                             <useIncrementalCompilation>false</useIncrementalCompilation>
                             <annotationProcessors>
                                 <annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>
+                                <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
                             </annotationProcessors>
 
                             <compilerArgs>
