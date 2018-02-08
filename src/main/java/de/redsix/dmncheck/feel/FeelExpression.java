@@ -1,11 +1,13 @@
 package de.redsix.dmncheck.feel;
 
 import org.derive4j.Data;
+import org.derive4j.Derive;
+import org.derive4j.Make;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Data
+@Data(value = @Derive(make = {Make.constructors, Make.caseOfMatching, Make.getters}))
 public abstract class FeelExpression {
 
     public interface Cases<R> {
