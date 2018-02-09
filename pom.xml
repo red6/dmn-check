@@ -12,14 +12,6 @@
     <url>https://github.com/red6/dmn-check</url>
     <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect bugs</description>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <checker.framework.version>2.3.2</checker.framework.version>
-    </properties>
-
     <organization>
         <name>red6 enterprise software GmbH</name>
         <url>https://red6-es.de/</url>
@@ -29,6 +21,15 @@
         <system>GitHub</system>
         <url>https://github.com/red6/dmn-check/issues</url>
     </issueManagement>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <checker.framework.version>2.3.2</checker.framework.version>
+        <junit.version>5.0.2</junit.version>
+    </properties>
 
     <build>
         <pluginManagement>
@@ -125,7 +126,6 @@
         </plugins>
     </build>
 
-
     <profiles>
         <profile>
             <id>checkerframework</id>
@@ -169,11 +169,13 @@
     </profiles>
 
     <dependencies>
+
         <dependency>
             <groupId>org.camunda.bpm.model</groupId>
             <artifactId>camunda-dmn-model</artifactId>
             <version>7.8.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -201,30 +203,35 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.0.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.0.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-migrationsupport</artifactId>
-            <version>5.0.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.0.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
@@ -258,6 +265,7 @@
             <artifactId>jparsec</artifactId>
             <version>3.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.derive4j</groupId>
             <artifactId>derive4j</artifactId>
