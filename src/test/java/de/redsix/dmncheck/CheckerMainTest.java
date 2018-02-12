@@ -12,6 +12,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,8 +65,11 @@ public class CheckerMainTest {
 
     @Test
     void shouldSkipFileIfItsExcluded() throws Exception {
-        testee.setExcludes(new String[] {"duplicate_unique.dmn"});
-        testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
+        final String ignoredFilename = "duplicate_unique.dmn";
+        testee.setExcludes(new String[] { ignoredFilename });
+        final List<File> filesToTest = testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("")));
+
+        Assertions.assertTrue(filesToTest.stream().noneMatch(file -> file.getName().equals(ignoredFilename)));
     }
 
     @Test

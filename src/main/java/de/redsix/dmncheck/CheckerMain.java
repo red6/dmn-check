@@ -49,20 +49,15 @@ class CheckerMain extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         final List<Path> searchPaths = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
-        final List<String> fileNames = getFileNames(".dmn", searchPaths);
-        final List<File> files = fileNames.stream().map(File::new).collect(Collectors.toList());
+        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPaths);
 
-        testFiles(files);
+        testFiles(filesToTest);
     }
 
     void testFiles(final List<File> files) throws MojoExecutionException {
         boolean encounteredError = false;
         for (File file : files) {
-            if (getExcludeList().contains(file.getName())) {
-                getLog().info("Skipped File: " + file);
-            } else {
-                encounteredError |= testFile(file);
-            }
+            encounteredError |= testFile(file);
         }
 
         if (encounteredError) {
@@ -97,6 +92,32 @@ class CheckerMain extends AbstractMojo {
                 .collect(Collectors.toList());
     }
 
+    List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
+        final List<String> fileNames = getFileNames(".dmn", searchPaths);
+        final List<File> files = fileNames.stream().map(File::new).collect(Collectors.toList());
+        return files.stream().filter(file -> {
+            if (getExcludeList().contains(file.getName())) {
+                getLog().info("Skipped File: " + file);
+                return false;
+            } else {
+                return true;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    List<String> getFileNames(final String suffix, final List<Path> dirs) {
+        return dirs.stream().flatMap(dir -> {
+            try {
+                return Files.walk(dir)
+                        .filter(Files::isRegularFile)
+                        .map(path -> path.toAbsolutePath().toString())
+                        .filter(absolutePath -> absolutePath.endsWith(suffix));
+            } catch (IOException e) {
+                throw new RuntimeException("Could not determine DMN files.", e);
+            }
+        }).collect(Collectors.toList());
+    }
+
     private List<String> getExcludeList() {
         if (excludes != null) {
             return Arrays.asList(excludes);
@@ -111,19 +132,6 @@ class CheckerMain extends AbstractMojo {
         } else {
             return Collections.singletonList("");
         }
-    }
-
-    List<String> getFileNames(final String suffix, final List<Path> dirs) {
-        return dirs.stream().flatMap(dir -> {
-            try {
-                return Files.walk(dir)
-                        .filter(Files::isRegularFile)
-                        .map(path -> path.toAbsolutePath().toString())
-                        .filter(absolutePath -> absolutePath.endsWith(suffix));
-            } catch (IOException e) {
-                throw new RuntimeException("Could not determine DMN files.", e);
-            }
-        }).collect(Collectors.toList());
     }
 
     void setExcludes(final String[] excludes) {
