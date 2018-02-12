@@ -47,7 +47,7 @@ class CheckerMain extends AbstractMojo {
     private String[] searchPaths;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         final List<Path> searchPaths = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
         final List<String> fileNames = getFileNames(".dmn", searchPaths);
         final List<File> files = fileNames.stream().map(File::new).collect(Collectors.toList());
