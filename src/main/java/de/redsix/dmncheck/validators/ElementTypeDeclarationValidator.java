@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
+
 public interface ElementTypeDeclarationValidator<T extends DmnElement> extends Validator<T> {
 
     String getTypeRef(T expression);
@@ -21,17 +23,17 @@ public interface ElementTypeDeclarationValidator<T extends DmnElement> extends V
     default List<ValidationResult> validate(T expression) {
         final String expressionType = getTypeRef(expression);
         if(Objects.isNull(expressionType)) {
-            return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                $.message = getClassUnderValidation().getSimpleName() + " has no type";
-                $.element = expression;
-                $.type = ValidationResultType.WARNING;
-            }).build());
+            return Collections.singletonList(validationResult()
+                    .message(getClassUnderValidation().getSimpleName() + " has no type")
+                    .type(ValidationResultType.WARNING)
+                    .element(expression)
+                    .build());
         } else
         if (ExpressionType.isNotValid(expressionType)) {
-            return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                $.message = getClassUnderValidation().getSimpleName() + " uses an unsupported type";
-                $.element = expression;
-            }).build());
+            return Collections.singletonList(validationResult()
+                    .message(getClassUnderValidation().getSimpleName() + " uses an unsupported type")
+                    .element(expression)
+                    .build());
         } else {
             return Collections.emptyList();
         }

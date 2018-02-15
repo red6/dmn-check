@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
+
 public enum AggregationOutputTypeValidator implements GenericValidator<DecisionTable, Output> {
     instance;
 
@@ -25,10 +27,10 @@ public enum AggregationOutputTypeValidator implements GenericValidator<DecisionT
     @Override
     public List<ValidationResult> validate(Output output) {
         if (!ExpressionType.isNumeric(output.getTypeRef())) {
-            return Collections.singletonList(ValidationResult.Builder.with($ -> {
-                $.message = "Aggregations MAX, MIN, SUM are only valid with numeric output types";
-                $.element = output;
-            }).build());
+            return Collections.singletonList(validationResult()
+                    .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
+                    .element(output)
+                    .build());
         } else {
             return Collections.emptyList();
         }

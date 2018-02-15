@@ -14,6 +14,8 @@ import org.jparsec.pattern.Patterns;
 
 import java.time.LocalDateTime;
 
+import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
+
 public final class FeelParser {
 
     private static final Terminals OPERATORS = Terminals
@@ -120,11 +122,11 @@ public final class FeelParser {
 
     static final Parser<FeelExpression> PARSER = Parsers.or(parseEmpty(), parser()).from(TOKENIZER, IGNORED);
 
-    public static Either<FeelExpression, ValidationResult.Builder> parse(final CharSequence charSequence) {
+    public static Either<FeelExpression, ValidationResult.Element> parse(final CharSequence charSequence) {
         try {
             return Eithers.left(PARSER.parse(charSequence));
         } catch (final ParserException e) {
-            return Eithers.right(ValidationResult.Builder.with($ -> $.message = "Could not parse '" + charSequence + "': " + e.getMessage()));
+            return Eithers.right(validationResult().message("Could not parse '" + charSequence + "': " + e.getMessage()));
         }
     }
 }

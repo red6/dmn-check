@@ -2,20 +2,14 @@ package de.redsix.dmncheck.result;
 
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-import java.util.function.Consumer;
-
 public class  ValidationResult {
 
-    private final ValidationResultType validationResultType;
+    private ValidationResultType validationResultType = ValidationResultType.ERROR;
+    private String message;
+    private ModelElementInstance element;
 
-    private final String message;
+    private ValidationResult() {
 
-    private final ModelElementInstance element;
-
-    private ValidationResult(String message, ValidationResultType validationResultType, ModelElementInstance element) {
-        this.message = message;
-        this.validationResultType = validationResultType;
-        this.element = element;
     }
 
     public ValidationResultType getValidationResultType() {
@@ -35,29 +29,72 @@ public class  ValidationResult {
         return message;
     }
 
-    public final static class Builder {
+    public interface Message {
+        Element message(String message);
+    }
 
-        public ValidationResultType type = ValidationResultType.ERROR;
-        public String message;
-        public ModelElementInstance element;
+    public interface Element {
+        Element type(ValidationResultType type);
+        Build element(ModelElementInstance element);
+        String getMessage();
+    }
+
+    public interface Build {
+        ModelElementInstance getElement();
+        ValidationResultType getType();
+        ValidationResult build();
+    }
+
+    public final static class Builder implements Message, Element, Build {
+
+        private ValidationResult validationResult;
 
         private Builder() {
-
+            validationResult = new ValidationResult();
         }
 
-        public static Builder with(Consumer<Builder> builderConsumer) {
-            final Builder builder = new Builder();
-            builderConsumer.accept(builder);
-            return builder;
+        public static ValidationResult.Message validationResult() {
+            return new Builder();
         }
 
-        public Builder extend(Consumer<Builder> builderConsumer) {
-            builderConsumer.accept(this);
+        @Override
+        public Element message(String message) {
+            this.validationResult.message = message;
             return this;
         }
 
+        @Override
+        public String getMessage() {
+            return this.validationResult.message;
+        }
+
+        @Override
+        public Element type(ValidationResultType type) {
+            this.validationResult.validationResultType = type;
+            return this;
+        }
+
+        @Override
+        public Build element(ModelElementInstance element) {
+            this.validationResult.element = element;
+            return this;
+        }
+
+        @Override
+        public ModelElementInstance getElement() {
+            return this.validationResult.element;
+        }
+
+        @Override
+        public ValidationResultType getType() {
+            return this.validationResult.validationResultType;
+        }
+
+        @Override
         public ValidationResult build() {
-            return new ValidationResult(message, type, element);
+            final ValidationResult builtValidationResult = validationResult;
+            validationResult = new ValidationResult();
+            return builtValidationResult;
         }
     }
 }
