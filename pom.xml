@@ -138,8 +138,9 @@
                         <configuration>
                             <useIncrementalCompilation>false</useIncrementalCompilation>
                             <annotationProcessors>
-                                <annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>
+                                <!--<annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>-->
                                 <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
+                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
                             </annotationProcessors>
 
                             <compilerArgs>

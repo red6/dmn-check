@@ -14,7 +14,6 @@ import de.redsix.dmncheck.validators.ShadowedRuleValidator;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
@@ -41,9 +40,11 @@ class CheckerMain extends AbstractMojo {
                     InputEntryTypeValidator.instance, OutputTypeDeclarationValidator.instance, ShadowedRuleValidator.instance);
 
     @Parameter
+    @SuppressWarnings("nullness")
     private String[] excludes;
 
     @Parameter
+    @SuppressWarnings("nullness")
     private String[] searchPaths;
 
     @Override
