@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
-
 public enum AggregationValidator implements Validator<DecisionTable> {
     instance;
 
@@ -24,7 +22,7 @@ public enum AggregationValidator implements Validator<DecisionTable> {
     public List<ValidationResult> validate(DecisionTable decisionTable) {
         final BuiltinAggregator builtinAggregator = decisionTable.getAggregation();
         if (Objects.nonNull(builtinAggregator)) {
-            return Collections.singletonList(validationResult()
+            return Collections.singletonList(ValidationResult.Builder.init
                     .message("Aggregations are only valid with HitPolicy " + HitPolicy.COLLECT)
                     .element(decisionTable)
                     .build());

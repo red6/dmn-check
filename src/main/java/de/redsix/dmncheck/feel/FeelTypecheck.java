@@ -11,21 +11,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
 import static de.redsix.dmncheck.util.Eithers.left;
 
 public class FeelTypecheck {
 
     public final static class Context extends HashMap<String, ExpressionType> { }
 
-    public static Either<ExpressionType, ValidationResult.Element> typecheck(final FeelExpression expression) {
+    public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final FeelExpression expression) {
         return typecheck(new Context(), expression);
     }
 
-    public static Either<ExpressionType, ValidationResult.Element> typecheck(final Context context, final FeelExpression expression) {
+    public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
-                .<Either<ExpressionType, ValidationResult.Element>>Empty(() -> left(ExpressionType.TOP))
+                .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionType.TOP))
                 .BooleanLiteral(bool -> left(ExpressionType.BOOLEAN))
                 .DateLiteral(dateTime -> left(ExpressionType.DATE))
                 .DoubleLiteral(aDouble -> left(ExpressionType.DOUBLE))
@@ -41,7 +40,7 @@ public class FeelTypecheck {
                 );
     }
 
-    private static Either<ExpressionType, ValidationResult.Element> typecheckDisjunctionExpression(final Context context, final FeelExpression head, final FeelExpression tail) {
+    private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckDisjunctionExpression(final Context context, final FeelExpression head, final FeelExpression tail) {
         return typecheck(context, head).bind(headType ->
                 typecheck(context, tail).bind(tailType ->
                     check(headType.equals(tailType), "Types of head and tail do not match.")
@@ -49,7 +48,7 @@ public class FeelTypecheck {
                 ));
     }
 
-    private static Either<ExpressionType, ValidationResult.Element> typecheckBinaryExpression(final Context context, final FeelExpression left, final Operator operator, final FeelExpression right) {
+    private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckBinaryExpression(final Context context, final FeelExpression left, final Operator operator, final FeelExpression right) {
         return typecheck(context, left).bind(leftType ->
                 typecheck(context, right).bind(rightType ->
                     check(leftType.equals(rightType), "Types of left and right operand do not match.")
@@ -57,7 +56,7 @@ public class FeelTypecheck {
                 ));
     }
 
-    private static Either<ExpressionType, ValidationResult.Element> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
+    private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
         final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE);
         return typecheck(context, operand).bind(type ->
                     check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.").map(Optional::of)
@@ -66,7 +65,7 @@ public class FeelTypecheck {
                 );
     }
 
-    private static Either<ExpressionType, ValidationResult.Element> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
+    private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
         final List<ExpressionType> allowedTypes = Arrays
                 .asList(ExpressionType.INTEGER, ExpressionType.DOUBLE, ExpressionType.LONG, ExpressionType.DATE);
         return typecheck(context, lowerBound).bind(lowerBoundType ->
@@ -77,9 +76,9 @@ public class FeelTypecheck {
                 ));
     }
 
-    private static Optional<Either<ExpressionType, ValidationResult.Element>> check(final Boolean condition, final String errorMessage) {
+    private static Optional<Either<ExpressionType, ValidationResult.Builder.ElementStep>> check(final Boolean condition, final String errorMessage) {
         if (!condition) {
-            return Optional.of(Eithers.right(validationResult().message(errorMessage)));
+            return Optional.of(Eithers.right(ValidationResult.Builder.init.message(errorMessage)));
         } else {
             return Optional.empty();
         }

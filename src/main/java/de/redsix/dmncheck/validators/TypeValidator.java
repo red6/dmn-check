@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
-
 public interface TypeValidator extends Validator<DecisionTable> {
 
     String errorMessage();
@@ -33,7 +31,7 @@ public interface TypeValidator extends Validator<DecisionTable> {
             optionalType.ifPresent(type -> context.put(variable, type));
 
             return typecheckExpression(rule, expression, context, optionalType);
-        }).flatMap(List::stream).map(ValidationResult.Build::build);
+        }).flatMap(List::stream).map(ValidationResult.Builder.BuildStep::build);
     }
 
     default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
@@ -42,19 +40,19 @@ public interface TypeValidator extends Validator<DecisionTable> {
             final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
             return typecheckExpression(rule, expression, emptyContext, type);
-        }).flatMap(List::stream).map(ValidationResult.Build::build);
+        }).flatMap(List::stream).map(ValidationResult.Builder.BuildStep::build);
     }
 
-    default List<ValidationResult.Build> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
+    default List<ValidationResult.Builder.BuildStep> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
             Optional<ExpressionType> expectedType) {
-        final Either<ExpressionType, ValidationResult.Element> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
+        final Either<ExpressionType, ValidationResult.Builder.ElementStep> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
             if (expectedType.map(type::equals).orElse(true) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
-                return Collections.<ValidationResult.Build>emptyList();
+                return Collections.<ValidationResult.Builder.BuildStep>emptyList();
             } else {
-                return Collections.singletonList(validationResult().message(errorMessage()).element(rule));
+                return Collections.singletonList(ValidationResult.Builder.init.message(errorMessage()).element(rule));
             }
         }).right(validationResultBuilder -> Collections.singletonList(validationResultBuilder.element(rule)));
     }

@@ -14,8 +14,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
-
 public enum ConflictingRuleValidator implements Validator<DecisionTable> {
     instance;
 
@@ -36,7 +34,7 @@ public enum ConflictingRuleValidator implements Validator<DecisionTable> {
                 .map(entry -> entry.getValue().stream().collect(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
                 .filter(rules -> rules.size() > 1)
-                .map(rules -> validationResult()
+                .map(rules -> ValidationResult.Builder.init
                         .message("Rule is conflicting with rules " + rules.stream().skip(1).map(Rule::getId).collect(Collectors.toList()))
                         .element(rules.first())
                         .build())

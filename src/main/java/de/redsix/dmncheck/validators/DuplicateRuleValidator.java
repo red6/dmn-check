@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
-
 public enum DuplicateRuleValidator implements Validator<DecisionTable> {
     instance;
 
@@ -40,7 +38,7 @@ public enum DuplicateRuleValidator implements Validator<DecisionTable> {
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add(validationResult()
+                result.add(ValidationResult.Builder.init
                     .message("Rule is defined more than once")
                     .element(rule)
                     .build());

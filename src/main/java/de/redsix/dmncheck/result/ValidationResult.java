@@ -4,12 +4,14 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class  ValidationResult {
 
-    private ValidationResultType validationResultType = ValidationResultType.ERROR;
+    private ValidationResultType validationResultType;
     private String message;
     private ModelElementInstance element;
 
-    private ValidationResult() {
-
+    private ValidationResult(final String message, final ModelElementInstance element, final ValidationResultType validationResultType) {
+        this.message = message;
+        this.element = element;
+        this.validationResultType = validationResultType;
     }
 
     public ValidationResultType getValidationResultType() {
@@ -29,72 +31,26 @@ public class  ValidationResult {
         return message;
     }
 
-    public interface Message {
-        Element message(String message);
-    }
+    public static final class Builder {
 
-    public interface Element {
-        Element type(ValidationResultType type);
-        Build element(ModelElementInstance element);
-        String getMessage();
-    }
-
-    public interface Build {
-        ModelElementInstance getElement();
-        ValidationResultType getType();
-        ValidationResult build();
-    }
-
-    public final static class Builder implements Message, Element, Build {
-
-        private ValidationResult validationResult;
-
-        private Builder() {
-            validationResult = new ValidationResult();
+        @FunctionalInterface
+        public interface MessageStep {
+            default ElementStep message(String message) {
+                return messageAndType(message, ValidationResultType.ERROR);
+            }
+            ElementStep messageAndType(String message, ValidationResultType type);
         }
 
-        public static ValidationResult.Message validationResult() {
-            return new Builder();
+        @FunctionalInterface
+        public interface ElementStep {
+            BuildStep element(ModelElementInstance element);
         }
 
-        @Override
-        public Element message(String message) {
-            this.validationResult.message = message;
-            return this;
+        @FunctionalInterface
+        public interface BuildStep {
+            ValidationResult build();
         }
 
-        @Override
-        public String getMessage() {
-            return this.validationResult.message;
-        }
-
-        @Override
-        public Element type(ValidationResultType type) {
-            this.validationResult.validationResultType = type;
-            return this;
-        }
-
-        @Override
-        public Build element(ModelElementInstance element) {
-            this.validationResult.element = element;
-            return this;
-        }
-
-        @Override
-        public ModelElementInstance getElement() {
-            return this.validationResult.element;
-        }
-
-        @Override
-        public ValidationResultType getType() {
-            return this.validationResult.validationResultType;
-        }
-
-        @Override
-        public ValidationResult build() {
-            final ValidationResult builtValidationResult = validationResult;
-            validationResult = new ValidationResult();
-            return builtValidationResult;
-        }
+        public static final MessageStep init = (message, type) -> element -> () -> new ValidationResult(message, element, type);
     }
 }

@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static de.redsix.dmncheck.result.ValidationResult.Builder.validationResult;
-
 public enum ShadowedRuleValidator implements Validator<DecisionTable> {
     instance;
 
@@ -43,7 +41,7 @@ public enum ShadowedRuleValidator implements Validator<DecisionTable> {
 
         return Util.zip(IntStream.range(1, rules.size()).boxed(), rules.stream(),
                 (n, rule) -> rules.stream().skip(n).flatMap(potentiallySubsumingRule -> {
-                    final List<Either<Optional<Boolean>, ValidationResult.Element>> subsumptionCheckResult = checkRulesForSubsumption(rule,
+                    final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult = checkRulesForSubsumption(rule,
                             potentiallySubsumingRule);
 
                     final List<ValidationResult> parsingErrors = extractParsingErrors(rule, subsumptionCheckResult);
@@ -54,7 +52,7 @@ public enum ShadowedRuleValidator implements Validator<DecisionTable> {
 
                     final List<Optional<Boolean>> subsumptionResults = extractSubsumptionResults(subsumptionCheckResult);
                     if (subsumptionCheckIsPossible(subsumptionResults) && everythingIsSubsumed(subsumptionResults)) {
-                        return Stream.of(validationResult()
+                        return Stream.of(ValidationResult.Builder.init
                             .message("Rule is shadowed by rule " + potentiallySubsumingRule.getId())
                             .element(rule)
                         .build());
@@ -64,14 +62,14 @@ public enum ShadowedRuleValidator implements Validator<DecisionTable> {
                 })).flatMap(Function.identity()).collect(Collectors.toList());
     }
 
-    private List<Either<Optional<Boolean>, ValidationResult.Element>> checkRulesForSubsumption(final Rule rule,
+    private List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> checkRulesForSubsumption(final Rule rule,
             final Rule potentiallySubsumingRule) {
         return Util
                 .zip(rule.getInputEntries().stream(), potentiallySubsumingRule.getInputEntries().stream(), this::checkInputsForSubsumption)
                 .collect(Collectors.toList());
     }
 
-    private Either<Optional<Boolean>, ValidationResult.Element> checkInputsForSubsumption(final InputEntry input,
+    private Either<Optional<Boolean>, ValidationResult.Builder.ElementStep> checkInputsForSubsumption(final InputEntry input,
             final InputEntry potentiallySubsumingInput) {
         return FeelParser.parse(input.getTextContent()).bind(inputExpression ->
                 FeelParser.parse(potentiallySubsumingInput.getTextContent()).bind(potentiallySubsumingInputExpression ->
@@ -79,7 +77,7 @@ public enum ShadowedRuleValidator implements Validator<DecisionTable> {
     }
 
     private List<Optional<Boolean>> extractSubsumptionResults(
-            final List<Either<Optional<Boolean>, ValidationResult.Element>> subsumptionCheckResult) {
+            final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult) {
         return subsumptionCheckResult.stream()
                 .map(Eithers::getLeft)
                 .filter(Optional::isPresent)
@@ -88,7 +86,7 @@ public enum ShadowedRuleValidator implements Validator<DecisionTable> {
     }
 
     private List<ValidationResult> extractParsingErrors(final Rule rule,
-            final List<Either<Optional<Boolean>, ValidationResult.Element>> subsumptionCheckResult) {
+            final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult) {
         return subsumptionCheckResult.stream()
                 .map(Eithers::getRight)
                 .filter(Optional::isPresent)
