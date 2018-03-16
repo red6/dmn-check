@@ -16,6 +16,10 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 public final class PrettyPrintValidationResults {
 
+    private PrettyPrintValidationResults() {
+
+    }
+
     public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
         for (ValidationResult validationResult : validationResults) {
             final String errorMessage =
