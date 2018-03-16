@@ -49,8 +49,8 @@ class CheckerMain extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        final List<Path> searchPaths = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
-        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPaths);
+        final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
 
         testFiles(filesToTest);
     }
