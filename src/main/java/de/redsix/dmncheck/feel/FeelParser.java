@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 @ParametersAreNonnullByDefault
 public final class FeelParser {
 
+    private FeelParser() {
+
+    }
+
     private static final Terminals OPERATORS = Terminals
             .operators("+", "-", "*", "**", "/", "(", ")", "[", "]", "..", ",", "not(", "and", "or", "<", ">", "<=", ">=",
                     "date and time(\"", "\")");
