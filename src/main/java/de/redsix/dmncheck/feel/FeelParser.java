@@ -12,8 +12,10 @@ import org.jparsec.Tokens;
 import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.LocalDateTime;
 
+@ParametersAreNonnullByDefault
 public final class FeelParser {
 
     private static final Terminals OPERATORS = Terminals

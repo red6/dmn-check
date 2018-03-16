@@ -1,9 +1,11 @@
 package de.redsix.dmncheck.feel;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
+@ParametersAreNonnullByDefault
 final class Subsumption {
 
     private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}

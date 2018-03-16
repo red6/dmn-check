@@ -2,6 +2,9 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Output;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public enum OutputTypeDeclarationValidator implements ElementTypeDeclarationValidator<Output> {
     instance;
 

@@ -6,10 +6,12 @@ import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public enum AggregationValidator implements Validator<DecisionTable> {
     instance;
 

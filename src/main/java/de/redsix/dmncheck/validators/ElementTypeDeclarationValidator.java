@@ -6,10 +6,12 @@ import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public interface ElementTypeDeclarationValidator<T extends DmnElement> extends Validator<T> {
 
     String getTypeRef(T expression);

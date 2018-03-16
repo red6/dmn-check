@@ -7,11 +7,13 @@ import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public enum AggregationOutputTypeValidator implements GenericValidator<DecisionTable, Output> {
     instance;
 

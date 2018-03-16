@@ -1,8 +1,10 @@
 package de.redsix.dmncheck.model;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+@ParametersAreNonnullByDefault
 public enum ExpressionType {
     TOP,
     STRING,

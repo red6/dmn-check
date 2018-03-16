@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.util;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Spliterator;
@@ -8,6 +9,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@ParametersAreNonnullByDefault
 public final class Util {
 
     private Util() {

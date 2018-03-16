@@ -40,6 +40,23 @@
                     <version>3.7.0</version>
                     <configuration>
                         <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <compilerArgs>
+                            <arg>-Xplugin:Traute</arg>
+                            <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
+                        </compilerArgs>
+
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>tech.harmonysoft</groupId>
+                                <artifactId>traute-javac</artifactId>
+                                <version>1.1.8</version>
+                            </path>
+                            <path>
+                                <groupId>org.derive4j</groupId>
+                                <artifactId>derive4j</artifactId>
+                                <version>0.12.3</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
             </plugins>
@@ -142,22 +159,36 @@
                                 <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
                             </annotationProcessors>
 
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>${checker.framework.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>tech.harmonysoft</groupId>
+                                    <artifactId>traute-javac</artifactId>
+                                    <version>1.1.8</version>
+                                </path>
+                                <path>
+                                    <groupId>org.derive4j</groupId>
+                                    <artifactId>derive4j</artifactId>
+                                    <version>0.12.3</version>
+                                </path>
+                            </annotationProcessorPaths>
+
                             <compilerArgs>
                                 <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
                                 <arg>-Astubs=checkerframework/stubs</arg>
                                 <arg>-AstubWarnIfNotFound</arg>
+                                <arg>-Xplugin:Traute</arg>
+                                <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
                             </compilerArgs>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
             <dependencies>
-                <dependency>
-                    <groupId>org.checkerframework</groupId>
-                    <artifactId>checker</artifactId>
-                    <version>${checker.framework.version}</version>
-                    <scope>provided</scope>
-                </dependency>
                 <dependency>
                     <groupId>org.checkerframework</groupId>
                     <artifactId>jdk8</artifactId>
@@ -277,6 +308,12 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <version>${checker.framework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>2.0.2</version>
         </dependency>
 
     </dependencies>
