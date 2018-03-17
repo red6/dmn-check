@@ -17,6 +17,14 @@
         <url>https://red6-es.de/</url>
     </organization>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/red6/dmn-check/issues</url>
