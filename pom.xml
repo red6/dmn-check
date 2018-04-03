@@ -219,22 +219,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.2</version>
-
-            <!-- Work around vulnerability codehaus-plexus/plexus-utils#4 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Work around vulnerability codehaus-plexus/plexus-utils#4 -->
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.1.0</version>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
