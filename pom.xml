@@ -99,6 +99,10 @@
                         <version>1.0.2</version>
                     </dependency>
                 </dependencies>
+
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
             </plugin>
 
             <plugin>
