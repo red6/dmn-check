@@ -31,8 +31,11 @@
     </issueManagement>
 
     <scm>
+        <connection>scm:git:git@github.com:red6/dmn-check.git</connection>
+        <developerConnection>scm:git:git@github.com:red6/dmn-check.git</developerConnection>
         <url>https://github.com/red6/dmn-check.git</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
