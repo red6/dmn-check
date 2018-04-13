@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 @Mojo(name = "check-dmn", requiresProject = false)
 class CheckerMain extends AbstractMojo {
 
-    private final static List<GenericValidator> validators = Arrays
+    private final static List<GenericValidator> DEFAULT_VALIDATORS = Arrays
             .asList(DuplicateRuleValidator.instance, InputTypeDeclarationValidator.instance, OutputTypeDeclarationValidator.instance,
                     AggregationValidator.instance, AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
                     InputEntryTypeValidator.instance, OutputEntryTypeValidator.instance, ShadowedRuleValidator.instance,
@@ -40,6 +40,9 @@ class CheckerMain extends AbstractMojo {
 
     @Parameter
     private String[] searchPaths;
+
+    @Parameter
+    private String[] validators;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -82,7 +85,7 @@ class CheckerMain extends AbstractMojo {
     }
 
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
-        return validators.stream()
+        return getValidators().stream()
                 .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
                 .collect(Collectors.toList());
     }
@@ -129,12 +132,34 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
+    private List<GenericValidator> getValidators() {
+        if (validators != null) {
+            return Arrays.stream(validators).map(this::loadValidator).collect(Collectors.toList());
+        } else {
+            return DEFAULT_VALIDATORS;
+        }
+    }
+
+    private GenericValidator loadValidator(final String validator) {
+        try {
+            final Class<?> validatorClass = ClassLoader.getSystemClassLoader().loadClass(validator);
+            return ((Class<GenericValidator>) validatorClass).newInstance();
+        }
+        catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException("Failed to load validator " + validator, e);
+        }
+    }
+
     void setExcludes(final String[] excludes) {
         this.excludes = excludes;
     }
 
     void setSearchPaths(final String[] searchPaths) {
         this.searchPaths = searchPaths;
+    }
+
+    void setValidators(final String[] validators) {
+        this.validators = validators;
     }
 
 }

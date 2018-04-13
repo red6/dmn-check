@@ -109,6 +109,22 @@ public class CheckerMainTest {
         Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
     }
 
+    @Test
+    void shouldLoadNoValidatorFromConfig() throws MojoExecutionException {
+        testee.setValidators(new String[] { });
+
+        testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
+    }
+
+    @Test
+    void shouldLoadDuplicateRuleValidatorFromConfig() {
+        testee.setValidators(new String[] { "de.redsix.dmncheck.validators.DuplicateRuleValidator" });
+
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
+                () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+    }
+
     private File getFile(final String filename) {
         ClassLoader classLoader = getClass().getClassLoader();
         final URL url = classLoader.getResource(filename);
