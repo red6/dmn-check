@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public enum InputEntryTypeValidator implements TypeValidator {
-    instance;
+public class InputEntryTypeValidator implements TypeValidator {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

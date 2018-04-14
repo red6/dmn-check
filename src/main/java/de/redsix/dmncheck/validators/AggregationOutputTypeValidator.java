@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public enum AggregationOutputTypeValidator implements GenericValidator<DecisionTable, Output> {
-    instance;
+public class AggregationOutputTypeValidator implements GenericValidator<DecisionTable, Output> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

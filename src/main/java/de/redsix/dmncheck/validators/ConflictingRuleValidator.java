@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public enum ConflictingRuleValidator implements Validator<DecisionTable> {
-    instance;
+public class ConflictingRuleValidator implements Validator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShadowedRuleValidatorTest extends WithDecisionTable {
 
+    private final ShadowedRuleValidator testee = new ShadowedRuleValidator();
+
     @ParameterizedTest
     @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
     void ruleIsShadowedByFirstRule(final HitPolicy hitPolicy) {
@@ -38,7 +40,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(catchAllRule);
         decisionTable.getRules().add(shadowedRule);
 
-        final List<ValidationResult> validationResults = ShadowedRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -77,7 +79,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule);
         decisionTable.getRules().add(otherRule);
 
-        final List<ValidationResult> validationResults = ShadowedRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(0, validationResults.size());
     }
@@ -103,7 +105,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(catchAllRule);
         decisionTable.getRules().add(shadowedRule);
 
-        final List<ValidationResult> validationResults = ShadowedRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

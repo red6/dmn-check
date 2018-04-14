@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InputEntryTypeValidatorTest extends WithDecisionTable {
+    
+    private final InputEntryTypeValidator testee = new InputEntryTypeValidator();
 
     @Test
     void shouldAcceptWellTypedInputExpression() {
@@ -31,7 +33,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
             rule.getInputEntries().add(inputEntry);
             decisionTable.getRules().add(rule);
 
-            final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+            final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
             assertTrue(validationResults.isEmpty());
     }
@@ -49,7 +51,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -68,7 +70,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -88,7 +90,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -108,7 +110,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -133,7 +135,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -157,7 +159,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

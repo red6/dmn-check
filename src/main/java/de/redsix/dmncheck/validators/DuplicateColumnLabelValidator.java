@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public enum DuplicateColumnLabelValidator implements Validator<DecisionTable> {
-    instance;
+public class DuplicateColumnLabelValidator implements Validator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

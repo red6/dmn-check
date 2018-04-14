@@ -12,6 +12,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
+    
+    private final DuplicateColumnLabelValidator testee = new DuplicateColumnLabelValidator();
 
     @Test
     void outputsWithDistinctLabelsAreAllowed() {
@@ -23,7 +25,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         output2.setLabel("Label2");
         decisionTable.getOutputs().add(output2);
 
-        final List<ValidationResult> validationResults = DuplicateColumnLabelValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(0, validationResults.size());
     }
@@ -38,7 +40,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         output2.setLabel("Label");
         decisionTable.getOutputs().add(output2);
 
-        final List<ValidationResult> validationResults = DuplicateColumnLabelValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -59,7 +61,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         input2.setLabel("Label2");
         decisionTable.getInputs().add(input2);
 
-        final List<ValidationResult> validationResults = DuplicateColumnLabelValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(0, validationResults.size());
     }
@@ -74,7 +76,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         input2.setLabel("Label");
         decisionTable.getInputs().add(input2);
 
-        final List<ValidationResult> validationResults = DuplicateColumnLabelValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

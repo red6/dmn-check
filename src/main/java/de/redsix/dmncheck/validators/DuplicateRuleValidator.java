@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public enum DuplicateRuleValidator implements Validator<DecisionTable> {
-    instance;
+public class DuplicateRuleValidator implements Validator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

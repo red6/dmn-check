@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InputTypeDeclarationValidatorTest extends WithDecisionTable {
 
+    private final InputTypeDeclarationValidator testee = new InputTypeDeclarationValidator();
+
     @Test
     void shouldDetectThatOutputHasNoType() {
         final Input input = modelInstance.newInstance(Input.class);
@@ -22,7 +24,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         input.setInputExpression(inputExpression);
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputTypeDeclarationValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -41,7 +43,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         inputExpression.setTypeRef("unsupportedType");
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputTypeDeclarationValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -60,7 +62,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         inputExpression.setTypeRef("integer");
         decisionTable.getInputs().add(input);
 
-        final List<ValidationResult> validationResults = InputTypeDeclarationValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }

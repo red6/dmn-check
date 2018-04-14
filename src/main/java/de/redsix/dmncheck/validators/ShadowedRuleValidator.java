@@ -23,8 +23,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public enum ShadowedRuleValidator implements Validator<DecisionTable> {
-    instance;
+public class ShadowedRuleValidator implements Validator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

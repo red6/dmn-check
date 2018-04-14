@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OutputEntryValidatorTest extends WithDecisionTable {
 
+    private final OutputEntryTypeValidator testee = new OutputEntryTypeValidator();
+
     @Test
     void shouldAcceptWellTypedInputExpression() {
         final Output output = modelInstance.newInstance(Output.class);
@@ -29,7 +31,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = OutputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -45,7 +47,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = OutputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -62,7 +64,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = OutputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertFalse(validationResults.isEmpty());
     }
@@ -79,7 +81,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = OutputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -101,7 +103,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = OutputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

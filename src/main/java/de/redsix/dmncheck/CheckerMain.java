@@ -3,8 +3,9 @@ package de.redsix.dmncheck;
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
-import de.redsix.dmncheck.validators.*;
 import de.redsix.dmncheck.validators.core.GenericValidator;
+import de.redsix.dmncheck.validators.core.Validator;
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -29,11 +30,7 @@ import java.util.stream.Stream;
 @Mojo(name = "check-dmn", requiresProject = false)
 class CheckerMain extends AbstractMojo {
 
-    private final static List<GenericValidator> DEFAULT_VALIDATORS = Arrays
-            .asList(DuplicateRuleValidator.instance, InputTypeDeclarationValidator.instance, OutputTypeDeclarationValidator.instance,
-                    AggregationValidator.instance, AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
-                    InputEntryTypeValidator.instance, OutputEntryTypeValidator.instance, ShadowedRuleValidator.instance,
-                    DuplicateColumnLabelValidator.instance);
+    private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
 
     @Parameter
     private String[] excludes;
@@ -133,19 +130,28 @@ class CheckerMain extends AbstractMojo {
     }
 
     private List<GenericValidator> getValidators() {
+        final String[] scanSpec;
         if (validators != null) {
-            return Arrays.stream(validators).map(this::loadValidator).collect(Collectors.toList());
+            scanSpec = validators;
         } else {
-            return DEFAULT_VALIDATORS;
+            scanSpec = new String[] {VALIDATOR_PACKAGE};
         }
+
+        final List<Class<? extends GenericValidator>> validatorClasses = new ArrayList<>();
+        new FastClasspathScanner(scanSpec)
+                .disableRecursiveScanning()
+                .strictWhitelist()
+                .matchClassesImplementing(GenericValidator.class, validatorClasses::add)
+                .matchClassesImplementing(Validator.class, validatorClasses::add)
+                .scan();
+        return validatorClasses.stream().map(this::instantiateValidator).collect(Collectors.toList());
     }
 
-    private GenericValidator loadValidator(final String validator) {
+    private GenericValidator instantiateValidator(final Class<? extends GenericValidator> validator) {
         try {
-            final Class<?> validatorClass = ClassLoader.getSystemClassLoader().loadClass(validator);
-            return ((Class<GenericValidator>) validatorClass).newInstance();
+            return validator.newInstance();
         }
-        catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+        catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("Failed to load validator " + validator, e);
         }
     }

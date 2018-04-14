@@ -12,13 +12,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AggregationValidatorTest extends WithDecisionTable {
+    
+    private final AggregationValidator testee = new AggregationValidator();
 
     @Test
     void shouldErrorOnHitPolicyUniqueWithAggregatorCount() {
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 
-        final List<ValidationResult> validationResults = AggregationValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -34,7 +36,7 @@ class AggregationValidatorTest extends WithDecisionTable {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 
-        final List<ValidationResult> validationResults = AggregationValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
