@@ -34,6 +34,8 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
 
     private Stream<T> getElementsUnderValidation(final ModelElementType elementType, final S element) {
         final Stream<T> childElementsUnderValidation = element.getChildElementsByType(getClassUnderValidation()).stream();
+
+        @SuppressWarnings("unchecked")
         final Stream<T> rootElementUnderValidation = element.getElementType().equals(elementType) ? Stream.of((T) element) : Stream.empty();
 
         return Stream.concat(childElementsUnderValidation, rootElementUnderValidation);
