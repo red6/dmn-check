@@ -17,6 +17,7 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -145,7 +146,10 @@ class CheckerMain extends AbstractMojo {
                 .matchClassesImplementing(SimpleValidator.class, validatorClasses::add)
                 .matchClassesImplementing(Validator.class, validatorClasses::add)
                 .scan();
-        return validatorClasses.stream().map(this::instantiateValidator).collect(Collectors.toList());
+        return validatorClasses.stream()
+                .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
+                .map(this::instantiateValidator)
+                .collect(Collectors.toList());
     }
 
     private Validator instantiateValidator(final Class<? extends Validator> validator) {
