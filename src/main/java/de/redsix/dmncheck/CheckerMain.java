@@ -143,6 +143,7 @@ class CheckerMain extends AbstractMojo {
                 .strictWhitelist()
                 .matchClassesImplementing(GenericValidator.class, validatorClasses::add)
                 .matchClassesImplementing(SimpleValidator.class, validatorClasses::add)
+                .matchClassesImplementing(Validator.class, validatorClasses::add)
                 .scan();
         return validatorClasses.stream().map(this::instantiateValidator).collect(Collectors.toList());
     }
