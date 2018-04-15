@@ -1,5 +1,6 @@
 package de.redsix.dmncheck;
 
+import de.redsix.dmncheck.validators.DuplicateRuleValidator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -118,7 +119,7 @@ public class CheckerMainTest {
 
     @Test
     void shouldLoadDuplicateRuleValidatorFromConfig() {
-        testee.setValidators(new String[] { "de.redsix.dmncheck.validators.DuplicateRuleValidator" });
+        testee.setValidators(new String[] {DuplicateRuleValidator.class.getCanonicalName()});
 
         final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
