@@ -27,9 +27,15 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
         final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());
         return elements.stream()
                 .filter(this::isApplicable)
-                .flatMap(element -> Stream.concat(element.getChildElementsByType(getClassUnderValidation()).stream(),
-                        element.getElementType().equals(elementType) ? Stream.of((T) element) : Stream.empty()))
+                .flatMap(element -> getElementsUnderValidation(elementType, element))
                 .flatMap(element -> validate(element).stream())
                 .collect(Collectors.toList());
+    }
+
+    private Stream<T> getElementsUnderValidation(final ModelElementType elementType, final S element) {
+        final Stream<T> childElementsUnderValidation = element.getChildElementsByType(getClassUnderValidation()).stream();
+        final Stream<T> rootElementUnderValidation = element.getElementType().equals(elementType) ? Stream.of((T) element) : Stream.empty();
+
+        return Stream.concat(childElementsUnderValidation, rootElementUnderValidation);
     }
 }
