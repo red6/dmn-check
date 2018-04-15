@@ -3,7 +3,7 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public interface ElementTypeDeclarationValidator<T extends DmnElement> extends Validator<T> {
+public interface ElementTypeDeclarationValidator<T extends DmnElement> extends SimpleValidator<T> {
 
     String getTypeRef(T expression);
 

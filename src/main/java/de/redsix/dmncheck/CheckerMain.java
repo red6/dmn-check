@@ -4,6 +4,7 @@ import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
 import de.redsix.dmncheck.validators.core.GenericValidator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.Validator;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.maven.plugin.AbstractMojo;
@@ -129,7 +130,7 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    private List<GenericValidator> getValidators() {
+    private List<Validator> getValidators() {
         final String[] scanSpec;
         if (validators != null) {
             scanSpec = validators;
@@ -137,17 +138,17 @@ class CheckerMain extends AbstractMojo {
             scanSpec = new String[] {VALIDATOR_PACKAGE};
         }
 
-        final List<Class<? extends GenericValidator>> validatorClasses = new ArrayList<>();
+        final List<Class<? extends Validator>> validatorClasses = new ArrayList<>();
         new FastClasspathScanner(scanSpec)
                 .disableRecursiveScanning()
                 .strictWhitelist()
                 .matchClassesImplementing(GenericValidator.class, validatorClasses::add)
-                .matchClassesImplementing(Validator.class, validatorClasses::add)
+                .matchClassesImplementing(SimpleValidator.class, validatorClasses::add)
                 .scan();
         return validatorClasses.stream().map(this::instantiateValidator).collect(Collectors.toList());
     }
 
-    private GenericValidator instantiateValidator(final Class<? extends GenericValidator> validator) {
+    private Validator instantiateValidator(final Class<? extends Validator> validator) {
         try {
             return validator.newInstance();
         }

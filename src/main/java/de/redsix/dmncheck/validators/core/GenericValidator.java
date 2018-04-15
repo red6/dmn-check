@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public interface GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance>{
+public interface GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance> extends Validator {
 
     boolean isApplicable(final S element);
 

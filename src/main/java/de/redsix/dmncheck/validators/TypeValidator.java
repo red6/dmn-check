@@ -7,7 +7,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 import de.redsix.dmncheck.util.Util;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public interface TypeValidator extends Validator<DecisionTable> {
+public interface TypeValidator extends SimpleValidator<DecisionTable> {
 
     String errorMessage();
 

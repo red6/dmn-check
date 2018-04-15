@@ -1,11 +1,10 @@
 package de.redsix.dmncheck.validators.core;
 
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import de.redsix.dmncheck.result.ValidationResult;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 
-public interface Validator<T extends ModelElementInstance> extends GenericValidator<T, T>{
+import java.util.List;
 
-    @Override
-    default Class<T> getClassUsedToCheckApplicability() {
-        return getClassUnderValidation();
-    }
+public interface Validator {
+    List<ValidationResult> apply(final DmnModelInstance dmnModelInstance);
 }
