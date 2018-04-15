@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class ShadowedRuleValidator implements SimpleValidator<DecisionTable> {
+public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

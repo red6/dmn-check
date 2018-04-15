@@ -19,14 +19,14 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public interface TypeValidator extends SimpleValidator<DecisionTable> {
+public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
-    String errorMessage();
+    abstract String errorMessage();
 
-    boolean isEmptyAllowed();
+    abstract boolean isEmptyAllowed();
 
-    default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<String> variables, final Stream<Optional<ExpressionType>> types) {
+    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
+            final Stream<Optional<ExpressionType>> types) {
         return Util.zip(expressions, variables, types, (expression, variable, optionalType) -> {
             final FeelTypecheck.Context context = new FeelTypecheck.Context();
 
@@ -36,7 +36,7 @@ public interface TypeValidator extends SimpleValidator<DecisionTable> {
         }).flatMap(List::stream).map(ValidationResult.Builder::build);
     }
 
-    default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
+    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
             final Stream<Optional<ExpressionType>> types) {
         return Util.zip(expressions, types, (expression, type) -> {
             final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
@@ -45,7 +45,7 @@ public interface TypeValidator extends SimpleValidator<DecisionTable> {
         }).flatMap(List::stream).map(ValidationResult.Builder::build);
     }
 
-    default List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
+    private List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
             Optional<ExpressionType> expectedType) {
         final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
@@ -63,7 +63,7 @@ public interface TypeValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    default Class<DecisionTable> getClassUnderValidation() {
+    public Class<DecisionTable> getClassUnderValidation() {
         return DecisionTable.class;
     }
 }

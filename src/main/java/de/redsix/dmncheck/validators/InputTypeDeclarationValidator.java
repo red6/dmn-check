@@ -5,7 +5,7 @@ import org.camunda.bpm.model.dmn.instance.InputExpression;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class InputTypeDeclarationValidator implements ElementTypeDeclarationValidator<InputExpression> {
+public class InputTypeDeclarationValidator extends ElementTypeDeclarationValidator<InputExpression> {
 
     @Override
     public String getTypeRef(InputExpression inputExpression) {

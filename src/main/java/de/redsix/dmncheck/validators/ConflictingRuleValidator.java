@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class ConflictingRuleValidator implements SimpleValidator<DecisionTable> {
+public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class DuplicateRuleValidator implements SimpleValidator<DecisionTable> {
+public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

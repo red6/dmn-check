@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class InputEntryTypeValidator implements TypeValidator {
+public class InputEntryTypeValidator extends TypeValidator {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

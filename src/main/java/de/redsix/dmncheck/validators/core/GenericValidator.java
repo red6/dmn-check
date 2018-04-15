@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public interface GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance> extends Validator {
+public abstract class GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance> implements Validator {
 
-    boolean isApplicable(final S element);
+    public abstract boolean isApplicable(final S element);
 
-    List<ValidationResult> validate(final T element);
+    public abstract List<ValidationResult> validate(final T element);
 
-    Class<S> getClassUsedToCheckApplicability();
+    public abstract Class<S> getClassUsedToCheckApplicability();
 
-    Class<T> getClassUnderValidation();
+    public abstract Class<T> getClassUnderValidation();
 
-    default List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
+    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
         final ModelElementType elementType = dmnModelInstance.getModel().getType(getClassUnderValidation());
         final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());
         return elements.stream()

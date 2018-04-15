@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public interface ElementTypeDeclarationValidator<T extends DmnElement> extends SimpleValidator<T> {
+public abstract class ElementTypeDeclarationValidator<T extends DmnElement> extends SimpleValidator<T> {
 
-    String getTypeRef(T expression);
+    abstract String getTypeRef(T expression);
 
-    default boolean isApplicable(T expression) {
+    public boolean isApplicable(T expression) {
         return true;
     }
 
-    default List<ValidationResult> validate(T expression) {
+    public List<ValidationResult> validate(T expression) {
         final String expressionType = getTypeRef(expression);
         if(Objects.isNull(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.with($ -> {

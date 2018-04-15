@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
-public class DuplicateColumnLabelValidator implements SimpleValidator<DecisionTable> {
+public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

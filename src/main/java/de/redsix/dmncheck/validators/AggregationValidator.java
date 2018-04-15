@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class AggregationValidator implements SimpleValidator<DecisionTable> {
+public class AggregationValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {
