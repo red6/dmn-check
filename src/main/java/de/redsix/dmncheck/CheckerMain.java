@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 @Mojo(name = "check-dmn", requiresProject = false)
@@ -84,7 +83,7 @@ class CheckerMain extends AbstractMojo {
 
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return getValidators().stream()
-                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
+                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
                 .collect(Collectors.toList());
     }
 
