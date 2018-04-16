@@ -30,7 +30,7 @@ The following example shows the basic configuration of the plugin:
 	        <plugin>
                 <groupId>de.redsix</groupId>
                 <artifactId>dmn-check</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>...</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
