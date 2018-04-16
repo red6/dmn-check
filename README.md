@@ -28,9 +28,9 @@ This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses 
 The following example shows the basic configuration of the plugin:
 		
 	        <plugin>
-                <groupId>de.red6-es</groupId>
+                <groupId>de.redsix</groupId>
                 <artifactId>dmn-check</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
@@ -60,7 +60,7 @@ Using this configuration the plugin will search all folders of the current proje
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
 
-        mvn de.red6-es:dmn-check:check-dmn
+        mvn de.redsix:dmn-check:check-dmn
 
 ## Validations
 
