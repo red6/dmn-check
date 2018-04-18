@@ -91,6 +91,15 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldParseEmptyStringLiteral() throws Exception {
+        final FeelExpression expression = FeelParser.PARSER.parse("\"\"");
+
+        final FeelExpression expectedExpression = FeelExpressions.StringLiteral("");
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     void shouldParseStringLiteral() throws Exception {
         final FeelExpression expression = FeelParser.PARSER.parse("\"Steak\"");
 

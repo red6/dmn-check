@@ -33,7 +33,7 @@ public final class FeelParser {
                     .map(s -> Tokens.fragment(s, "datefragment")),
             Patterns.regex("^-$").toScanner("empty").source().map(s -> Tokens.fragment(s, "emptyfragment")),
             OPERATORS.tokenizer(),
-            Patterns.regex("\"[^\"]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
+            Patterns.regex("\"[^\"]*\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source()
                     .map(s -> Tokens.fragment(s, "booleanfragment")),
             Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source()
