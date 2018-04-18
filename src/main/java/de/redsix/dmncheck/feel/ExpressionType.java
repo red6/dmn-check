@@ -1,7 +1,10 @@
 package de.redsix.dmncheck.feel;
 
+import jdk.jfr.events.ExceptionThrownEvent;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
@@ -30,5 +33,25 @@ public enum ExpressionType {
 
     public static boolean isNumeric(final ExpressionType givenType) {
         return isNumeric(givenType.name());
+    }
+
+    public boolean isSubtypeOf(final ExpressionType supertype) {
+        return reflexivity(this, supertype) || TOPisTopElement(supertype) || INTEGERsubtypeOfLONG(this, supertype);
+    }
+
+    private boolean reflexivity(final ExpressionType subtype, final ExpressionType supertype) {
+        return subtype.equals(supertype);
+    }
+
+    private boolean TOPisTopElement(final ExpressionType supertype) {
+        return TOP.equals(supertype);
+    }
+
+    private boolean INTEGERsubtypeOfLONG(final ExpressionType subtype, final ExpressionType supertype) {
+        return INTEGER.equals(subtype) && LONG.equals(supertype);
+    }
+
+    public static ExpressionType getType(Optional<String> type) {
+        return type.map(String::toUpperCase).map(ExpressionType::valueOf).orElse(TOP);
     }
 }

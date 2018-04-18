@@ -29,21 +29,22 @@ public class OutputEntryTypeValidator extends TypeValidator {
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<OutputEntry> outputEntry = rule.getOutputEntries().stream();
 
-            final Stream<Optional<ExpressionType>> outputTypes = decisionTable.getOutputs().stream()
+            final Stream<ExpressionType> outputTypes = decisionTable.getOutputs().stream()
                     .map(OutputClause::getTypeRef)
-                    .map(typeRef -> Optional.ofNullable(typeRef).map(String::toUpperCase).map(ExpressionType::valueOf));
+                    .map(Optional::ofNullable)
+                    .map(ExpressionType::getType);
 
             return typecheck(rule, outputEntry, outputTypes);
         }).collect(Collectors.toList());
     }
 
     @Override
-    public boolean isEmptyAllowed() {
-        return false;
+    public String errorMessage() {
+        return "Type of output entry does not match type of output expression";
     }
 
     @Override
-    public String errorMessage() {
-        return "Type of output entry does not match type of output expression";
+    boolean isEmptyAllowed() {
+        return false;
     }
 }

@@ -76,6 +76,25 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldAcceptIntegersAsLongs() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("long");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("42");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
     void shouldAcceptBoundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);

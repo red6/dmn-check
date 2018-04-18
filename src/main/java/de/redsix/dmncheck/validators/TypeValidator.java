@@ -26,18 +26,18 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
     abstract boolean isEmptyAllowed();
 
     Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
-            final Stream<Optional<ExpressionType>> types) {
-        return Util.zip(expressions, variables, types, (expression, variable, optionalType) -> {
+            final Stream<ExpressionType> types) {
+        return Util.zip(expressions, variables, types, (expression, variable, type) -> {
             final FeelTypecheck.Context context = new FeelTypecheck.Context();
 
-            optionalType.ifPresent(type -> context.put(variable, type));
+            context.put(variable, type);
 
-            return typecheckExpression(rule, expression, context, optionalType);
+            return typecheckExpression(rule, expression, context, type);
         }).flatMap(List::stream).map(ValidationResult.Builder::build);
     }
 
     Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<Optional<ExpressionType>> types) {
+            final Stream<ExpressionType> types) {
         return Util.zip(expressions, types, (expression, type) -> {
             final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
@@ -46,12 +46,12 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
     }
 
     private List<ValidationResult.Builder> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
-            Optional<ExpressionType> expectedType) {
+            ExpressionType expectedType) {
         final Either<ExpressionType, ValidationResult.Builder> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
-            if (expectedType.map(type::equals).orElse(true) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
+            if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionType.TOP.equals(type)) {
                 return Collections.<ValidationResult.Builder>emptyList();
             } else {
                 return Collections.singletonList(ValidationResult.Builder.with($ -> {

@@ -37,6 +37,23 @@ class OutputEntryValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldAcceptIntegersAsLong() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setTypeRef("long");
+        decisionTable.getOutputs().add(output);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        outputEntry.setTextContent("42");
+        rule.getOutputEntries().add(outputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
     void shouldAcceptWellTypedInputExpressionWithoutTypeDeclaration() {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
@@ -53,7 +70,7 @@ class OutputEntryValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldAcceptEmptyExpression() {
+    void shouldNotAcceptEmptyExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);

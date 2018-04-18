@@ -32,21 +32,22 @@ public class InputEntryTypeValidator extends TypeValidator {
 
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
-            final Stream<Optional<ExpressionType>> inputTypes = decisionTable.getInputs().stream()
+            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream()
                     .map(input -> input.getInputExpression().getTypeRef())
-                    .map(typeRef -> Optional.ofNullable(typeRef).map(String::toUpperCase).map(ExpressionType::valueOf));
+                    .map(Optional::ofNullable)
+                    .map(ExpressionType::getType);
 
             return typecheck(rule, inputExpressions, inputVariables, inputTypes);
         }).collect(Collectors.toList());
     }
 
     @Override
-    public boolean isEmptyAllowed() {
-        return true;
+    public String errorMessage() {
+        return "Type of input entry does not match type of input expression";
     }
 
     @Override
-    public String errorMessage() {
-        return "Type of input entry does not match type of input expression";
+    boolean isEmptyAllowed() {
+        return true;
     }
 }
