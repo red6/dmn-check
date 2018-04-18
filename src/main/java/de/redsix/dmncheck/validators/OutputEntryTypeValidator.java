@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.model.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;

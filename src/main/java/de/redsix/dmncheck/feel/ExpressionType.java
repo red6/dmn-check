@@ -1,4 +1,4 @@
-package de.redsix.dmncheck.model;
+package de.redsix.dmncheck.feel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
