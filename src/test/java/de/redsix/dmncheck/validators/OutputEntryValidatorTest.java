@@ -54,6 +54,23 @@ class OutputEntryValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldAcceptIntegersAsDouble() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setTypeRef("double");
+        decisionTable.getOutputs().add(output);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        outputEntry.setTextContent("42");
+        rule.getOutputEntries().add(outputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
     void shouldAcceptWellTypedInputExpressionWithoutTypeDeclaration() {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
