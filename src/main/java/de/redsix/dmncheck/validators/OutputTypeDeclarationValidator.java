@@ -2,8 +2,10 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Output;
 
-public enum OutputTypeDeclarationValidator implements ElementTypeDeclarationValidator<Output> {
-    instance;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class OutputTypeDeclarationValidator extends ElementTypeDeclarationValidator<Output> {
 
     @Override
     public String getTypeRef(Output output) {

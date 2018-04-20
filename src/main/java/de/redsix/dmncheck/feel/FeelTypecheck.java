@@ -1,10 +1,10 @@
 package de.redsix.dmncheck.feel;
 
-import de.redsix.dmncheck.model.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,12 @@ import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
 
-public class FeelTypecheck {
+@ParametersAreNonnullByDefault
+public final class FeelTypecheck {
+
+    private FeelTypecheck() {
+
+    }
 
     public final static class Context extends HashMap<String, ExpressionType> { }
 

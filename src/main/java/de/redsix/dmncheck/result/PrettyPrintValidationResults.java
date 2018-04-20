@@ -6,13 +6,19 @@ import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@ParametersAreNonnullByDefault
 public final class PrettyPrintValidationResults {
+
+    private PrettyPrintValidationResults() {
+
+    }
 
     public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
         for (ValidationResult validationResult : validationResults) {

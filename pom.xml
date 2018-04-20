@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.red6-es</groupId>
+    <groupId>de.redsix</groupId>
     <artifactId>dmn-check</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>dmn-check</name>
     <url>https://github.com/red6/dmn-check</url>
     <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect bugs</description>
@@ -17,10 +17,46 @@
         <url>https://red6-es.de/</url>
     </organization>
 
+    <developers>
+        <developer>
+            <name>Jan Deutelmoser</name>
+        </developer>
+
+        <developer>
+            <name>Pascal Wittmann</name>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/red6/dmn-check/issues</url>
     </issueManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:red6/dmn-check.git</connection>
+        <developerConnection>scm:git:git@github.com:red6/dmn-check.git</developerConnection>
+        <url>https://github.com/red6/dmn-check.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -28,7 +64,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <checker.framework.version>2.3.2</checker.framework.version>
-        <junit.version>5.0.2</junit.version>
+        <junit.version>5.1.1</junit.version>
     </properties>
 
     <build>
@@ -40,6 +76,23 @@
                     <version>3.7.0</version>
                     <configuration>
                         <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <compilerArgs>
+                            <arg>-Xplugin:Traute</arg>
+                            <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
+                        </compilerArgs>
+
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>tech.harmonysoft</groupId>
+                                <artifactId>traute-javac</artifactId>
+                                <version>1.1.8</version>
+                            </path>
+                            <path>
+                                <groupId>org.derive4j</groupId>
+                                <artifactId>derive4j</artifactId>
+                                <version>0.12.3</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
             </plugins>
@@ -71,9 +124,13 @@
                     <dependency>
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.2</version>
+                        <version>1.1.1</version>
                     </dependency>
                 </dependencies>
+
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -141,12 +198,33 @@
                                 <!--<annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>-->
                                 <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
                                 <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
+                                <annotationProcessor>org.checkerframework.checker.formatter.FormatterChecker</annotationProcessor>
                             </annotationProcessors>
+
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>${checker.framework.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>tech.harmonysoft</groupId>
+                                    <artifactId>traute-javac</artifactId>
+                                    <version>1.1.8</version>
+                                </path>
+                                <path>
+                                    <groupId>org.derive4j</groupId>
+                                    <artifactId>derive4j</artifactId>
+                                    <version>0.12.3</version>
+                                </path>
+                            </annotationProcessorPaths>
 
                             <compilerArgs>
                                 <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
                                 <arg>-Astubs=checkerframework/stubs</arg>
                                 <arg>-AstubWarnIfNotFound</arg>
+                                <arg>-Xplugin:Traute</arg>
+                                <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
                             </compilerArgs>
                         </configuration>
                     </plugin>
@@ -155,17 +233,70 @@
             <dependencies>
                 <dependency>
                     <groupId>org.checkerframework</groupId>
-                    <artifactId>checker</artifactId>
-                    <version>${checker.framework.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.checkerframework</groupId>
                     <artifactId>jdk8</artifactId>
                     <version>${checker.framework.version}</version>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -180,28 +311,13 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.2</version>
-
-            <!-- Work around vulnerability codehaus-plexus/plexus-utils#4 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Work around vulnerability codehaus-plexus/plexus-utils#4 -->
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.1.0</version>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.0.2</version>
+            <version>1.1.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -258,7 +374,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.5.2</version>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
@@ -278,6 +394,18 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <version>${checker.framework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.lukehutch</groupId>
+            <artifactId>fast-classpath-scanner</artifactId>
+            <version>2.18.2</version>
         </dependency>
 
     </dependencies>

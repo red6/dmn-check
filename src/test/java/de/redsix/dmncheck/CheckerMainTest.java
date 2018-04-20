@@ -1,5 +1,6 @@
 package de.redsix.dmncheck;
 
+import de.redsix.dmncheck.validators.DuplicateRuleValidator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -64,7 +65,7 @@ public class CheckerMainTest {
     }
 
     @Test
-    void shouldSkipFileIfItsExcluded() throws Exception {
+    void shouldSkipFileIfItsExcluded() {
         final String ignoredFilename = "duplicate_unique.dmn";
         testee.setExcludes(new String[] { ignoredFilename });
         final List<File> filesToTest = testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("")));
@@ -106,6 +107,22 @@ public class CheckerMainTest {
     void shouldHandleInvalidDMNFiles() {
         final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("empty.dmn"))));
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+    }
+
+    @Test
+    void shouldLoadNoValidatorFromConfig() throws MojoExecutionException {
+        testee.setValidators(new String[] { });
+
+        testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
+    }
+
+    @Test
+    void shouldLoadDuplicateRuleValidatorFromConfig() {
+        testee.setValidators(new String[] {DuplicateRuleValidator.class.getCanonicalName()});
+
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
+                () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
         Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
     }
 

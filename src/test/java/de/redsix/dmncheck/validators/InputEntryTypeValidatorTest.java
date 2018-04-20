@@ -16,24 +16,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InputEntryTypeValidatorTest extends WithDecisionTable {
+    
+    private final InputEntryTypeValidator testee = new InputEntryTypeValidator();
 
     @Test
     void shouldAcceptWellTypedInputExpression() {
-            final Input input = modelInstance.newInstance(Input.class);
-            final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-            input.setInputExpression(inputExpression);
-            inputExpression.setTypeRef("integer");
-            decisionTable.getInputs().add(input);
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("integer");
+        decisionTable.getInputs().add(input);
 
-            final Rule rule = modelInstance.newInstance(Rule.class);
-            final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-            inputEntry.setTextContent("42");
-            rule.getInputEntries().add(inputEntry);
-            decisionTable.getRules().add(rule);
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("42");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
 
-            final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
-            assertTrue(validationResults.isEmpty());
+        assertTrue(validationResults.isEmpty());
     }
 
     @Test
@@ -49,7 +51,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -68,7 +70,45 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
+    void shouldAcceptIntegersAsLongs() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("long");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("42");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
+
+    @Test
+    void shouldAcceptIntegersAsDoubles() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef("double");
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("42");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -88,7 +128,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -108,7 +148,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -133,7 +173,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -157,7 +197,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = InputEntryTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);

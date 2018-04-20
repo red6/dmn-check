@@ -2,40 +2,41 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
-import de.redsix.dmncheck.model.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 import de.redsix.dmncheck.util.Util;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.Rule;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface TypeValidator extends Validator<DecisionTable> {
+@ParametersAreNonnullByDefault
+public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
-    String errorMessage();
+    abstract String errorMessage();
 
-    boolean isEmptyAllowed();
+    abstract boolean isEmptyAllowed();
 
-    default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<String> variables, final Stream<Optional<ExpressionType>> types) {
-        return Util.zip(expressions, variables, types, (expression, variable, optionalType) -> {
+    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
+            final Stream<ExpressionType> types) {
+        return Util.zip(expressions, variables, types, (expression, variable, type) -> {
             final FeelTypecheck.Context context = new FeelTypecheck.Context();
 
-            optionalType.ifPresent(type -> context.put(variable, type));
+            context.put(variable, type);
 
-            return typecheckExpression(rule, expression, context, optionalType);
+            return typecheckExpression(rule, expression, context, type);
         }).flatMap(List::stream).map(ValidationResult.Builder.BuildStep::build);
     }
 
-    default Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
-            final Stream<Optional<ExpressionType>> types) {
+    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
+            final Stream<ExpressionType> types) {
         return Util.zip(expressions, types, (expression, type) -> {
             final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
@@ -43,13 +44,13 @@ public interface TypeValidator extends Validator<DecisionTable> {
         }).flatMap(List::stream).map(ValidationResult.Builder.BuildStep::build);
     }
 
-    default List<ValidationResult.Builder.BuildStep> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
-            Optional<ExpressionType> expectedType) {
+    private List<ValidationResult.Builder.BuildStep> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
+            ExpressionType expectedType) {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
-            if (expectedType.map(type::equals).orElse(true) || isEmptyAllowed() && type.equals(ExpressionType.TOP)) {
+            if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionType.TOP.equals(type)) {
                 return Collections.<ValidationResult.Builder.BuildStep>emptyList();
             } else {
                 return Collections.singletonList(ValidationResult.Builder.init.message(errorMessage()).element(rule));
@@ -58,7 +59,7 @@ public interface TypeValidator extends Validator<DecisionTable> {
     }
 
     @Override
-    default Class<DecisionTable> getClassUnderValidation() {
+    public Class<DecisionTable> getClassUnderValidation() {
         return DecisionTable.class;
     }
 }

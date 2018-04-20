@@ -12,9 +12,15 @@ import org.jparsec.Tokens;
 import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.LocalDateTime;
 
+@ParametersAreNonnullByDefault
 public final class FeelParser {
+
+    private FeelParser() {
+
+    }
 
     private static final Terminals OPERATORS = Terminals
             .operators("+", "-", "*", "**", "/", "(", ")", "[", "]", "..", ",", "not(", "and", "or", "<", ">", "<=", ">=",
@@ -27,7 +33,7 @@ public final class FeelParser {
                     .map(s -> Tokens.fragment(s, "datefragment")),
             Patterns.regex("^-$").toScanner("empty").source().map(s -> Tokens.fragment(s, "emptyfragment")),
             OPERATORS.tokenizer(),
-            Patterns.regex("\"[^\"]+\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
+            Patterns.regex("\"[^\"]*\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source()
                     .map(s -> Tokens.fragment(s, "booleanfragment")),
             Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source()

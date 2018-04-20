@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConflictingRuleValidatorTest extends WithDecisionTable {
+    
+    private final ConflictingRuleValidator testee = new ConflictingRuleValidator();
 
     @ParameterizedTest
     @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
@@ -48,7 +50,7 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = ConflictingRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -89,7 +91,7 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = ConflictingRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -120,7 +122,7 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = ConflictingRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }

@@ -1,19 +1,20 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.model.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum InputEntryTypeValidator implements TypeValidator {
-    instance;
+@ParametersAreNonnullByDefault
+public class InputEntryTypeValidator extends TypeValidator {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {
@@ -31,21 +32,22 @@ public enum InputEntryTypeValidator implements TypeValidator {
 
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
-            final Stream<Optional<ExpressionType>> inputTypes = decisionTable.getInputs().stream()
+            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream()
                     .map(input -> input.getInputExpression().getTypeRef())
-                    .map(typeRef -> Optional.ofNullable(typeRef).map(String::toUpperCase).map(ExpressionType::valueOf));
+                    .map(Optional::ofNullable)
+                    .map(ExpressionType::getType);
 
             return typecheck(rule, inputExpressions, inputVariables, inputTypes);
         }).collect(Collectors.toList());
     }
 
     @Override
-    public boolean isEmptyAllowed() {
-        return true;
+    public String errorMessage() {
+        return "Type of input entry does not match type of input expression";
     }
 
     @Override
-    public String errorMessage() {
-        return "Type of input entry does not match type of input expression";
+    boolean isEmptyAllowed() {
+        return true;
     }
 }

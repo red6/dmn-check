@@ -13,6 +13,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AggregationOutputTypeValidatorTest extends WithDecisionTable {
+
+    private final AggregationOutputTypeValidator testee = new AggregationOutputTypeValidator();
+
     @Test
     void shouldErrorOnStringOutputWithMaxAggregator() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
@@ -21,7 +24,7 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         output.setTypeRef("string");
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = AggregationOutputTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -33,6 +36,24 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldWarnOnEmptyOutputtypeWithAggregation() {
+        decisionTable.setHitPolicy(HitPolicy.COLLECT);
+        decisionTable.setAggregation(BuiltinAggregator.MAX);
+        final Output output = modelInstance.newInstance(Output.class);
+        decisionTable.getOutputs().add(output);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("An aggregation is used but no output type is defined", validationResult.getMessage()),
+                () -> assertEquals(output, validationResult.getElement()),
+                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+        );
+    }
+
+    @Test
     void shouldAllowAggregatorMaxWithIntegerOutputs() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.MAX);
@@ -40,7 +61,7 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = AggregationOutputTypeValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }

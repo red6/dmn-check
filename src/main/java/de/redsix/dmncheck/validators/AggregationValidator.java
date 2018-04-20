@@ -1,17 +1,18 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public enum AggregationValidator implements Validator<DecisionTable> {
-    instance;
+@ParametersAreNonnullByDefault
+public class AggregationValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {

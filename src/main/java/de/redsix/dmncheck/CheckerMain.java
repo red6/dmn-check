@@ -3,15 +3,10 @@ package de.redsix.dmncheck;
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResultType;
-import de.redsix.dmncheck.validators.AggregationOutputTypeValidator;
-import de.redsix.dmncheck.validators.AggregationValidator;
-import de.redsix.dmncheck.validators.ConflictingRuleValidator;
-import de.redsix.dmncheck.validators.DuplicateRuleValidator;
-import de.redsix.dmncheck.validators.InputEntryTypeValidator;
-import de.redsix.dmncheck.validators.InputTypeDeclarationValidator;
-import de.redsix.dmncheck.validators.OutputTypeDeclarationValidator;
-import de.redsix.dmncheck.validators.ShadowedRuleValidator;
 import de.redsix.dmncheck.validators.core.GenericValidator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
+import de.redsix.dmncheck.validators.core.Validator;
+import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -19,8 +14,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,15 +26,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+@ParametersAreNonnullByDefault
 @Mojo(name = "check-dmn", requiresProject = false)
 class CheckerMain extends AbstractMojo {
 
-    private final static List<GenericValidator> validators = Arrays
-            .asList(DuplicateRuleValidator.instance, InputTypeDeclarationValidator.instance, OutputTypeDeclarationValidator.instance,
-                    AggregationValidator.instance, AggregationOutputTypeValidator.instance, ConflictingRuleValidator.instance,
-                    InputEntryTypeValidator.instance, OutputTypeDeclarationValidator.instance, ShadowedRuleValidator.instance);
+    private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
 
     @Parameter
     @SuppressWarnings("nullness")
@@ -47,10 +41,13 @@ class CheckerMain extends AbstractMojo {
     @SuppressWarnings("nullness")
     private String[] searchPaths;
 
+    @Parameter
+    private String[] validators;
+
     @Override
     public void execute() throws MojoExecutionException {
-        final List<Path> searchPaths = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
-        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPaths);
+        final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
 
         testFiles(filesToTest);
     }
@@ -88,8 +85,8 @@ class CheckerMain extends AbstractMojo {
     }
 
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
-        return validators.stream()
-                .flatMap(validator -> (Stream<ValidationResult>) (validator.apply(dmnModelInstance)).stream())
+        return getValidators().stream()
+                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
                 .collect(Collectors.toList());
     }
 
@@ -135,12 +132,48 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
+    private List<Validator> getValidators() {
+        final String[] scanSpec;
+        if (validators != null) {
+            scanSpec = validators;
+        } else {
+            scanSpec = new String[] {VALIDATOR_PACKAGE};
+        }
+
+        final List<Class<? extends Validator>> validatorClasses = new ArrayList<>();
+        new FastClasspathScanner(scanSpec)
+                .disableRecursiveScanning()
+                .strictWhitelist()
+                .matchSubclassesOf(GenericValidator.class, validatorClasses::add)
+                .matchSubclassesOf(SimpleValidator.class, validatorClasses::add)
+                .matchClassesImplementing(Validator.class, validatorClasses::add)
+                .scan();
+        return validatorClasses.stream()
+                .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
+                .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
+                .map(this::instantiateValidator)
+                .collect(Collectors.toList());
+    }
+
+    private Validator instantiateValidator(final Class<? extends Validator> validator) {
+        try {
+            return validator.newInstance();
+        }
+        catch (IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException("Failed to load validator " + validator, e);
+        }
+    }
+
     void setExcludes(final String[] excludes) {
         this.excludes = excludes;
     }
 
     void setSearchPaths(final String[] searchPaths) {
         this.searchPaths = searchPaths;
+    }
+
+    void setValidators(final String[] validators) {
+        this.validators = validators;
     }
 
 }

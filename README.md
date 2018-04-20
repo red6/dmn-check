@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/red6/dmn-check.svg?branch=master)](https://travis-ci.org/red6/dmn-check)
 [![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
-[![Dependency Status](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a2183530fb24f0a6b514d78)
 [![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/de1a1aa377520c44c3a7/maintainability)](https://codeclimate.com/github/red6/dmn-check/maintainability)
+ [![Maven Central Version](https://img.shields.io/maven-central/v/de.redsix/dmn-check.svg)](http://search.maven.org/#search|gav|1|g:"de.redsix"%20AND%20a:"dmn-check")
 
 # DMN-Check Maven plugin
 
@@ -29,9 +29,9 @@ This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses 
 The following example shows the basic configuration of the plugin:
 		
 	        <plugin>
-                <groupId>de.red6-es</groupId>
+                <groupId>de.redsix</groupId>
                 <artifactId>dmn-check</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>...</version>
                 <executions>
                     <execution>
                         <phase>test</phase>
@@ -42,7 +42,7 @@ The following example shows the basic configuration of the plugin:
                 </executions>
             </plugin>
 
-Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn`. It is possible to provide a set of search paths instead as well as to ignore certain files. The following example shows how you can make use of these options by restricting the search path to the folders `src/` and `model/`, as well as ignoring file `test.dmn`.
+Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators that should be executed. The following example shows how you can make use of these options by restricting the search path to the folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only the ShadowedRuleValidator should be executed. To specify validators you have to use the fully-qualified name.
 
                 <configuration>
                     <searchPaths>
@@ -52,13 +52,16 @@ Using this configuration the plugin will search all folders of the current proje
                     <excludes>
                         <exclude>test.dmn</exclude>
                     </excludes>
+                    <validators>
+                        <validator>de.redsix.dmncheck.validators.ShadowedRuleValidator</validator>
+                    </validators>
                 </configuration>
                 
 ### Standalone usage
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
 
-        mvn de.red6-es:dmn-check:check-dmn
+        mvn de.redsix:dmn-check:check-dmn
 
 ## Validations
 

@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DuplicateRuleValidatorTest extends WithDecisionTable {
 
+    private final DuplicateRuleValidator testee = new DuplicateRuleValidator();
+
     @Test
     void shouldDetectDuplicateRule() {
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
@@ -42,7 +44,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = DuplicateRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
@@ -79,7 +81,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = DuplicateRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }
@@ -110,7 +112,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule1);
         decisionTable.getRules().add(rule2);
 
-        final List<ValidationResult> validationResults = DuplicateRuleValidator.instance.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
     }

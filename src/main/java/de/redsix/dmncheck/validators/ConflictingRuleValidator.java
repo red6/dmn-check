@@ -1,12 +1,13 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -14,8 +15,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum ConflictingRuleValidator implements Validator<DecisionTable> {
-    instance;
+@ParametersAreNonnullByDefault
+public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

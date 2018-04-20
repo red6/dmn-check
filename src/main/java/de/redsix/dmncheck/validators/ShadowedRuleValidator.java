@@ -5,12 +5,13 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 import de.redsix.dmncheck.util.Util;
-import de.redsix.dmncheck.validators.core.Validator;
+import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public enum ShadowedRuleValidator implements Validator<DecisionTable> {
-    instance;
+@ParametersAreNonnullByDefault
+public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

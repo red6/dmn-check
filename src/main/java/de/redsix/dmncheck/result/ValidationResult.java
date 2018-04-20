@@ -2,7 +2,11 @@ package de.redsix.dmncheck.result;
 
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-public class  ValidationResult {
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class ValidationResult {
 
     private ValidationResultType validationResultType;
     private String message;
