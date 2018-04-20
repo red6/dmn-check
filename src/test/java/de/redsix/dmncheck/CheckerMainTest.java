@@ -65,7 +65,7 @@ public class CheckerMainTest {
     }
 
     @Test
-    void shouldSkipFileIfItsExcluded() throws Exception {
+    void shouldSkipFileIfItsExcluded() {
         final String ignoredFilename = "duplicate_unique.dmn";
         testee.setExcludes(new String[] { ignoredFilename });
         final List<File> filesToTest = testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("")));

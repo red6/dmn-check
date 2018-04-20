@@ -15,7 +15,6 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault

@@ -1,7 +1,5 @@
 package de.redsix.dmncheck.feel;
 
-import jdk.jfr.events.ExceptionThrownEvent;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Optional;
