@@ -24,7 +24,8 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
         final String expressionType = getTypeRef(expression);
         if(Objects.isNull(expressionType)) {
             return Collections.singletonList(ValidationResult.Builder.init
-                    .messageAndType(getClassUnderValidation().getSimpleName() + " has no type", ValidationResultType.WARNING)
+                    .message(getClassUnderValidation().getSimpleName() + " has no type")
+                    .type(ValidationResultType.WARNING)
                     .element(expression)
                     .build());
         } else

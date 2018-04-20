@@ -39,22 +39,72 @@ public class ValidationResult {
 
         @FunctionalInterface
         public interface MessageStep {
-            default ElementStep message(String message) {
-                return messageAndType(message, ValidationResultType.ERROR);
-            }
-            ElementStep messageAndType(String message, ValidationResultType type);
+            TypeStep message(String message);
         }
 
-        @FunctionalInterface
+        public interface TypeStep extends ElementStep {
+            ElementStep type(ValidationResultType type);
+            String getMessage();
+        }
+
         public interface ElementStep {
             BuildStep element(ModelElementInstance element);
+            ValidationResultType getType();
+            String getMessage();
         }
 
-        @FunctionalInterface
         public interface BuildStep {
+            ModelElementInstance getElement();
+            ValidationResultType getType();
+            String getMessage();
             ValidationResult build();
         }
 
-        public static final MessageStep init = (message, type) -> element -> () -> new ValidationResult(message, element, type);
+        public static final MessageStep init = message -> (new TypeStep() {
+
+            ValidationResultType type = ValidationResultType.ERROR;
+
+            @Override
+            public BuildStep element(ModelElementInstance element) {
+                return new BuildStep() {
+
+                    @Override
+                    public ModelElementInstance getElement() {
+                        return element;
+                    }
+
+                    @Override
+                    public ValidationResultType getType() {
+                        return type;
+                    }
+
+                    @Override
+                    public String getMessage() {
+                        return message;
+                    }
+
+                    @Override
+                    public ValidationResult build() {
+                        return new ValidationResult(message, element, type);
+                    }
+                };
+            }
+
+            @Override
+            public ValidationResultType getType() {
+                return type;
+            }
+
+            @Override
+            public ElementStep type(ValidationResultType type) {
+                this.type = type;
+                return this;
+            }
+
+            @Override
+            public String getMessage() {
+                return message;
+            }
+        });
     }
 }

@@ -344,6 +344,6 @@ class FeelParserTest {
                 + "<, >, <=, >=, -, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, date and time(\", not(, [, ] or ( expected, EOF encountered.";
 
         assertTrue(Eithers.getRight(result).isPresent());
-        assertEquals(expectedErrorMessage, Eithers.getRight(result).get().element(null).build().getMessage());
+        assertEquals(expectedErrorMessage, Eithers.getRight(result).get().getMessage());
     }
 }

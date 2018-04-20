@@ -36,7 +36,8 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
         return labels.stream().filter(
                 label -> Collections.frequency(labels, label) > 1).distinct().map(
                 label -> ValidationResult.Builder.init
-                        .messageAndType("Column with label '" + label + "' is used more than once", ValidationResultType.WARNING)
+                        .message("Column with label '" + label + "' is used more than once")
+                        .type(ValidationResultType.WARNING)
                         .element(decisionTable)
                         .build()).collect(Collectors.toList());
 

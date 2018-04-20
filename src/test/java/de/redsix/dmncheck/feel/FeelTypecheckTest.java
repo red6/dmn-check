@@ -84,7 +84,7 @@ class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(context, expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Variable 'x' has no type.", Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+        assertEquals("Variable 'x' has no type.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @ParameterizedTest
@@ -102,7 +102,7 @@ class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Non-numeric type in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+        assertEquals("Non-numeric type in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test
@@ -120,7 +120,7 @@ class FeelTypecheckTest {
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
         assertEquals("Types of left and right operand do not match.",
-                Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+                Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test
@@ -138,7 +138,7 @@ class FeelTypecheckTest {
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
         assertEquals("Types of head and tail do not match.",
-                Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+                Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test
@@ -156,7 +156,7 @@ class FeelTypecheckTest {
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
         assertEquals("Types of lower and upper bound do not match.",
-                Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+                Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test
@@ -166,6 +166,6 @@ class FeelTypecheckTest {
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
         assertEquals("Type is unsupported for RangeExpressions.",
-                Eithers.getRight(type).orElseThrow(AssertionError::new).element(null).build().getMessage());
+                Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 }

@@ -28,7 +28,8 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     public List<ValidationResult> validate(Output output) {
         if (output.getTypeRef() == null) {
             return Collections.singletonList(ValidationResult.Builder.init
-                    .messageAndType("An aggregation is used but no output type is defined", ValidationResultType.WARNING)
+                    .message("An aggregation is used but no output type is defined")
+                    .type(ValidationResultType.WARNING)
                     .element(output)
                     .build());
         } else if (!ExpressionType.isNumeric(output.getTypeRef())) {
