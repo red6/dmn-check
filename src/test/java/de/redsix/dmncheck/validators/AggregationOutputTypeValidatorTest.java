@@ -36,6 +36,24 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldWarnOnEmptyOutputtypeWithAggregation() {
+        decisionTable.setHitPolicy(HitPolicy.COLLECT);
+        decisionTable.setAggregation(BuiltinAggregator.MAX);
+        final Output output = modelInstance.newInstance(Output.class);
+        decisionTable.getOutputs().add(output);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("An aggregation is used but no output type is defined", validationResult.getMessage()),
+                () -> assertEquals(output, validationResult.getElement()),
+                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+        );
+    }
+
+    @Test
     void shouldAllowAggregatorMaxWithIntegerOutputs() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.MAX);
