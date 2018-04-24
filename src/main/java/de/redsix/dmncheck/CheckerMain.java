@@ -42,6 +42,7 @@ class CheckerMain extends AbstractMojo {
     private String[] searchPaths;
 
     @Parameter
+    @SuppressWarnings("nullness")
     private String[] validators;
 
     @Override
