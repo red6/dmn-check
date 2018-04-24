@@ -192,41 +192,79 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <version>3.7.0</version>
-                        <configuration>
-                            <useIncrementalCompilation>false</useIncrementalCompilation>
-                            <annotationProcessors>
-                                <!--<annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>-->
-                                <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
-                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
-                                <annotationProcessor>org.checkerframework.checker.formatter.FormatterChecker</annotationProcessor>
-                            </annotationProcessors>
 
-                            <annotationProcessorPaths>
-                                <path>
-                                    <groupId>org.checkerframework</groupId>
-                                    <artifactId>checker</artifactId>
-                                    <version>${checker.framework.version}</version>
-                                </path>
-                                <path>
-                                    <groupId>tech.harmonysoft</groupId>
-                                    <artifactId>traute-javac</artifactId>
-                                    <version>1.1.8</version>
-                                </path>
-                                <path>
-                                    <groupId>org.derive4j</groupId>
-                                    <artifactId>derive4j</artifactId>
-                                    <version>0.12.3</version>
-                                </path>
-                            </annotationProcessorPaths>
+                        <executions>
+                            <execution>
+                                <!-- normal compile and generation of other classes to standard location (implicit, you shouldn't need that) -->
+                                <id>default-compile</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
 
-                            <compilerArgs>
-                                <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
-                                <arg>-Astubs=checkerframework/stubs</arg>
-                                <arg>-AstubWarnIfNotFound</arg>
-                                <arg>-Xplugin:Traute</arg>
-                                <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
-                            </compilerArgs>
-                        </configuration>
+                                <configuration>
+                                    <useIncrementalCompilation>false</useIncrementalCompilation>
+                                    <annotationProcessors>
+                                        <annotationProcessor>org.derive4j.processor.DerivingProcessor</annotationProcessor>
+                                    </annotationProcessors>
+
+                                    <annotationProcessorPaths>
+                                        <path>
+                                            <groupId>tech.harmonysoft</groupId>
+                                            <artifactId>traute-javac</artifactId>
+                                            <version>1.1.8</version>
+                                        </path>
+                                        <path>
+                                            <groupId>org.derive4j</groupId>
+                                            <artifactId>derive4j</artifactId>
+                                            <version>0.12.3</version>
+                                        </path>
+                                    </annotationProcessorPaths>
+
+                                    <compilerArgs>
+                                        <arg>-Xplugin:Traute</arg>
+                                        <arg>-Atraute.annotations.not.null.by.default.parameter=javax.annotation.ParametersAreNonnullByDefault</arg>
+                                    </compilerArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>verify-with-checkerframework</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+
+                                <configuration>
+                                    <useIncrementalCompilation>true</useIncrementalCompilation>
+
+                                    <annotationProcessors>
+                                        <annotationProcessor>org.checkerframework.checker.regex.RegexChecker</annotationProcessor>
+                                        <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker</annotationProcessor>
+                                        <annotationProcessor>org.checkerframework.checker.formatter.FormatterChecker</annotationProcessor>
+                                    </annotationProcessors>
+
+                                    <annotationProcessorPaths>
+                                        <path>
+                                            <groupId>org.checkerframework</groupId>
+                                            <artifactId>checker</artifactId>
+                                            <version>${checker.framework.version}</version>
+                                        </path>
+                                    </annotationProcessorPaths>
+
+                                    <compilerArgs>
+                                        <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
+                                        <arg>-Astubs=checkerframework/stubs</arg>
+                                        <arg>-AstubWarnIfNotFound</arg>
+                                    </compilerArgs>
+
+                                    <excludes>
+                                        <exclude>**/FeelExpressions.*</exclude>
+                                        <exclude>**/FeelExpressions$*.*</exclude>
+                                        <exclude>**/Eithers.*</exclude>
+                                        <exclude>**/Eithers$*.*</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
