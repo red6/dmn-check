@@ -1,11 +1,9 @@
 package de.redsix.dmncheck.feel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@ParametersAreNonnullByDefault
 public enum ExpressionType {
     TOP,
     STRING,

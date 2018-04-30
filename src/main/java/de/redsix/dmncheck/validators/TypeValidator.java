@@ -12,12 +12,10 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.Rule;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-@ParametersAreNonnullByDefault
 public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
     abstract String errorMessage();

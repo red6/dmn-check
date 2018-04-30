@@ -5,13 +5,11 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ParametersAreNonnullByDefault
 public abstract class GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance> implements Validator {
 
     public abstract boolean isApplicable(final S element);

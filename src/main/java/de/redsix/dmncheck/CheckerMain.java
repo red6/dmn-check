@@ -14,7 +14,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -27,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ParametersAreNonnullByDefault
 @Mojo(name = "check-dmn", requiresProject = false)
 class CheckerMain extends AbstractMojo {
 

@@ -2,9 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Output;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
 public class OutputTypeDeclarationValidator extends ElementTypeDeclarationValidator<Output> {
 
     @Override

@@ -1,8 +1,6 @@
 package de.redsix.dmncheck.feel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
 public enum  Operator {
     ADD("+"),
     SUB("-"),
