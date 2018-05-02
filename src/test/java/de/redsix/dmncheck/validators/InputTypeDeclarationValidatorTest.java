@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
@@ -29,9 +29,9 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("InputExpression has no type", validationResult.getMessage()),
+                () -> assertEquals("InputExpression has no severity", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 
@@ -48,9 +48,9 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("InputExpression uses an unsupported type", validationResult.getMessage()),
+                () -> assertEquals("InputExpression uses an unsupported severity", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

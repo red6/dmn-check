@@ -84,7 +84,7 @@ class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(context, expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Variable 'x' has no type.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals("Variable 'x' has no severity.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @ParameterizedTest
@@ -102,7 +102,7 @@ class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Non-numeric type in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals("Non-numeric severity in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test

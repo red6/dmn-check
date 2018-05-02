@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
@@ -27,7 +27,7 @@ class AggregationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Aggregations are only valid with HitPolicy COLLECT", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

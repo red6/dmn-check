@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
@@ -47,7 +47,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 
@@ -83,7 +83,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 

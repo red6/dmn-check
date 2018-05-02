@@ -6,18 +6,18 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class ValidationResult {
 
-    private ValidationResultType validationResultType;
+    private Severity severity;
     private String message;
     private ModelElementInstance element;
 
-    private ValidationResult(final String message, final ModelElementInstance element, final ValidationResultType validationResultType) {
+    private ValidationResult(final String message, final ModelElementInstance element, final Severity severity) {
         this.message = message;
         this.element = element;
-        this.validationResultType = validationResultType;
+        this.severity = severity;
     }
 
-    public ValidationResultType getValidationResultType() {
-        return validationResultType;
+    public Severity getSeverity() {
+        return severity;
     }
 
     public String getMessage() {
@@ -37,30 +37,30 @@ public class ValidationResult {
 
         @FunctionalInterface
         public interface MessageStep {
-            TypeStep message(String message);
+            SeverityStep message(String message);
         }
 
-        public interface TypeStep extends ElementStep {
-            ElementStep type(ValidationResultType type);
+        public interface SeverityStep extends ElementStep {
+            ElementStep severity(Severity type);
             String getMessage();
         }
 
         public interface ElementStep {
             BuildStep element(ModelElementInstance element);
-            ValidationResultType getType();
+            Severity getType();
             String getMessage();
         }
 
         public interface BuildStep {
             ModelElementInstance getElement();
-            ValidationResultType getType();
+            Severity getType();
             String getMessage();
             ValidationResult build();
         }
 
-        public static final MessageStep init = message -> (new TypeStep() {
+        public static final MessageStep init = message -> (new SeverityStep() {
 
-            ValidationResultType type = ValidationResultType.ERROR;
+            Severity type = Severity.ERROR;
 
             @Override
             public BuildStep element(ModelElementInstance element) {
@@ -72,7 +72,7 @@ public class ValidationResult {
                     }
 
                     @Override
-                    public ValidationResultType getType() {
+                    public Severity getType() {
                         return type;
                     }
 
@@ -89,12 +89,12 @@ public class ValidationResult {
             }
 
             @Override
-            public ValidationResultType getType() {
+            public Severity getType() {
                 return type;
             }
 
             @Override
-            public ElementStep type(ValidationResultType type) {
+            public ElementStep severity(Severity type) {
                 this.type = type;
                 return this;
             }

@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
@@ -47,7 +47,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is shadowed by rule " + catchAllRule.getId(), validationResult.getMessage()),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 
@@ -112,7 +112,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertTrue(validationResult.getMessage().contains("Could not parse")),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

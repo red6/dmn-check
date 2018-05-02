@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
@@ -57,7 +57,7 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is conflicting with rules [" + rule2.getId() + "]", validationResult.getMessage()),
                 () -> assertEquals(rule1, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

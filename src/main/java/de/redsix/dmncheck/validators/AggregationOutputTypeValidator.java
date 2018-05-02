@@ -2,7 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
@@ -26,8 +26,8 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     public List<ValidationResult> validate(Output output) {
         if (output.getTypeRef() == null) {
             return Collections.singletonList(ValidationResult.Builder.init
-                    .message("An aggregation is used but no output type is defined")
-                    .type(ValidationResultType.WARNING)
+                    .message("An aggregation is used but no output severity is defined")
+                    .severity(Severity.WARNING)
                     .element(output)
                     .build());
         } else if (!ExpressionType.isNumeric(output.getTypeRef())) {

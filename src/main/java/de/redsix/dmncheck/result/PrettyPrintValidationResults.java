@@ -20,14 +20,14 @@ public final class PrettyPrintValidationResults {
     }
 
     public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
-        validationResults.sort(Comparator.comparing(ValidationResult::getValidationResultType).reversed());
+        validationResults.sort(Comparator.comparing(ValidationResult::getSeverity).reversed());
 
         for (ValidationResult validationResult : validationResults) {
             final String errorMessage =
-                    "Element '" + delegate(validationResult.getElement()) + "'" + " of type '" + validationResult.getElement()
+                    "Element '" + delegate(validationResult.getElement()) + "'" + " of severity '" + validationResult.getElement()
                             .getElementType().getTypeName() + "'" + " in file " + file.getName() + " has the following validation results "
                             + validationResult.getMessage();
-            getLoggingMethod(validationResult.getValidationResultType(), log).accept(errorMessage);
+            getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
         }
     }
 
@@ -44,8 +44,8 @@ public final class PrettyPrintValidationResults {
                 rule.getOutputEntries().stream().map(OutputEntry::getTextContent)).collect(Collectors.joining(","));
     }
 
-    private static Consumer<CharSequence> getLoggingMethod(final ValidationResultType validationResultType, final Log log) {
-        switch (validationResultType) {
+    private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final Log log) {
+        switch (severity) {
             case ERROR: return log::error;
             case WARNING: return log::warn;
             default: return log::error;

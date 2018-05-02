@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
@@ -35,7 +35,7 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
                 label -> Collections.frequency(labels, label) > 1).distinct().map(
                 label -> ValidationResult.Builder.init
                         .message("Column with label '" + label + "' is used more than once")
-                        .type(ValidationResultType.WARNING)
+                        .severity(Severity.WARNING)
                         .element(decisionTable)
                         .build()).collect(Collectors.toList());
 

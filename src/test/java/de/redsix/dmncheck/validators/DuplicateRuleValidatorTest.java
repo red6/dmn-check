@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -51,7 +51,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is defined more than once", validationResult.getMessage()),
                 () -> assertEquals(rule2, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

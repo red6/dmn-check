@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -120,9 +120,9 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of output entry does not match type of output expression", validationResult.getMessage()),
+                () -> assertEquals("Type of output entry does not match severity of output expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 
@@ -144,7 +144,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 }

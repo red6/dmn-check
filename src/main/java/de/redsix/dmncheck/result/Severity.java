@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.result;
 
-public enum ValidationResultType {
+public enum Severity {
     WARNING,
     ERROR
 }

@@ -26,7 +26,7 @@ public final class FeelTypecheck {
 
     public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
-                // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
+                // FIXME: 12/10/17 The explicit severity is needed as otherwise the severity of 'right' is lost.
                 .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionType.TOP))
                 .BooleanLiteral(bool -> left(ExpressionType.BOOLEAN))
                 .DateLiteral(dateTime -> left(ExpressionType.DATE))
@@ -34,7 +34,7 @@ public final class FeelTypecheck {
                 .IntegerLiteral(integer -> left(ExpressionType.INTEGER))
                 .StringLiteral(string -> left(ExpressionType.STRING))
                 .VariableLiteral(name ->
-                    check(context.containsKey(name), "Variable '" + name + "' has no type.")
+                    check(context.containsKey(name), "Variable '" + name + "' has no severity.")
                     .orElse(left(context.get(name))))
                 .RangeExpression((__, lowerBound, upperBound, ___) -> typecheckRangeExpression(context, lowerBound, upperBound))
                 .UnaryExpression((operator, operand) -> typecheckUnaryExpression(context, operator, operand))
@@ -63,7 +63,7 @@ public final class FeelTypecheck {
         final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE);
         return typecheck(context, operand).bind(type ->
                     check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.").map(Optional::of)
-                    .orElseGet(() -> check(ExpressionType.isNumeric(type), "Non-numeric type in UnaryExpression."))
+                    .orElseGet(() -> check(ExpressionType.isNumeric(type), "Non-numeric severity in UnaryExpression."))
                     .orElse(left(type))
                 );
     }

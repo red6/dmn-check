@@ -2,7 +2,7 @@ package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.Validator;
@@ -72,7 +72,7 @@ class CheckerMain extends AbstractMojo {
             if (!validationResults.isEmpty()) {
                 PrettyPrintValidationResults.logPrettified(file, validationResults, getLog());
                 encounteredError = validationResults.stream()
-                        .anyMatch(result -> ValidationResultType.ERROR.equals(result.getValidationResultType()));
+                        .anyMatch(result -> Severity.ERROR.equals(result.getSeverity()));
             }
         }
         catch (Exception e) {

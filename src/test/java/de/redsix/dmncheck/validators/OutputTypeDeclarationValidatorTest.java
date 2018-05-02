@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.junit.jupiter.api.Test;
@@ -26,9 +26,9 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Output has no type", validationResult.getMessage()),
+                () -> assertEquals("Output has no severity", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 
@@ -43,9 +43,9 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Output uses an unsupported type", validationResult.getMessage()),
+                () -> assertEquals("Output uses an unsupported severity", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 

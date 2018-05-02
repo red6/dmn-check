@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
@@ -31,7 +31,7 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Aggregations MAX, MIN, SUM are only valid with numeric output types", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 
@@ -47,9 +47,9 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("An aggregation is used but no output type is defined", validationResult.getMessage()),
+                () -> assertEquals("An aggregation is used but no output severity is defined", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.WARNING, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 

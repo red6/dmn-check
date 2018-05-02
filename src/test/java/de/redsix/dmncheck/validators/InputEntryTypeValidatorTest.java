@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.ValidationResultType;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
@@ -153,9 +153,9 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Variable 'x' has no type.", validationResult.getMessage()),
+                () -> assertEquals("Variable 'x' has no severity.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 
@@ -178,9 +178,9 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of input entry does not match type of input expression", validationResult.getMessage()),
+                () -> assertEquals("Type of input entry does not match severity of input expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 
@@ -204,7 +204,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(ValidationResultType.ERROR, validationResult.getValidationResultType())
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
 }
