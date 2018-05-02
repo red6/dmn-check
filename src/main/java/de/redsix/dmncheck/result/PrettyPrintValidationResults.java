@@ -20,13 +20,15 @@ public final class PrettyPrintValidationResults {
     }
 
     public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
+        log.info("Validation results for file " + file.getAbsolutePath());
+
         validationResults.sort(Comparator.comparing(ValidationResult::getSeverity).reversed());
 
         for (ValidationResult validationResult : validationResults) {
             final String errorMessage =
                     "Element '" + delegate(validationResult.getElement()) + "'" + " of severity '" + validationResult.getElement()
-                            .getElementType().getTypeName() + "'" + " in file " + file.getName() + " has the following validation results "
-                            + validationResult.getMessage();
+                            .getElementType().getTypeName() + "'" + " has the following validation result: " + validationResult
+                            .getMessage();
             getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
         }
     }
