@@ -7,6 +7,7 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ public final class PrettyPrintValidationResults {
     }
 
     public static void logPrettified(final File file, final List<ValidationResult> validationResults, final Log log) {
+        validationResults.sort(Comparator.comparing(ValidationResult::getValidationResultType).reversed());
+
         for (ValidationResult validationResult : validationResults) {
             final String errorMessage =
                     "Element '" + delegate(validationResult.getElement()) + "'" + " of type '" + validationResult.getElement()
