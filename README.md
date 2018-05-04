@@ -136,3 +136,11 @@ Althought there are not many tools for analysis of DMN files there exists some r
 <b id="CDL+16">CDL+16</b> Calvanese, D., Dumas, M., Laurson, Ü., Maggi, F.M., Montali, M., Teinemaa, I.: Semantics and analysis of DMN decision tables. In Proceedings of the 14th International Conference on Business Process Management (BPM) 2016
 
 <b id="LM16">LM16</b> Laurson, Ü. and Maggi, F.M., 2016, September. A Tool for the Analysis of DMN Decision Tables. In BPM (Demos) (pp. 56-60).
+
+<b id="BW">BW</b> Batoulis, K. and Weske, M., A Tool for Checking Soundness of Decision-Aware Business Processes.
+
+<b id="FMTV18">FMTV18</b> Figl, K., Mendling, J., Tokdemir, G. and Vanthienen, J., 2018. What we know and what we do not know about DMN. Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
+
+<b id="Silver16">Silver16</b> Silver, B., 2016. Decision Table Analysis in DMN.
+
+<b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
