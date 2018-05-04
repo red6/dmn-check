@@ -6,9 +6,9 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class ValidationResult {
 
-    private Severity severity;
-    private String message;
-    private ModelElementInstance element;
+    private final Severity severity;
+    private final String message;
+    private final ModelElementInstance element;
 
     private ValidationResult(final String message, final ModelElementInstance element, final Severity severity) {
         this.message = message;
