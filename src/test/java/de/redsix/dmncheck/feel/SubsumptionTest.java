@@ -12,7 +12,7 @@ class SubsumptionTest {
 
     @ParameterizedTest
     @CsvSource({"1", "\"a\"", "[1..2]", "<3"})
-    void emptySubsumesEverything(final String input) throws Exception {
+    void emptySubsumesEverything(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
 
@@ -21,7 +21,7 @@ class SubsumptionTest {
 
     @ParameterizedTest
     @CsvSource({"1", "\"a\"", "[1..2]", "<3"})
-    void nothingSubsumesEmptyExceptEmpty(final String input) throws Exception {
+    void nothingSubsumesEmptyExceptEmpty(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
 

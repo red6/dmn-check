@@ -39,7 +39,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void stringHasTypeString() throws Exception {
+    void stringHasTypeString() {
         final FeelExpression expression = FeelParser.PARSER.parse("\"Steak\"");
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
@@ -49,7 +49,7 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({"true, BOOLEAN", "false, BOOLEAN"})
-    void trueHasTypeBoolean(String input, ExpressionType expectedType) throws Exception {
+    void trueHasTypeBoolean(String input, ExpressionType expectedType) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
@@ -58,7 +58,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void dateHasTypeDate() throws Exception {
+    void dateHasTypeDate() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
@@ -67,7 +67,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void boundVariableHasType() throws Exception {
+    void boundVariableHasType() {
         final FeelExpression expression = FeelParser.PARSER.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
         context.put("x", ExpressionType.INTEGER);
@@ -78,7 +78,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void unboundVariableHasNoType() throws Exception {
+    void unboundVariableHasNoType() {
         final FeelExpression expression = FeelParser.PARSER.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(context, expression);
@@ -89,7 +89,7 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({"<5, INTEGER", "<5.2, DOUBLE"})
-    void lessThanExpressionHasNumericType(String input, ExpressionType expectedType) throws Exception {
+    void lessThanExpressionHasNumericType(String input, ExpressionType expectedType) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -97,7 +97,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void lessThanExpressionIsNotTypeableForStrings() throws Exception {
+    void lessThanExpressionIsNotTypeableForStrings() {
         final FeelExpression expression = FeelParser.PARSER.parse("<\"Steak\"");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -106,7 +106,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void additionOfIntegersIsTypeable() throws Exception {
+    void additionOfIntegersIsTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("3+4");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -114,7 +114,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void additionOfIntegerAndStringIsNotTypeable() throws Exception {
+    void additionOfIntegerAndStringIsNotTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("2+\"foo\"");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -124,7 +124,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void disjunctionOfComparisonsIsTypeable() throws Exception {
+    void disjunctionOfComparisonsIsTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,>8");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -132,7 +132,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void disjunctionOfComparisonAndStringIsNotTypeable() throws Exception {
+    void disjunctionOfComparisonAndStringIsNotTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,\"foo\"");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -142,7 +142,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void rangeOfIntegersIsWellTyped() throws Exception {
+    void rangeOfIntegersIsWellTyped() {
         final FeelExpression expression = FeelParser.PARSER.parse("[3..42]");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -150,7 +150,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void rangeFromIntegerToDoubleIsNotTypeable() throws Exception {
+    void rangeFromIntegerToDoubleIsNotTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("[1..1.5]");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
@@ -160,7 +160,7 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void rangeExpressionContainingStringsIsIlltyped() throws Exception {
+    void rangeExpressionContainingStringsIsIlltyped() {
         final FeelExpression expression = FeelParser.PARSER.parse("[\"A\"..\"Z\"]");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FeelParserTest {
 
     @Test
-    void shouldParseEmpty() throws Exception {
+    void shouldParseEmpty() {
         final FeelExpression expression = FeelParser.PARSER.parse("");
 
         final FeelExpression expectedExpression = Empty();
@@ -36,7 +36,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseEmptyRepresentedAsDash() throws Exception {
+    void shouldParseEmptyRepresentedAsDash() {
         final FeelExpression expression = FeelParser.PARSER.parse("-");
 
         final FeelExpression expectedExpression = Empty();
@@ -45,7 +45,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseNumberLiterals() throws Exception {
+    void shouldParseNumberLiterals() {
         final FeelExpression expression = FeelParser.PARSER.parse("42");
 
         final FeelExpression expectedExpression = IntegerLiteral(42);
@@ -54,7 +54,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseVariableLiteral() throws Exception {
+    void shouldParseVariableLiteral() {
         final FeelExpression expression = FeelParser.PARSER.parse("foobar");
 
         final FeelExpression expectedExpression = VariableLiteral("foobar");
@@ -63,7 +63,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDoubleLiteral() throws Exception {
+    void shouldParseDoubleLiteral() {
         final FeelExpression expression = FeelParser.PARSER.parse(String.valueOf(Math.PI));
 
         final FeelExpression expectedExpression = FeelExpressions.DoubleLiteral(Math.PI);
@@ -73,7 +73,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldParseBooleanLiteral(String input, boolean expectedValue) throws Exception {
+    void shouldParseBooleanLiteral(String input, boolean expectedValue) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = FeelExpressions.BooleanLiteral(expectedValue);
@@ -82,7 +82,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseVariableLiteralWithAttribute() throws Exception {
+    void shouldParseVariableLiteralWithAttribute() {
         final FeelExpression expression = FeelParser.PARSER.parse("foo.bar");
 
         final FeelExpression expectedExpression = VariableLiteral("foo.bar");
@@ -91,7 +91,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseEmptyStringLiteral() throws Exception {
+    void shouldParseEmptyStringLiteral() {
         final FeelExpression expression = FeelParser.PARSER.parse("\"\"");
 
         final FeelExpression expectedExpression = FeelExpressions.StringLiteral("");
@@ -100,7 +100,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseStringLiteral() throws Exception {
+    void shouldParseStringLiteral() {
         final FeelExpression expression = FeelParser.PARSER.parse("\"Steak\"");
 
         final FeelExpression expectedExpression = FeelExpressions.StringLiteral("Steak");
@@ -109,7 +109,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseStringLiteralContainingSpecialCharacters() throws Exception {
+    void shouldParseStringLiteralContainingSpecialCharacters() {
         final FeelExpression expression = FeelParser.PARSER.parse("\"x.y.z=false\"");
 
         final FeelExpression expectedExpression = FeelExpressions.StringLiteral("x.y.z=false");
@@ -150,7 +150,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"2*3, MUL", "2+3, ADD", "2-3, SUB", "2**3, EXP", "2/3, DIV"})
-    void shouldParseArithmeticExpressions(String input, Operator expectedOperator) throws Exception {
+    void shouldParseArithmeticExpressions(String input, Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = BinaryExpression(
@@ -173,7 +173,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseArithmeticExpressionWithVariable() throws Exception {
+    void shouldParseArithmeticExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("4 + x");
 
         final FeelExpression expectedExpression = BinaryExpression(
@@ -185,7 +185,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"<3, LT, 3", "< 3, LT, 3", "<=4, LE, 4", ">5, GT, 5", ">=6, GE, 6"})
-    void shouldParseComparisonExpressions(String input, Operator operator, int number) throws Exception {
+    void shouldParseComparisonExpressions(String input, Operator operator, int number) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = UnaryExpression(operator, IntegerLiteral(number));
@@ -194,7 +194,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseComparisonExpressionWithVariable() throws Exception {
+    void shouldParseComparisonExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("> y");
 
         final FeelExpression expectedExpression = UnaryExpression(Operator.GT, VariableLiteral("y"));
@@ -214,7 +214,7 @@ class FeelParserTest {
             "]1..2[, false, 1, 2, false",
             "(1..2[, false, 1, 2, false"
     })
-    void shouldParseRangeExpression(String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) throws Exception {
+    void shouldParseRangeExpression(String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = RangeExpression(isLeftInclusive, IntegerLiteral(lowerBound),
@@ -234,7 +234,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseRangeExpressionWithVariable() throws Exception {
+    void shouldParseRangeExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("[1..x]");
 
         final FeelExpression expectedExpression = RangeExpression(true, IntegerLiteral(1),
@@ -244,7 +244,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDisjunctionExpressionWithComparisons() throws Exception {
+    void shouldParseDisjunctionExpressionWithComparisons() {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,>100,42");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
@@ -256,7 +256,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDisjunctionExpressionWithStrings() throws Exception {
+    void shouldParseDisjunctionExpressionWithStrings() {
         final FeelExpression expression = FeelParser.PARSER.parse("\"Spareribs\",\"Steak\",\"Stew\"");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
@@ -267,7 +267,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDisjunctionExpressionWithVariable() throws Exception {
+    void shouldParseDisjunctionExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse(">customer.age,>21");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
@@ -278,7 +278,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDisjunctionExpressionWithRanges() throws Exception {
+    void shouldParseDisjunctionExpressionWithRanges() {
         final FeelExpression expression = FeelParser.PARSER.parse("[1..2],[5..6],[8..10]");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
@@ -291,7 +291,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDisjunctionWithMixedExpressions() throws Exception {
+    void shouldParseDisjunctionWithMixedExpressions() {
         final FeelExpression expression = FeelParser.PARSER.parse("10,[20..30],>10,42");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
@@ -306,7 +306,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseExpressionContainingNot() throws Exception {
+    void shouldParseExpressionContainingNot() {
         final FeelExpression expression = FeelParser.PARSER.parse("not([1..4],[6..9])");
 
         final FeelExpression expectedExpression = UnaryExpression(Operator.NOT,
@@ -318,7 +318,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDateExpression() throws Exception {
+    void shouldParseDateExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
         final FeelExpression expectedExpression = DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0));
@@ -326,7 +326,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldParseDateExpressionsInRange() throws Exception {
+    void shouldParseDateExpressionsInRange() {
         final FeelExpression expression = FeelParser.PARSER.parse(
                 "[date and time(\"2015-11-30T12:00:00\")..date and time(\"2015-12-01T12:00:00\")]");
 
@@ -337,7 +337,7 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldTreatParsingErrorsAsValidationErrors() throws Exception {
+    void shouldTreatParsingErrorsAsValidationErrors() {
         final Either<FeelExpression, ValidationResult.Builder.ElementStep> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
