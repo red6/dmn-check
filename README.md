@@ -137,7 +137,9 @@ Althought there are not many tools for analysis of DMN files there exists some r
 
 <b id="LM16">LM16</b> Laurson, Ü. and Maggi, F.M., 2016, September. A Tool for the Analysis of DMN Decision Tables. In BPM (Demos) (pp. 56-60).
 
-<b id="BW">BW</b> Batoulis, K. and Weske, M., A Tool for Checking Soundness of Decision-Aware Business Processes.
+<b id="BW-a">BW-a</b> Batoulis, K. and Weske, M., A Tool for Checking Soundness of Decision-Aware Business Processes.
+
+<b id="BW-b">BW-b</b> Batoulis, K. and Weske, M., Disambiguation of DMN Decision Tables.
 
 <b id="FMTV18">FMTV18</b> Figl, K., Mendling, J., Tokdemir, G. and Vanthienen, J., 2018. What we know and what we do not know about DMN. Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
 
