@@ -33,6 +33,53 @@ public class ValidationResult {
         return message;
     }
 
+    public static final Builder.MessageStep init = message -> (new Builder.SeverityStep() {
+
+        Severity type = Severity.ERROR;
+
+        @Override
+        public Builder.BuildStep element(ModelElementInstance element) {
+            return new Builder.BuildStep() {
+
+                @Override
+                public ModelElementInstance getElement() {
+                    return element;
+                }
+
+                @Override
+                public Severity getType() {
+                    return type;
+                }
+
+                @Override
+                public String getMessage() {
+                    return message;
+                }
+
+                @Override
+                public ValidationResult build() {
+                    return new ValidationResult(message, element, type);
+                }
+            };
+        }
+
+        @Override
+        public Severity getType() {
+            return type;
+        }
+
+        @Override
+        public Builder.ElementStep severity(Severity type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+    });
+
     public static final class Builder {
 
         @FunctionalInterface
@@ -58,51 +105,5 @@ public class ValidationResult {
             ValidationResult build();
         }
 
-        public static final MessageStep init = message -> (new SeverityStep() {
-
-            Severity type = Severity.ERROR;
-
-            @Override
-            public BuildStep element(ModelElementInstance element) {
-                return new BuildStep() {
-
-                    @Override
-                    public ModelElementInstance getElement() {
-                        return element;
-                    }
-
-                    @Override
-                    public Severity getType() {
-                        return type;
-                    }
-
-                    @Override
-                    public String getMessage() {
-                        return message;
-                    }
-
-                    @Override
-                    public ValidationResult build() {
-                        return new ValidationResult(message, element, type);
-                    }
-                };
-            }
-
-            @Override
-            public Severity getType() {
-                return type;
-            }
-
-            @Override
-            public ElementStep severity(Severity type) {
-                this.type = type;
-                return this;
-            }
-
-            @Override
-            public String getMessage() {
-                return message;
-            }
-        });
     }
 }

@@ -25,13 +25,13 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     @Override
     public List<ValidationResult> validate(Output output) {
         if (output.getTypeRef() == null) {
-            return Collections.singletonList(ValidationResult.Builder.init
+            return Collections.singletonList(ValidationResult.init
                     .message("An aggregation is used but no output severity is defined")
                     .severity(Severity.WARNING)
                     .element(output)
                     .build());
         } else if (!ExpressionType.isNumeric(output.getTypeRef())) {
-            return Collections.singletonList(ValidationResult.Builder.init
+            return Collections.singletonList(ValidationResult.init
                     .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
                     .element(output)
                     .build());

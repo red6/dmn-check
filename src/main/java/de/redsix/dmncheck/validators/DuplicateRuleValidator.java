@@ -37,7 +37,7 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add(ValidationResult.Builder.init
+                result.add(ValidationResult.init
                     .message("Rule is defined more than once")
                     .element(rule)
                     .build());

@@ -51,7 +51,7 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
                     final List<Optional<Boolean>> subsumptionResults = extractSubsumptionResults(subsumptionCheckResult);
                     if (subsumptionCheckIsPossible(subsumptionResults) && everythingIsSubsumed(subsumptionResults)) {
-                        return Stream.of(ValidationResult.Builder.init
+                        return Stream.of(ValidationResult.init
                             .message("Rule is shadowed by rule " + potentiallySubsumingRule.getId())
                             .element(rule)
                         .build());

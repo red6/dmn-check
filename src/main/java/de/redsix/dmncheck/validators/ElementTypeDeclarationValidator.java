@@ -21,14 +21,14 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
     public List<ValidationResult> validate(T expression) {
         final String expressionType = getTypeRef(expression);
         if(Objects.isNull(expressionType)) {
-            return Collections.singletonList(ValidationResult.Builder.init
+            return Collections.singletonList(ValidationResult.init
                     .message(getClassUnderValidation().getSimpleName() + " has no severity")
                     .severity(Severity.WARNING)
                     .element(expression)
                     .build());
         } else
         if (ExpressionType.isNotValid(expressionType)) {
-            return Collections.singletonList(ValidationResult.Builder.init
+            return Collections.singletonList(ValidationResult.init
                     .message(getClassUnderValidation().getSimpleName() + " uses an unsupported severity")
                     .element(expression)
                     .build());

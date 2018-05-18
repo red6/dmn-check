@@ -33,7 +33,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                 .map(entry -> entry.getValue().stream().collect(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
                 .filter(rules -> rules.size() > 1)
-                .map(rules -> ValidationResult.Builder.init
+                .map(rules -> ValidationResult.init
                         .message("Rule is conflicting with rules " + rules.stream().skip(1).map(Rule::getId).collect(Collectors.toList()))
                         .element(rules.first())
                         .build())

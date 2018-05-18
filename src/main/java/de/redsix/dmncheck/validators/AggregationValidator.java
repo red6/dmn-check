@@ -21,7 +21,7 @@ public class AggregationValidator extends SimpleValidator<DecisionTable> {
     public List<ValidationResult> validate(DecisionTable decisionTable) {
         final BuiltinAggregator builtinAggregator = decisionTable.getAggregation();
         if (Objects.nonNull(builtinAggregator)) {
-            return Collections.singletonList(ValidationResult.Builder.init
+            return Collections.singletonList(ValidationResult.init
                     .message("Aggregations are only valid with HitPolicy " + HitPolicy.COLLECT)
                     .element(decisionTable)
                     .build());

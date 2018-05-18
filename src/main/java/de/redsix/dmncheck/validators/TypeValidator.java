@@ -51,7 +51,7 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
             if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionType.TOP.equals(type)) {
                 return Collections.<ValidationResult.Builder.BuildStep>emptyList();
             } else {
-                return Collections.singletonList(ValidationResult.Builder.init.message(errorMessage()).element(rule));
+                return Collections.singletonList(ValidationResult.init.message(errorMessage()).element(rule));
             }
         }).right(validationResultBuilder -> Collections.singletonList(validationResultBuilder.element(rule)));
     }

@@ -81,7 +81,7 @@ public final class FeelTypecheck {
 
     private static Optional<Either<ExpressionType, ValidationResult.Builder.ElementStep>> check(final Boolean condition, final String errorMessage) {
         if (!condition) {
-            return Optional.of(Eithers.right(ValidationResult.Builder.init.message(errorMessage)));
+            return Optional.of(Eithers.right(ValidationResult.init.message(errorMessage)));
         } else {
             return Optional.empty();
         }

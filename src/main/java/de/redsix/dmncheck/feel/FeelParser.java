@@ -128,7 +128,7 @@ public final class FeelParser {
         try {
             return Eithers.left(PARSER.parse(charSequence));
         } catch (final ParserException e) {
-            return Eithers.right(ValidationResult.Builder.init.message("Could not parse '" + charSequence + "': " + e.getMessage()));
+            return Eithers.right(ValidationResult.init.message("Could not parse '" + charSequence + "': " + e.getMessage()));
         }
     }
 }
