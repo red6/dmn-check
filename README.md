@@ -121,3 +121,28 @@ This example contains no duplicate rules and no conflicting rules. However all i
 ### Types of expressions
 
 DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most expression languages, not all syntactically possible expressions are valid. `dmn-check` integrates a severity checker for the FEEL expression language that ensures that a decision table contains only well-typed expressions. An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a valid expression. In contrast `[1..9]` is well-typed and describes the numbers from 1 to 9.
+
+
+## Releated work
+
+Althought there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the releated work when starting the work on `dmn-check`.
+
+### A Tool for the Analysis of DMN Decision Tables
+
+Ülari Laurson and Fabrizio Maria Maggi extended the `dmn-js` editing toolkit of Camunda with analysis capabilities and published it at [github.com/ulaurson/dmn-js](https://github.com/ulaurson/dmn-js). The tool is able to detect syntax and type errors and to identify overlapping and missing rules. It also is able to simplify decision tables by merging rules. In the demo paper [LM16](#LM16) they describe the tool. Further details about the analyses performed by the tool are published in [CDL+16](#CDL+16). 
+
+## References
+
+<b id="CDL+16">CDL+16</b> Calvanese, D., Dumas, M., Laurson, Ü., Maggi, F.M., Montali, M., Teinemaa, I.: Semantics and analysis of DMN decision tables. In Proceedings of the 14th International Conference on Business Process Management (BPM) 2016
+
+<b id="LM16">LM16</b> Laurson, Ü. and Maggi, F.M., 2016, September. A Tool for the Analysis of DMN Decision Tables. In BPM (Demos) (pp. 56-60).
+
+<b id="BW-a">BW-a</b> Batoulis, K. and Weske, M., A Tool for Checking Soundness of Decision-Aware Business Processes.
+
+<b id="BW-b">BW-b</b> Batoulis, K. and Weske, M., Disambiguation of DMN Decision Tables.
+
+<b id="FMTV18">FMTV18</b> Figl, K., Mendling, J., Tokdemir, G. and Vanthienen, J., 2018. What we know and what we do not know about DMN. Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
+
+<b id="Silver16">Silver16</b> Silver, B., 2016. Decision Table Analysis in DMN.
+
+<b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.

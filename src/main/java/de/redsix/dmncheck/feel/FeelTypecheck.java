@@ -26,7 +26,7 @@ public final class FeelTypecheck {
 
     public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
-                // FIXME: 12/10/17 The explicit severity is needed as otherwise the severity of 'right' is lost.
+                // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
                 .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionType.TOP))
                 .BooleanLiteral(bool -> left(ExpressionType.BOOLEAN))
                 .DateLiteral(dateTime -> left(ExpressionType.DATE))
