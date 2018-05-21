@@ -1,14 +1,17 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
+import de.redsix.dmncheck.util.Util;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +21,7 @@ public class InputEntryTypeValidator extends TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getInputs().stream().allMatch(input -> {
             final String expressionType = input.getInputExpression().getTypeRef();
-            return Objects.isNull(expressionType) || ExpressionType.isValid(expressionType);
+            return ExpressionTypeParser.parse(expressionType).match(parseResult -> true, parseError -> false);
         });
     }
 
@@ -30,12 +33,14 @@ public class InputEntryTypeValidator extends TypeValidator {
 
             final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
 
-            final Stream<ExpressionType> inputTypes = decisionTable.getInputs().stream()
+            final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherInputTypes = decisionTable.getInputs().stream()
                     .map(input -> input.getInputExpression().getTypeRef())
-                    .map(Optional::ofNullable)
-                    .map(ExpressionType::getType);
+                    .map(ExpressionTypeParser::parse)
+                    .collect(Either.sequence());
 
-            return typecheck(rule, inputExpressions, inputVariables, inputTypes);
+            return eitherInputTypes.match(
+                    inputTypes -> typecheck(rule, inputExpressions, inputVariables, inputTypes.stream()),
+                    validationResult -> Stream.of(validationResult.element(rule).build()));
         }).collect(Collectors.toList());
     }
 

@@ -237,6 +237,8 @@
                                     </compilerArgs>
 
                                     <excludes>
+                                        <exclude>**/ExpressionTypes.*</exclude>
+                                        <exclude>**/ExpressionTypes*.*</exclude>
                                         <exclude>**/FeelExpressions.*</exclude>
                                         <exclude>**/FeelExpressions$*.*</exclude>
                                         <exclude>**/Eithers.*</exclude>

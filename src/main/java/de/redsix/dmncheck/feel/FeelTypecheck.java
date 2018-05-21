@@ -27,12 +27,12 @@ public final class FeelTypecheck {
     public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
-                .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionType.TOP))
-                .BooleanLiteral(bool -> left(ExpressionType.BOOLEAN))
-                .DateLiteral(dateTime -> left(ExpressionType.DATE))
-                .DoubleLiteral(aDouble -> left(ExpressionType.DOUBLE))
-                .IntegerLiteral(integer -> left(ExpressionType.INTEGER))
-                .StringLiteral(string -> left(ExpressionType.STRING))
+                .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionTypes.TOP()))
+                .BooleanLiteral(bool -> left(ExpressionTypes.BOOLEAN()))
+                .DateLiteral(dateTime -> left(ExpressionTypes.DATE()))
+                .DoubleLiteral(aDouble -> left(ExpressionTypes.DOUBLE()))
+                .IntegerLiteral(integer -> left(ExpressionTypes.INTEGER()))
+                .StringLiteral(string -> left(ExpressionTypes.STRING()))
                 .VariableLiteral(name ->
                     check(context.containsKey(name), "Variable '" + name + "' has no severity.")
                     .orElse(left(context.get(name))))
@@ -70,7 +70,7 @@ public final class FeelTypecheck {
 
     private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
         final List<ExpressionType> allowedTypes = Arrays
-                .asList(ExpressionType.INTEGER, ExpressionType.DOUBLE, ExpressionType.LONG, ExpressionType.DATE);
+                .asList(ExpressionTypes.INTEGER(), ExpressionTypes.DOUBLE(), ExpressionTypes.LONG(), ExpressionTypes.DATE());
         return typecheck(context, lowerBound).bind(lowerBoundType ->
                 typecheck(context, upperBound).bind(upperBoundType ->
                         check(lowerBoundType.equals(upperBoundType), "Types of lower and upper bound do not match.").map(Optional::of)

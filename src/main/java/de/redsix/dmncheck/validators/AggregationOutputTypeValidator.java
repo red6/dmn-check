@@ -1,8 +1,10 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
@@ -30,13 +32,17 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
                     .severity(Severity.WARNING)
                     .element(output)
                     .build());
-        } else if (!ExpressionType.isNumeric(output.getTypeRef())) {
-            return Collections.singletonList(ValidationResult.init
-                    .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
-                    .element(output)
-                    .build());
         } else {
-            return Collections.emptyList();
+            final Either<ExpressionType, ValidationResult.Builder.ElementStep> eitherType = ExpressionTypeParser.parse(output.getTypeRef());
+            return eitherType.match(type -> {
+                if (!ExpressionType.isNumeric(type)) {
+                    return Collections.singletonList(
+                            ValidationResult.init.message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
+                                    .element(output).build());
+                } else {
+                    return Collections.emptyList();
+                }
+            }, validationResult -> Collections.singletonList(validationResult.element(output).build()));
         }
     }
 

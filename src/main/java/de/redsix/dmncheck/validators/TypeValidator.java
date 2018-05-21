@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.feel.ExpressionTypes;
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
 import de.redsix.dmncheck.feel.ExpressionType;
@@ -48,7 +49,7 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
 
         return Eithers.caseOf(typedcheckResult).left(type -> {
-            if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionType.TOP.equals(type)) {
+            if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionTypes.TOP().equals(type)) {
                 return Collections.<ValidationResult.Builder.BuildStep>emptyList();
             } else {
                 return Collections.singletonList(ValidationResult.init.message(errorMessage()).element(rule));

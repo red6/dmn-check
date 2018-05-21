@@ -1,14 +1,18 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
+import de.redsix.dmncheck.util.Util;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +22,7 @@ public class OutputEntryTypeValidator extends TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
-            return Objects.isNull(expressionType) || ExpressionType.isValid(expressionType);
+            return ExpressionTypeParser.parse(expressionType).match(parseResult -> true, parseError -> false);
         });
     }
 
@@ -27,12 +31,14 @@ public class OutputEntryTypeValidator extends TypeValidator {
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<OutputEntry> outputEntry = rule.getOutputEntries().stream();
 
-            final Stream<ExpressionType> outputTypes = decisionTable.getOutputs().stream()
+            final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherOutputTypes = decisionTable.getOutputs().stream()
                     .map(OutputClause::getTypeRef)
-                    .map(Optional::ofNullable)
-                    .map(ExpressionType::getType);
+                    .map(ExpressionTypeParser::parse)
+                    .collect(Either.sequence());
 
-            return typecheck(rule, outputEntry, outputTypes);
+            return eitherOutputTypes.match(
+                    outputTypes -> typecheck(rule, outputEntry, outputTypes.stream()),
+                    validationResult -> Stream.of(validationResult.element(rule).build()));
         }).collect(Collectors.toList());
     }
 

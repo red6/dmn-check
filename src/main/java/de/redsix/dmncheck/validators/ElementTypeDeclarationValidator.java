@@ -1,8 +1,11 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
+import de.redsix.dmncheck.feel.ExpressionTypeParser;
+import de.redsix.dmncheck.feel.ExpressionTypes;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
@@ -26,14 +29,21 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
                     .severity(Severity.WARNING)
                     .element(expression)
                     .build());
-        } else
-        if (ExpressionType.isNotValid(expressionType)) {
-            return Collections.singletonList(ValidationResult.init
-                    .message(getClassUnderValidation().getSimpleName() + " uses an unsupported severity")
-                    .element(expression)
-                    .build());
         } else {
-            return Collections.emptyList();
+            final Either<ExpressionType, ValidationResult.Builder.ElementStep> eitherType = ExpressionTypeParser.parse(expressionType);
+            return eitherType.match(
+                    type -> {
+                        if (ExpressionTypes.TOP().equals(type)) {
+                            return Collections.singletonList(ValidationResult.init
+                                    .message("TOP is an internal type and cannot be used in declarations.")
+                                    .severity(Severity.ERROR)
+                                    .element(expression)
+                                    .build());
+                        } else {
+                            return Collections.emptyList();
+                        }
+                    },
+                    validationResult -> Collections.singletonList(validationResult.element(expression).build()));
         }
     }
 }

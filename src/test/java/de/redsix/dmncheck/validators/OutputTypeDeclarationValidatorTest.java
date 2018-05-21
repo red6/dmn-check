@@ -43,7 +43,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Output uses an unsupported severity", validationResult.getMessage()),
+                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
