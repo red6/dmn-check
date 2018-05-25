@@ -81,7 +81,7 @@
                             <path>
                                 <groupId>org.derive4j</groupId>
                                 <artifactId>derive4j</artifactId>
-                                <version>0.12.3</version>
+                                <version>0.12.4</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
@@ -201,7 +201,7 @@
                                         <path>
                                             <groupId>org.derive4j</groupId>
                                             <artifactId>derive4j</artifactId>
-                                            <version>0.12.3</version>
+                                            <version>0.12.4</version>
                                         </path>
                                     </annotationProcessorPaths>
                                 </configuration>
