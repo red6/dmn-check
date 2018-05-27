@@ -120,7 +120,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of output entry does not match severity of output expression", validationResult.getMessage()),
+                () -> assertEquals("Type of output entry does not match type of output expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );

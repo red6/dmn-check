@@ -38,7 +38,7 @@ public class OutputEntryTypeValidator extends TypeValidator {
 
     @Override
     public String errorMessage() {
-        return "Type of output entry does not match severity of output expression";
+        return "Type of output entry does not match type of output expression";
     }
 
     @Override

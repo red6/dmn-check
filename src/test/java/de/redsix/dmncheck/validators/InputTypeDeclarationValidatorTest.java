@@ -29,7 +29,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("InputExpression has no severity", validationResult.getMessage()),
+                () -> assertEquals("InputExpression has no type", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
                 () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
@@ -48,7 +48,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("InputExpression uses an unsupported severity", validationResult.getMessage()),
+                () -> assertEquals("InputExpression uses an unsupported type", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );

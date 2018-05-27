@@ -47,7 +47,7 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("An aggregation is used but no output severity is defined", validationResult.getMessage()),
+                () -> assertEquals("An aggregation is used but no output type is defined", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
                 () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );

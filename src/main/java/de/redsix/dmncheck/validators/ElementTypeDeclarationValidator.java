@@ -22,14 +22,14 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
         final String expressionType = getTypeRef(expression);
         if(Objects.isNull(expressionType)) {
             return Collections.singletonList(ValidationResult.init
-                    .message(getClassUnderValidation().getSimpleName() + " has no severity")
+                    .message(getClassUnderValidation().getSimpleName() + " has no type")
                     .severity(Severity.WARNING)
                     .element(expression)
                     .build());
         } else
         if (ExpressionType.isNotValid(expressionType)) {
             return Collections.singletonList(ValidationResult.init
-                    .message(getClassUnderValidation().getSimpleName() + " uses an unsupported severity")
+                    .message(getClassUnderValidation().getSimpleName() + " uses an unsupported type")
                     .element(expression)
                     .build());
         } else {

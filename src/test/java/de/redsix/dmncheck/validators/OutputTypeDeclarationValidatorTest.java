@@ -26,7 +26,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Output has no severity", validationResult.getMessage()),
+                () -> assertEquals("Output has no type", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
                 () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
@@ -43,7 +43,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Output uses an unsupported severity", validationResult.getMessage()),
+                () -> assertEquals("Output uses an unsupported type", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );

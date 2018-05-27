@@ -153,7 +153,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Variable 'x' has no severity.", validationResult.getMessage()),
+                () -> assertEquals("Variable 'x' has no type.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
@@ -178,7 +178,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of input entry does not match severity of input expression", validationResult.getMessage()),
+                () -> assertEquals("Type of input entry does not match type of input expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );

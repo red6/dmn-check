@@ -26,7 +26,7 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     public List<ValidationResult> validate(Output output) {
         if (output.getTypeRef() == null) {
             return Collections.singletonList(ValidationResult.init
-                    .message("An aggregation is used but no output severity is defined")
+                    .message("An aggregation is used but no output type is defined")
                     .severity(Severity.WARNING)
                     .element(output)
                     .build());

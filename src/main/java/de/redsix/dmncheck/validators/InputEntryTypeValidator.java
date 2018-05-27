@@ -41,7 +41,7 @@ public class InputEntryTypeValidator extends TypeValidator {
 
     @Override
     public String errorMessage() {
-        return "Type of input entry does not match severity of input expression";
+        return "Type of input entry does not match type of input expression";
     }
 
     @Override

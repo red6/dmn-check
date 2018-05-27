@@ -34,7 +34,7 @@ public final class FeelTypecheck {
                 .IntegerLiteral(integer -> left(ExpressionType.INTEGER))
                 .StringLiteral(string -> left(ExpressionType.STRING))
                 .VariableLiteral(name ->
-                    check(context.containsKey(name), "Variable '" + name + "' has no severity.")
+                    check(context.containsKey(name), "Variable '" + name + "' has no type.")
                     .orElse(left(context.get(name))))
                 .RangeExpression((__, lowerBound, upperBound, ___) -> typecheckRangeExpression(context, lowerBound, upperBound))
                 .UnaryExpression((operator, operand) -> typecheckUnaryExpression(context, operator, operand))
@@ -63,7 +63,7 @@ public final class FeelTypecheck {
         final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE);
         return typecheck(context, operand).bind(type ->
                     check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.").map(Optional::of)
-                    .orElseGet(() -> check(ExpressionType.isNumeric(type), "Non-numeric severity in UnaryExpression."))
+                    .orElseGet(() -> check(ExpressionType.isNumeric(type), "Non-numeric type in UnaryExpression."))
                     .orElse(left(type))
                 );
     }
