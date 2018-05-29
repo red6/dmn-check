@@ -15,6 +15,7 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
@@ -45,16 +46,14 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
     private List<ValidationResult.Builder.BuildStep> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
             ExpressionType expectedType) {
-        final Either<ExpressionType, ValidationResult.Builder.ElementStep> typedcheckResult = FeelParser.parse(inputEntry.getTextContent())
-                .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression));
-
-        return Eithers.caseOf(typedcheckResult).left(type -> {
-            if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionTypes.TOP().equals(type)) {
-                return Collections.<ValidationResult.Builder.BuildStep>emptyList();
-            } else {
-                return Collections.singletonList(ValidationResult.init.message(errorMessage()).element(rule));
-            }
-        }).right(validationResultBuilder -> Collections.singletonList(validationResultBuilder.element(rule)));
+        return FeelParser.parse(inputEntry.getTextContent()).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
+                .map(type -> {
+                    if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionTypes.TOP().equals(type)) {
+                        return Collections.<ValidationResult.Builder.BuildStep>emptyList();
+                    } else {
+                        return Collections.singletonList(ValidationResult.init.message(errorMessage()).element(rule));
+                    }
+                }).match(Function.identity(), validationResultBuilder -> Collections.singletonList(validationResultBuilder.element(rule)));
     }
 
     @Override
