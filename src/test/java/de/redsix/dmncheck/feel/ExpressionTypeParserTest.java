@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.validators.util.TestEnum;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,6 +57,15 @@ public class ExpressionTypeParserTest {
         final ExpressionType type = ExpressionTypeParser.PARSER.parse("date");
 
         final ExpressionType expectedType = ExpressionTypes.DATE();
+
+        assertEquals(expectedType, type);
+    }
+
+    @Test
+    void shouldParseEnum() {
+        final ExpressionType type = ExpressionTypeParser.PARSER.parse(TestEnum.class.getCanonicalName());
+
+        final ExpressionType expectedType = ExpressionTypes.ENUM(TestEnum.class.getCanonicalName());
 
         assertEquals(expectedType, type);
     }

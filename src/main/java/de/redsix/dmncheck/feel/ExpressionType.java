@@ -20,9 +20,19 @@ public abstract class ExpressionType {
         R LONG();
         R DOUBLE();
         R DATE();
+        R ENUM(String className);
     }
 
     public abstract <R> R match(ExpressionType.Cases<R> cases);
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object obj);
+
+    @Override
+    public abstract String toString();
 
     public static boolean isValid(final ExpressionType givenType) {
         return !TOP().equals(givenType);

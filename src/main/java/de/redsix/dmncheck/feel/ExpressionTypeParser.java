@@ -21,7 +21,9 @@ public final class ExpressionTypeParser {
             Patterns.stringCaseInsensitive("integer").toScanner("boolean").source().map(s -> Tokens.fragment(s, "integerfragment")),
             Patterns.stringCaseInsensitive("long").toScanner("boolean").source().map(s -> Tokens.fragment(s, "longfragment")),
             Patterns.stringCaseInsensitive("double").toScanner("boolean").source().map(s -> Tokens.fragment(s, "doublefragment")),
-            Patterns.stringCaseInsensitive("date").toScanner("boolean").source().map(s -> Tokens.fragment(s, "datefragment"))
+            Patterns.stringCaseInsensitive("date").toScanner("boolean").source().map(s -> Tokens.fragment(s, "datefragment")),
+            Patterns.regex("([a-z][a-z_0-9]*\\.)*[A-Z_]($[A-Z_]|[\\w_])*").toScanner("enum").source()
+                    .map(s -> Tokens.fragment(s, "enumfragment"))
             );
 
     private static final Parser<ExpressionType> STRING = Terminals.fragment("stringfragment").map(__ -> ExpressionTypes.STRING());
@@ -30,9 +32,10 @@ public final class ExpressionTypeParser {
     private static final Parser<ExpressionType> LONG = Terminals.fragment("longfragment").map(__ -> ExpressionTypes.LONG());
     private static final Parser<ExpressionType> DOUBLE = Terminals.fragment("doublefragment").map(__ -> ExpressionTypes.DOUBLE());
     private static final Parser<ExpressionType> DATE = Terminals.fragment("datefragment").map(__ -> ExpressionTypes.DATE());
+    private static final Parser<ExpressionType> ENUM = Terminals.fragment("enumfragment").map(ExpressionTypes::ENUM);
     private static final Parser<ExpressionType> TOP = Parsers.EOF.map((__) -> ExpressionTypes.TOP());
 
-    static final Parser<ExpressionType> PARSER = Parsers.or(STRING, BOOLEAN, INTEGER, LONG, DOUBLE, DATE, TOP).from(TOKENIZER, IGNORED);
+    static final Parser<ExpressionType> PARSER = Parsers.or(STRING, BOOLEAN, INTEGER, LONG, DOUBLE, DATE, ENUM, TOP).from(TOKENIZER, IGNORED);
 
     public static Either<ExpressionType, ValidationResult.Builder.ElementStep> parse(final CharSequence charSequence) {
         try {
