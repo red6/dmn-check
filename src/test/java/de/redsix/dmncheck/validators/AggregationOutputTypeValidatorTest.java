@@ -54,6 +54,25 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldErrorOnUnsupportedOutputType() {
+        decisionTable.setHitPolicy(HitPolicy.COLLECT);
+        decisionTable.setAggregation(BuiltinAggregator.MAX);
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setTypeRef("unsupportedType");
+        decisionTable.getOutputs().add(output);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
+                () -> assertEquals(output, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
     void shouldAllowAggregatorMaxWithIntegerOutputs() {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.MAX);
