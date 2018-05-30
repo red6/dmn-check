@@ -135,6 +135,8 @@
                 <version>0.7.9</version>
                 <configuration>
                     <excludes>
+                        <exclude>**/ExpressionTypes.*</exclude>
+                        <exclude>**/ExpressionTypes$*.*</exclude>
                         <exclude>**/FeelExpressions.*</exclude>
                         <exclude>**/FeelExpressions$*.*</exclude>
                         <exclude>**/Eithers.*</exclude>
@@ -238,7 +240,7 @@
 
                                     <excludes>
                                         <exclude>**/ExpressionTypes.*</exclude>
-                                        <exclude>**/ExpressionTypes*.*</exclude>
+                                        <exclude>**/ExpressionTypes$*.*</exclude>
                                         <exclude>**/FeelExpressions.*</exclude>
                                         <exclude>**/FeelExpressions$*.*</exclude>
                                         <exclude>**/Eithers.*</exclude>
