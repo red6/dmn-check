@@ -24,19 +24,16 @@ public class InputEntryTypeValidator extends TypeValidator {
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
+        final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherInputTypes = decisionTable.getInputs().stream()
+                .map(input -> input.getInputExpression().getTypeRef())
+                .map(ExpressionTypeParser::parse)
+                .collect(Either.sequence());
 
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<String> inputVariables = decisionTable.getInputs().stream().map(Input::getCamundaInputVariable);
 
-            final Stream<InputEntry> inputExpressions = rule.getInputEntries().stream();
-
-            final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherInputTypes = decisionTable.getInputs().stream()
-                    .map(input -> input.getInputExpression().getTypeRef())
-                    .map(ExpressionTypeParser::parse)
-                    .collect(Either.sequence());
-
             return eitherInputTypes.match(
-                    inputTypes -> typecheck(rule, inputExpressions, inputVariables, inputTypes.stream()),
+                    inputTypes -> typecheck(rule, rule.getInputEntries().stream(), inputVariables, inputTypes.stream()),
                     validationResult -> Stream.of(validationResult.element(rule).build()));
         }).collect(Collectors.toList());
     }

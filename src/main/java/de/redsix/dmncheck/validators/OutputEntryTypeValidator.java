@@ -4,6 +4,7 @@ import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -24,18 +25,16 @@ public class OutputEntryTypeValidator extends TypeValidator {
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
-        return decisionTable.getRules().stream().flatMap(rule -> {
-            final Stream<OutputEntry> outputEntry = rule.getOutputEntries().stream();
+        final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherOutputTypes = decisionTable.getOutputs().stream()
+                .map(OutputClause::getTypeRef)
+                .map(ExpressionTypeParser::parse)
+                .collect(Either.sequence());
 
-            final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherOutputTypes = decisionTable.getOutputs().stream()
-                    .map(OutputClause::getTypeRef)
-                    .map(ExpressionTypeParser::parse)
-                    .collect(Either.sequence());
-
-            return eitherOutputTypes.match(
-                    outputTypes -> typecheck(rule, outputEntry, outputTypes.stream()),
-                    validationResult -> Stream.of(validationResult.element(rule).build()));
-        }).collect(Collectors.toList());
+        return decisionTable.getRules().stream().flatMap(rule ->
+                eitherOutputTypes.match(
+                        outputTypes -> typecheck(rule, rule.getOutputEntries().stream(), outputTypes.stream()),
+                        validationResult -> Stream.of(validationResult.element(rule).build())))
+                .collect(Collectors.toList());
     }
 
     @Override
