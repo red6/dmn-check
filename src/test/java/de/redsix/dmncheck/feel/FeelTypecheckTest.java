@@ -19,7 +19,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.TOP), type);
+        assertEquals(left(ExpressionTypes.TOP()), type);
     }
 
     @Test
@@ -27,7 +27,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("42");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.INTEGER), type);
+        assertEquals(left(ExpressionTypes.INTEGER()), type);
     }
 
     @Test
@@ -35,7 +35,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("3.14159265359");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.DOUBLE), type);
+        assertEquals(left(ExpressionTypes.DOUBLE()), type);
     }
 
     @Test
@@ -44,17 +44,17 @@ class FeelTypecheckTest {
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.STRING), type);
+        assertEquals(left(ExpressionTypes.STRING()), type);
     }
 
     @ParameterizedTest
     @CsvSource({"true, BOOLEAN", "false, BOOLEAN"})
-    void trueHasTypeBoolean(String input, ExpressionType expectedType) {
+    void trueHasTypeBoolean(String input, String expectedType) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(expectedType), type);
+        assertEquals(ExpressionTypeParser.parse(expectedType), type);
     }
 
     @Test
@@ -63,18 +63,18 @@ class FeelTypecheckTest {
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.DATE), type);
+        assertEquals(left(ExpressionTypes.DATE()), type);
     }
 
     @Test
     void boundVariableHasType() {
         final FeelExpression expression = FeelParser.PARSER.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
-        context.put("x", ExpressionType.INTEGER);
+        context.put("x", ExpressionTypes.INTEGER());
 
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(context, expression);
 
-        assertEquals(left(ExpressionType.INTEGER), type);
+        assertEquals(left(ExpressionTypes.INTEGER()), type);
     }
 
     @Test
@@ -89,11 +89,11 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({"<5, INTEGER", "<5.2, DOUBLE"})
-    void lessThanExpressionHasNumericType(String input, ExpressionType expectedType) {
+    void lessThanExpressionHasNumericType(String input, String expectedType) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(expectedType), type);
+        assertEquals(ExpressionTypeParser.parse(expectedType), type);
     }
 
     @Test
@@ -110,7 +110,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("3+4");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.INTEGER), type);
+        assertEquals(left(ExpressionTypes.INTEGER()), type);
     }
 
     @Test
@@ -128,7 +128,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,>8");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.INTEGER), type);
+        assertEquals(left(ExpressionTypes.INTEGER()), type);
     }
 
     @Test
@@ -146,7 +146,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse("[3..42]");
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(left(ExpressionType.INTEGER), type);
+        assertEquals(left(ExpressionTypes.INTEGER()), type);
     }
 
     @Test

@@ -5,7 +5,10 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
+import org.checkerframework.common.value.qual.StringVal;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
@@ -48,7 +51,26 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("InputExpression uses an unsupported type", validationResult.getMessage()),
+                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
+                () -> assertEquals(inputExpression, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
+    void shouldDetectThatOutputUsesInternalTypeTOP() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef(" ");
+        decisionTable.getInputs().add(input);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("TOP is an internal type and cannot be used in declarations.", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );

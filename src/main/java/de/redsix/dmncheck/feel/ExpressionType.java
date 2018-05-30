@@ -1,34 +1,45 @@
 package de.redsix.dmncheck.feel;
 
+import org.derive4j.Data;
+
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-public enum ExpressionType {
-    TOP,
-    STRING,
-    BOOLEAN,
-    INTEGER,
-    LONG,
-    DOUBLE,
-    DATE;
+import static de.redsix.dmncheck.feel.ExpressionTypes.DOUBLE;
+import static de.redsix.dmncheck.feel.ExpressionTypes.INTEGER;
+import static de.redsix.dmncheck.feel.ExpressionTypes.LONG;
+import static de.redsix.dmncheck.feel.ExpressionTypes.TOP;
 
-    public static boolean isNotValid(final String givenType) {
-        return !isValid(givenType);
+@Data
+public abstract class ExpressionType {
+
+    public interface Cases<R> {
+        R TOP();
+        R STRING();
+        R BOOLEAN();
+        R INTEGER();
+        R LONG();
+        R DOUBLE();
+        R DATE();
+        R ENUM(String className);
     }
 
-    public static boolean isValid(final String givenType) {
-        return !TOP.name().equalsIgnoreCase(givenType) && Arrays.stream(ExpressionType.values())
-                .anyMatch(type -> type.name().equalsIgnoreCase(givenType));
-    }
+    public abstract <R> R match(ExpressionType.Cases<R> cases);
 
-    public static boolean isNumeric(final String givenType) {
-        return !TOP.name().equalsIgnoreCase(givenType) && Stream.of(INTEGER, LONG, DOUBLE)
-                .anyMatch(type -> type.name().equalsIgnoreCase(givenType));
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object obj);
+
+    @Override
+    public abstract String toString();
+
+    public static boolean isValid(final ExpressionType givenType) {
+        return !TOP().equals(givenType);
     }
 
     public static boolean isNumeric(final ExpressionType givenType) {
-        return isNumeric(givenType.name());
+        return !TOP().equals(givenType) && Arrays.asList(INTEGER(), LONG(), DOUBLE()).contains(givenType);
     }
 
     public boolean isSubtypeOf(final ExpressionType supertype) {
@@ -41,18 +52,14 @@ public enum ExpressionType {
     }
 
     private boolean TOPisTopElement(final ExpressionType supertype) {
-        return TOP.equals(supertype);
+        return TOP().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfLONG(final ExpressionType subtype, final ExpressionType supertype) {
-        return INTEGER.equals(subtype) && LONG.equals(supertype);
+        return INTEGER().equals(subtype) && LONG().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfDOUBLE(final ExpressionType subtype, final ExpressionType supertype) {
-        return INTEGER.equals(subtype) && DOUBLE.equals(supertype);
-    }
-
-    public static ExpressionType getType(Optional<String> type) {
-        return type.map(String::toUpperCase).map(ExpressionType::valueOf).orElse(TOP);
+        return INTEGER().equals(subtype) && DOUBLE().equals(supertype);
     }
 }
