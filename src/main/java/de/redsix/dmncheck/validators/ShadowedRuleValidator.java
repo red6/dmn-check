@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -38,34 +39,27 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
         final ArrayList<Rule> rules = new ArrayList<>(decisionTable.getRules());
         Collections.reverse(rules);
 
-        return Util.zip(IntStream.range(1, rules.size()).boxed(), rules.stream(),
-                (n, rule) -> rules.stream().skip(n).flatMap(potentiallySubsumingRule -> {
-                    final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult = checkRulesForSubsumption(rule,
-                            potentiallySubsumingRule);
-
-                    final List<ValidationResult> parsingErrors = extractParsingErrors(rule, subsumptionCheckResult);
-
-                    if (!parsingErrors.isEmpty()) {
-                        return parsingErrors.stream();
-                    }
-
-                    final List<Optional<Boolean>> subsumptionResults = extractSubsumptionResults(subsumptionCheckResult);
-                    if (subsumptionCheckIsPossible(subsumptionResults) && everythingIsSubsumed(subsumptionResults)) {
-                        return Stream.of(ValidationResult.init
-                            .message("Rule is shadowed by rule " + potentiallySubsumingRule.getId())
-                            .element(rule)
-                        .build());
-                    } else {
-                        return Stream.empty();
-                    }
-                })).flatMap(Function.identity()).collect(Collectors.toList());
+        return Util.zip(
+                    IntStream.range(1, rules.size()).boxed(),
+                    rules.stream(),
+                    (n, rule) -> identifySubsumedRules(n, rule, rules))
+                .flatMap(Function.identity()).collect(Collectors.toList());
     }
 
-    private List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> checkRulesForSubsumption(final Rule rule,
+    private Stream<ValidationResult> identifySubsumedRules(final Integer n, final Rule rule, final ArrayList<Rule> rules) {
+        return rules.stream()
+                .skip(n)
+                .flatMap(potentiallySubsumingRule ->
+                        collectSubsumptionResults(rule, potentiallySubsumingRule)
+                            .match(subsumptionResults -> isRuleSubsumed(subsumptionResults, rule, potentiallySubsumingRule),
+                                    validationResultElementStep -> Stream.of(validationResultElementStep.element(rule).build())));
+    }
+
+    private Either<List<Optional<Boolean>>, ValidationResult.Builder.ElementStep> collectSubsumptionResults(final Rule rule,
             final Rule potentiallySubsumingRule) {
         return Util
                 .zip(rule.getInputEntries().stream(), potentiallySubsumingRule.getInputEntries().stream(), this::checkInputsForSubsumption)
-                .collect(Collectors.toList());
+                .collect(Either.sequence());
     }
 
     private Either<Optional<Boolean>, ValidationResult.Builder.ElementStep> checkInputsForSubsumption(final InputEntry input,
@@ -75,23 +69,14 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
                         Eithers.left(potentiallySubsumingInputExpression.subsumes(inputExpression))));
     }
 
-    private List<Optional<Boolean>> extractSubsumptionResults(
-            final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult) {
-        return subsumptionCheckResult.stream()
-                .map(Eithers::getLeft)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-    }
-
-    private List<ValidationResult> extractParsingErrors(final Rule rule,
-            final List<Either<Optional<Boolean>, ValidationResult.Builder.ElementStep>> subsumptionCheckResult) {
-        return subsumptionCheckResult.stream()
-                .map(Eithers::getRight)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(validationResultBuilder -> validationResultBuilder.element(rule).build())
-                .collect(Collectors.toList());
+    private Stream<ValidationResult> isRuleSubsumed(final List<Optional<Boolean>> subsumptionResults, final Rule rule,
+            final Rule potentiallySubsumingRule) {
+        if (subsumptionCheckIsPossible(subsumptionResults) && everythingIsSubsumed(subsumptionResults)) {
+            return Stream.of(ValidationResult.init.message("Rule is shadowed by rule " + potentiallySubsumingRule.getId()).element(rule)
+                    .build());
+        } else {
+            return Stream.empty();
+        }
     }
 
     private boolean everythingIsSubsumed(final List<Optional<Boolean>> subsumptionResults) {
