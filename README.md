@@ -13,6 +13,7 @@ Currently the plugin checks among others for the following:
 * Conflicting rules
 * Shadowed rules
 * Types of the expressions
+* Correct use of enumerations
 
 In section [Validations](#validations) you find a complete list with detailed descriptions of what they do.
 
@@ -122,6 +123,9 @@ This example contains no duplicate rules and no conflicting rules. However all i
 
 DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most expression languages, not all syntactically possible expressions are valid. `dmn-check` integrates a type checker for the FEEL expression language that ensures that a decision table contains only well-typed expressions. An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a valid expression. In contrast `[1..9]` is well-typed and describes the numbers from 1 to 9.
 
+### Correct use of enumerations
+
+Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation. 
 
 ## Releated work
 
