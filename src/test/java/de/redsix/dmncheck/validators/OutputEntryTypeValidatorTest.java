@@ -87,7 +87,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldNotAcceptEmptyExpression() {
+    void shouldAcceptEmptyExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
@@ -100,7 +100,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
-        assertFalse(validationResults.isEmpty());
+        assertTrue(validationResults.isEmpty());
     }
 
     @Test

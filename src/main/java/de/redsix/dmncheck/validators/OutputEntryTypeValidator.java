@@ -41,9 +41,4 @@ public class OutputEntryTypeValidator extends TypeValidator {
     public String errorMessage() {
         return "Type of output entry does not match type of output expression";
     }
-
-    @Override
-    boolean isEmptyAllowed() {
-        return false;
-    }
 }

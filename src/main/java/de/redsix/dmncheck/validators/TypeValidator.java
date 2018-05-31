@@ -24,8 +24,6 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
     abstract String errorMessage();
 
-    abstract boolean isEmptyAllowed();
-
     Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
             final Stream<ExpressionType> types) {
         return Util.zip(expressions, variables, types, (expression, variable, type) -> {
@@ -52,7 +50,7 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
                 .map(type -> {
                     if (type.isSubtypeOf(ExpressionTypes.STRING()) && ExpressionTypes.getClassName(expectedType).isPresent()) {
                         return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), inputEntry.getTextContent(), rule);
-                    } else if (type.isSubtypeOf(expectedType) || isEmptyAllowed() && ExpressionTypes.TOP().equals(type)) {
+                    } else if (type.isSubtypeOf(expectedType) || ExpressionTypes.TOP().equals(type)) {
                         return Collections.<ValidationResult.Builder.BuildStep>emptyList();
                     } else {
                         return Collections.singletonList(ValidationResult.init.message(errorMessage()).element(rule));

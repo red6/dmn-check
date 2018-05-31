@@ -42,9 +42,4 @@ public class InputEntryTypeValidator extends TypeValidator {
     public String errorMessage() {
         return "Type of input entry does not match type of input expression";
     }
-
-    @Override
-    boolean isEmptyAllowed() {
-        return true;
-    }
 }
