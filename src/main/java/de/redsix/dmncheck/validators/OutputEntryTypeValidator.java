@@ -4,10 +4,8 @@ import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.Eithers;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
-import org.camunda.bpm.model.dmn.instance.OutputEntry;
 
 import java.util.List;
 import java.util.stream.Collectors;
