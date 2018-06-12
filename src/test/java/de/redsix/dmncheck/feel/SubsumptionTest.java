@@ -34,6 +34,19 @@ class SubsumptionTest {
         assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, emptyExpression, Subsumption.eq));
     }
 
+    @Test
+    void identicalStringsSubsumeEachOther() {
+        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"somestring\"");
+        assertEquals(Optional.of(true), Subsumption.subsumes(stringExpression, stringExpression, Subsumption.eq));
+    }
+
+    @Test
+    void differentStringsDoNotSubsumeEachOther() {
+        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"somestring\"");
+        final FeelExpression otherStringExpression = FeelParser.PARSER.parse("\"otherstring\"");
+        assertEquals(Optional.of(false), Subsumption.subsumes(stringExpression, otherStringExpression, Subsumption.eq));
+    }
+
     @ParameterizedTest
     @CsvSource({"[1..2], [1..2]", "[1..9], [4..5]", "[1..5], (1..5)", "[1..5], [4..5]", "[1..5], [1..2]"})
     void rangeExpressionsThatSubsumeEachOther(final String subsumingInput, final String subsumedInput) {
