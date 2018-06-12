@@ -34,10 +34,6 @@ public abstract class ExpressionType {
     @Override
     public abstract String toString();
 
-    public static boolean isValid(final ExpressionType givenType) {
-        return !TOP().equals(givenType);
-    }
-
     public static boolean isNumeric(final ExpressionType givenType) {
         return !TOP().equals(givenType) && Arrays.asList(INTEGER(), LONG(), DOUBLE()).contains(givenType);
     }
