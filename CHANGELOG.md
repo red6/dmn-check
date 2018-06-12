@@ -1,3 +1,9 @@
+### 1.0.3 (2018-06-12)
+
+Bugfixes:
+
+  - Fix detection of shadowed rules with strings
+
 ## 1.0.2 (2018-05-31)
 
 Bugfixes:
