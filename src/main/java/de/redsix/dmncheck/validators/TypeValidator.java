@@ -5,6 +5,7 @@ import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
 import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.Util;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
@@ -59,19 +60,22 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
     }
 
     private List<ValidationResult.Builder.BuildStep> checkEnumValue(final String className, final String stringValue, final Rule rule) {
-        final List<Class<? extends Enum>> enums = new ArrayList<>();
-        new FastClasspathScanner(className).matchSubclassesOf(Enum.class, enums::add).scan();
-
-        if (enums.size() == 1) {
-            final List<String> foo = Arrays.stream(enums.get(0).getEnumConstants()).map(Enum::name).collect(Collectors.toList());
-            final String value = stringValue.substring(1, stringValue.length() -1 );
-            if (foo.contains(value)) {
-                return Collections.emptyList();
+        try {
+            Class<?> anEnum = ProjectClassLoader.instance.classLoader.loadClass(className);
+            if (anEnum.isEnum()) {
+                final List<String> foo = Arrays.stream(((Class<? extends Enum>) anEnum).getEnumConstants()).map(Enum::name).collect(Collectors.toList());
+                final String value = stringValue.substring(1, stringValue.length() -1 );
+                if (foo.contains(value)) {
+                    return Collections.emptyList();
+                } else {
+                    return Collections.singletonList(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className).element(rule));
+                }
             } else {
-                return Collections.singletonList(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className).element(rule));
+                return Collections.singletonList(ValidationResult.init.message("Class " + className + " is no enum.").element(rule));
             }
-        } else {
-            return Collections.singletonList(ValidationResult.init.message("Found " + className + " more than once on the classpath.").element(rule));
+        }
+        catch (ClassNotFoundException e) {
+            return Collections.singletonList(ValidationResult.init.message("Class " + className + " not found on project classpath.").element(rule));
         }
     }
 
