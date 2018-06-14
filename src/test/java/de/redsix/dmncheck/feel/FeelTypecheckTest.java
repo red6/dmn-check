@@ -102,7 +102,8 @@ class FeelTypecheckTest {
         final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getLeft(type));
-        assertEquals("Non-numeric type in UnaryExpression.", Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals("Operator < expects numeric type but got " + ExpressionTypes.STRING(),
+                Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test

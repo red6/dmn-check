@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
+import static de.redsix.dmncheck.util.Eithers.right;
 
 public final class FeelTypecheck {
 
@@ -55,17 +56,40 @@ public final class FeelTypecheck {
         return typecheck(context, left).bind(leftType ->
                 typecheck(context, right).bind(rightType ->
                     check(leftType.equals(rightType), "Types of left and right operand do not match.")
-                    .orElse(left(leftType))
+                    .orElse(checkOperatorCompatibility(leftType, operator))
                 ));
     }
 
     private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
         final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE);
         return typecheck(context, operand).bind(type ->
-                    check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.").map(Optional::of)
-                    .orElseGet(() -> check(ExpressionType.isNumeric(type), "Non-numeric type in UnaryExpression."))
-                    .orElse(left(type))
+                    check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.")
+                    .orElse(checkOperatorCompatibility(type, operator))
                 );
+    }
+
+    private static Either<ExpressionType, ValidationResult.Builder.ElementStep> checkOperatorCompatibility(final ExpressionType type, final Operator operator) {
+        switch (operator) {
+            case GE:
+            case GT:
+            case LE:
+            case LT:
+            case DIV:
+            case EXP:
+            case MUL:
+            case ADD:
+            case SUB:
+                return check(ExpressionType.isNumeric(type),
+                        "Operator " + operator + " expects numeric type but got " + type).orElse(left(type));
+            case OR:
+            case AND:
+            case NOT:
+                return check(ExpressionTypes.BOOLEAN().equals(type),
+                        "Operator " + operator + "expects boolean but got " + type).orElse(left(type));
+            default:
+                return Eithers.right(ValidationResult.init.message("Unexpected operand " + operator));
+
+        }
     }
 
     private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckRangeExpression(final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
