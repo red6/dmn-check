@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.util.TestEnum;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
@@ -148,6 +149,8 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
+        ProjectClassLoader.instance.classLoader = Thread.currentThread().getContextClassLoader();
+
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertTrue(validationResults.isEmpty());
@@ -166,6 +169,8 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         inputEntry.setTextContent("\"" + TestEnum.some.name() + "unkown\"");
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
+
+        ProjectClassLoader.instance.classLoader = Thread.currentThread().getContextClassLoader();
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 

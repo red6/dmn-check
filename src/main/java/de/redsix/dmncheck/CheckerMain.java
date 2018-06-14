@@ -3,20 +3,29 @@ package de.redsix.dmncheck;
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.Validator;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,9 +33,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mojo(name = "check-dmn", requiresProject = false)
+@Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 class CheckerMain extends AbstractMojo {
 
     private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
@@ -43,8 +53,14 @@ class CheckerMain extends AbstractMojo {
     @SuppressWarnings("nullness")
     private String[] validators;
 
+    @Component
+    @SuppressWarnings("nullness")
+    private MavenProject project;
+
     @Override
     public void execute() throws MojoExecutionException {
+        loadProjectclasspath();
+
         final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
 
@@ -163,6 +179,24 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
+    private void loadProjectclasspath() throws MojoExecutionException {
+        final List<URL> listUrl = new ArrayList<>();
+
+        Set<Artifact> deps = project.getArtifacts();
+        for (Artifact artifact : deps) {
+            final URL url;
+            try {
+                url = artifact.getFile().toURI().toURL();
+                listUrl.add(url);
+            }
+            catch (MalformedURLException e) {
+                throw new MojoExecutionException("Failed to construct project class loader.");
+            }
+        }
+
+        ProjectClassLoader.instance.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
+    }
+
     void setExcludes(final String[] excludes) {
         this.excludes = excludes;
     }
@@ -175,4 +209,7 @@ class CheckerMain extends AbstractMojo {
         this.validators = validators;
     }
 
+    public void setProject(MavenProject project) {
+        this.project = project;
+    }
 }
