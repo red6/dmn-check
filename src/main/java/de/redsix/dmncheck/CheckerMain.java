@@ -1,8 +1,8 @@
 package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.result.PrettyPrintValidationResults;
-import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
@@ -11,8 +11,6 @@ import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -29,11 +27,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
@@ -53,7 +47,7 @@ class CheckerMain extends AbstractMojo {
     @SuppressWarnings("nullness")
     private String[] validators;
 
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     @SuppressWarnings("nullness")
     private MavenProject project;
 
