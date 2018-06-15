@@ -8,12 +8,10 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.Util;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.Rule;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

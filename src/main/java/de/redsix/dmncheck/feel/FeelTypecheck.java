@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
-import static de.redsix.dmncheck.util.Eithers.right;
 
 public final class FeelTypecheck {
 
