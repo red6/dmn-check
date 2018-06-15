@@ -152,7 +152,6 @@ class CheckerMain extends AbstractMojo {
         final List<Class<? extends Validator>> validatorClasses = new ArrayList<>();
         new FastClasspathScanner(scanSpec)
                 .disableRecursiveScanning()
-                .strictWhitelist()
                 .matchSubclassesOf(GenericValidator.class, validatorClasses::add)
                 .matchSubclassesOf(SimpleValidator.class, validatorClasses::add)
                 .matchClassesImplementing(Validator.class, validatorClasses::add)
