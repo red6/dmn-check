@@ -433,7 +433,7 @@
         <dependency>
             <groupId>io.github.lukehutch</groupId>
             <artifactId>fast-classpath-scanner</artifactId>
-            <version>3.0.2</version>
+            <version>3.0.3</version>
         </dependency>
 
     </dependencies>
