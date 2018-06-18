@@ -4,6 +4,7 @@ import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypes;
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.ProjectClassLoader;
@@ -29,46 +30,52 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
     Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
             final Stream<ExpressionType> types) {
-        return Util.zip(expressions, variables, types, (expression, variable, type) -> {
-            final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
+                .zip(expressions, variables, types, (expression, variable, type) -> {
+                    final FeelTypecheck.Context context = new FeelTypecheck.Context();
 
-            context.put(variable, type);
+                    context.put(variable, type);
 
-            return typecheckExpression(rule, expression, context, type);
-        }).filter(Optional::isPresent).map(Optional::get).map(ValidationResult.Builder.BuildStep::build);
+                    return typecheckExpression(expression, context, type);
+                });
+
+        return buildValidationResults(intermediateResults, rule);
     }
 
     Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
             final Stream<ExpressionType> types) {
-        return Util.zip(expressions, types, (expression, type) -> {
-            final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
+        final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
+                .zip(expressions, types, (expression, type) -> {
+                    final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
-            return typecheckExpression(rule, expression, emptyContext, type);
-        }).filter(Optional::isPresent).map(Optional::get).map(ValidationResult.Builder.BuildStep::build);
+                    return typecheckExpression(expression, emptyContext, type);
+                });
+
+        return buildValidationResults(intermediateResults, rule);
     }
 
-    private Optional<ValidationResult.Builder.BuildStep> typecheckExpression(Rule rule, DmnElement inputEntry, FeelTypecheck.Context context,
+    private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(DmnElement inputEntry, FeelTypecheck.Context context,
             ExpressionType expectedType) {
         return FeelParser.parse(inputEntry.getTextContent()).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
                 .map(type -> {
                     if (type.isSubtypeOf(ExpressionTypes.STRING()) && ExpressionTypes.getClassName(expectedType).isPresent()) {
-                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), inputEntry.getTextContent(), rule);
+                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), inputEntry.getTextContent());
                     } else if (type.isSubtypeOf(expectedType) || ExpressionTypes.TOP().equals(type)) {
-                        return Optional.<ValidationResult.Builder.BuildStep>empty();
+                        return Optional.<ValidationResult.Builder.ElementStep>empty();
                     } else {
-                        return Optional.of(ValidationResult.init.message(errorMessage()).element(rule));
+                        return Optional.of(ValidationResult.init.message(errorMessage()).severity(Severity.ERROR));
                     }
-                }).match(Function.identity(), validationResultBuilder -> Optional.of(validationResultBuilder.element(rule)));
+                }).match(Function.identity(), Optional::of);
     }
 
-    private Optional<ValidationResult.Builder.BuildStep> checkEnumValue(final String className, final String stringValue, final Rule rule) {
+    private Optional<ValidationResult.Builder.ElementStep> checkEnumValue(final String className, final String stringValue) {
         return loadEnum(className)
                 .bind(this::isEnum)
                 .bind(clazz -> doesStringBelongToEnum(className, stringValue, clazz))
-                .match((__) -> Optional.empty(), validationResultBuilder -> Optional.of(validationResultBuilder.element(rule)));
+                .match((__) -> Optional.empty(), Optional::of);
     }
 
-    private Either<? extends Class<?>, ValidationResult.Builder.ElementStep> doesStringBelongToEnum(String className, String stringValue,
+    private Either<Class<?>, ValidationResult.Builder.ElementStep> doesStringBelongToEnum(String className, String stringValue,
             Class<?> clazz) {
         final List<String> enumConstants = Arrays.stream(((Class<? extends Enum>) clazz).getEnumConstants()).map(Enum::name)
                 .collect(Collectors.toList());
@@ -95,6 +102,15 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
         } else {
             return right(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
+    }
+
+    private Stream<ValidationResult> buildValidationResults(final Stream<Optional<ValidationResult.Builder.ElementStep>> elementSteps,
+            final Rule rule) {
+        return elementSteps
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(validationResultBuilder -> validationResultBuilder.element(rule))
+                .map(ValidationResult.Builder.BuildStep::build);
     }
 
     @Override
