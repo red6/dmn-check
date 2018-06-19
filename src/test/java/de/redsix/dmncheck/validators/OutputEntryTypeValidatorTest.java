@@ -19,7 +19,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     private final OutputEntryTypeValidator testee = new OutputEntryTypeValidator();
 
     @Test
-    void shouldAcceptWellTypedInputExpression() {
+    void shouldAcceptWellTypedOutputExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
@@ -70,7 +70,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldAcceptWellTypedInputExpressionWithoutTypeDeclaration() {
+    void shouldAcceptWellTypedOutputExpressionWithoutTypeDeclaration() {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
 
@@ -103,7 +103,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldRejectIllTypedInputExpression() {
+    void shouldRejectIllTypedOutputExpression() {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
@@ -126,7 +126,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldRejectIllTypedInputExpressionWithoutTypeDeclaration() {
+    void shouldRejectIllTypedOutputExpressionWithoutTypeDeclaration() {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
 
