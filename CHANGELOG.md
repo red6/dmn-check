@@ -1,4 +1,14 @@
-### 1.0.3 (2018-06-12)
+## 1.0.4 (2018-06-19)
+
+Bugfixes:
+
+  - Enum validator searches for classes on the project classpath
+  
+Features:
+
+  - Check that id and name of decisions are set
+
+## 1.0.3 (2018-06-12)
 
 Bugfixes:
 
