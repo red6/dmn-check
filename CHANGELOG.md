@@ -1,3 +1,9 @@
+## 1.0.5 (2018-06-21)
+
+Bugfixes:
+
+  - Fix incompatibilities between maven 3.3 and 3.5
+
 ## 1.0.4 (2018-06-19)
 
 Bugfixes:
