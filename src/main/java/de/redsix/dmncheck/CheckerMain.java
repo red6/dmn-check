@@ -202,7 +202,7 @@ class CheckerMain extends AbstractMojo {
         this.validators = validators;
     }
 
-    public void setProject(MavenProject project) {
+    void setProject(MavenProject project) {
         this.project = project;
     }
 }
