@@ -3,8 +3,6 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.HitPolicy;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
