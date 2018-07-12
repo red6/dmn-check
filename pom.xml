@@ -65,6 +65,7 @@
 
         <checker.framework.version>2.5.3</checker.framework.version>
         <junit.version>5.2.0</junit.version>
+        <derive4j.version>0.12.4</derive4j.version>
     </properties>
 
     <build>
@@ -81,7 +82,7 @@
                             <path>
                                 <groupId>org.derive4j</groupId>
                                 <artifactId>derive4j</artifactId>
-                                <version>0.12.4</version>
+                                <version>${derive4j.version}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
@@ -195,7 +196,7 @@
                                         <path>
                                             <groupId>org.derive4j</groupId>
                                             <artifactId>derive4j</artifactId>
-                                            <version>0.12.4</version>
+                                            <version>${derive4j.version}</version>
                                         </path>
                                     </annotationProcessorPaths>
                                 </configuration>
@@ -410,7 +411,7 @@
         <dependency>
             <groupId>org.derive4j</groupId>
             <artifactId>derive4j</artifactId>
-            <version>0.12.4</version>
+            <version>${derive4j.version}</version>
             <optional>true</optional>
         </dependency>
 
