@@ -104,7 +104,7 @@ We look again a rule two and four. This time all their inputs are identical, but
 
 ### Shadowed rules
 
-Shadowing can also lead to strange misbehaviours that can be easy to stop but sometimes also very subtle. Have a look at the following example with hit policy `FIRST`:
+Shadowing can also lead to strange behaviours that can be easy to stop but sometimes also very subtle. Have a look at the following example with hit policy `FIRST`:
 
 | Season (I)    | How many guests (I) | Dish (O)    |
 | ------------- | ------------------- | ----------- |
@@ -129,7 +129,7 @@ Decision making often involves a fixed set of values (eg. a list of supported cu
 
 ## Releated work
 
-Althought there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the releated work when starting the work on `dmn-check`.
+Although there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the related work when starting the work on `dmn-check`.
 
 ### A Tool for the Analysis of DMN Decision Tables
 
