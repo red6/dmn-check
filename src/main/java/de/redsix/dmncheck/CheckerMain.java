@@ -7,7 +7,9 @@ import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.Validator;
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 class CheckerMain extends AbstractMojo {
@@ -143,24 +146,36 @@ class CheckerMain extends AbstractMojo {
 
     private List<Validator> getValidators() {
         final String[] scanSpec;
-        if (validators != null) {
+        if (validators == null) {
+            scanSpec = new String[] {VALIDATOR_PACKAGE};
+        } else if (validators.length > 0) {
             scanSpec = validators;
         } else {
-            scanSpec = new String[] {VALIDATOR_PACKAGE};
+            return Collections.emptyList();
         }
 
-        final List<Class<? extends Validator>> validatorClasses = new ArrayList<>();
-        new FastClasspathScanner(scanSpec)
-                .disableRecursiveScanning()
-                .matchSubclassesOf(GenericValidator.class, validatorClasses::add)
-                .matchSubclassesOf(SimpleValidator.class, validatorClasses::add)
-                .matchClassesImplementing(Validator.class, validatorClasses::add)
+        // FIXME Pascal Wittmann, 27.08.2018: Is there a way to avoid splitting the identifiers into class and package identifiers?
+        final ScanResult scanResult = new ClassGraph()
+                .whitelistPackagesNonRecursive(
+                    Stream.of(scanSpec).filter(identifier -> !this.isClassIdentifier(identifier)).toArray(String[]::new)
+                )
+                .whitelistClasses(Stream.of(scanSpec).filter(this::isClassIdentifier).toArray(String[]::new))
                 .scan();
-        return validatorClasses.stream()
+
+        ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
+        validatorClasses = validatorClasses.union(scanResult.getSubclasses(GenericValidator.class.getName()));
+        validatorClasses = validatorClasses.union(scanResult.getSubclasses(SimpleValidator.class.getName()));
+
+        return validatorClasses.loadClasses(Validator.class).stream()
                 .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
                 .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                 .map(this::instantiateValidator)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isClassIdentifier(String identifier) {
+        String lastPart = identifier.substring(identifier.lastIndexOf('.') + 1);
+        return !lastPart.isEmpty() && Character.isUpperCase(lastPart.charAt(0));
     }
 
     private Validator instantiateValidator(final Class<? extends Validator> validator) {

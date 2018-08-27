@@ -429,9 +429,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.lukehutch</groupId>
-            <artifactId>fast-classpath-scanner</artifactId>
-            <version>3.1.11</version>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.1.2</version>
         </dependency>
 
     </dependencies>
