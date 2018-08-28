@@ -154,7 +154,6 @@ class CheckerMain extends AbstractMojo {
             return Collections.emptyList();
         }
 
-        // FIXME Pascal Wittmann, 27.08.2018: Is there a way to avoid splitting the identifiers into class and package identifiers?
         final ScanResult scanResult = new ClassGraph()
                 .whitelistPackagesNonRecursive(
                     Stream.of(scanSpec).filter(identifier -> !this.isClassIdentifier(identifier)).toArray(String[]::new)
