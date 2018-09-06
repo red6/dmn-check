@@ -5,16 +5,17 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,13 +23,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@EnableRuleMigrationSupport
-public class CheckerMainTest {
+@ExtendWith(TempDirectory.class)
+class CheckerMainTest {
 
     final private CheckerMain testee = new CheckerMain();
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @BeforeEach
     void setUp() {
@@ -38,30 +36,36 @@ public class CheckerMainTest {
     }
 
     @Test
-    void readsAllDmnFilesRecursively() throws IOException {
-        File folder1_1 = temporaryFolder.newFolder("folder1-0", "folder1-1");
-        File folder1 = folder1_1.getParentFile();
-        File folder2 = temporaryFolder.newFolder("folder2-0");
+    void readsAllDmnFilesRecursively(@TempDirectory.TempDir Path temporaryFolder) throws IOException {
+        Path folder1 = temporaryFolder.resolve("folder1");
+        Path folder1_1 = folder1.resolve("folder1-1");
+        Path folder2 = temporaryFolder.resolve("folder2");
 
-        final List<String> dmnFileNames = Arrays.asList(temporaryFolder.getRoot() + File.separator + "file1.dmn",
-                folder1.getAbsolutePath() + File.separator + "file1.dmn", folder1.getAbsolutePath() + File.separator + "file2.dmn",
-                folder1_1.getAbsolutePath() + File.separator + "file2.dmn",
-                folder2.getAbsolutePath() + File.separator + "file2.dmn");
+        final List<String> dmnFileNames = Arrays.asList(temporaryFolder.toAbsolutePath() + File.separator + "file1.dmn",
+                folder1.toAbsolutePath() + File.separator + "file1.dmn",
+                folder1.toAbsolutePath() + File.separator + "file2.dmn",
+                folder1_1.toAbsolutePath() + File.separator + "file2.dmn",
+                folder2.toAbsolutePath() + File.separator + "file2.dmn");
 
-        final List<String> txtFileNames = Arrays.asList(temporaryFolder.getRoot() + File.separator + "file1.txt",
-                folder1.getAbsolutePath() + File.separator + "file1.txt", folder1.getAbsolutePath() + File.separator + "file2.txt",
-                folder1_1.getAbsolutePath() + File.separator + "file2.txt",
-                folder2.getAbsolutePath() + File.separator + "file2.txt");
+        final List<String> txtFileNames = Arrays.asList(temporaryFolder.toAbsolutePath() + File.separator + "file1.txt",
+                folder1.toAbsolutePath() + File.separator + "file1.txt",
+                folder1.toAbsolutePath() + File.separator + "file2.txt",
+                folder1_1.toAbsolutePath() + File.separator + "file2.txt",
+                folder2.toAbsolutePath() + File.separator + "file2.txt");
 
         final List<String> allFileNames = Stream.concat(dmnFileNames.stream(), txtFileNames.stream()).collect(Collectors.toList());
 
         for (String fileName : allFileNames) {
             File file = new File(fileName);
+            file.getParentFile().mkdirs();
             Assertions.assertTrue(file.createNewFile());
         }
 
+        // additional empty directory
+        Files.createDirectory(folder1.resolve("folder1-0"));
+
         final List<String> result = testee
-                .getFileNames("dmn", Collections.singletonList(temporaryFolder.getRoot().getAbsoluteFile().toPath()));
+                .getFileNames("dmn", Collections.singletonList(temporaryFolder));
 
         MatcherAssert.assertThat(result, Matchers.containsInAnyOrder(dmnFileNames.toArray()));
     }
