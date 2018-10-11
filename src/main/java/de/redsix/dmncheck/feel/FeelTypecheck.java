@@ -60,7 +60,7 @@ public final class FeelTypecheck {
     }
 
     private static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
-        final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE);
+        final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE, Operator.NOT);
         return typecheck(context, operand).bind(type ->
                     check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.")
                     .orElse(checkOperatorCompatibility(type, operator))
@@ -82,9 +82,10 @@ public final class FeelTypecheck {
                         "Operator " + operator + " expects numeric type but got " + type).orElse(left(type));
             case OR:
             case AND:
-            case NOT:
                 return check(ExpressionTypes.BOOLEAN().equals(type),
                         "Operator " + operator + " expects boolean but got " + type).orElse(left(type));
+            case NOT:
+                return left(type);
             default:
                 return Eithers.right(ValidationResult.init.message("Unexpected operand " + operator));
 

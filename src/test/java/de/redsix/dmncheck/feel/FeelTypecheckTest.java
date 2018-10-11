@@ -169,4 +169,20 @@ class FeelTypecheckTest {
         assertEquals("Type is unsupported for RangeExpressions.",
                 Eithers.getRight(type).orElseThrow(AssertionError::new).getMessage());
     }
+
+    @Test
+    void notExpressionContainingTrueIsTypable() {
+        final FeelExpression expression = FeelParser.PARSER.parse("not(true)");
+        final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(left(ExpressionTypes.BOOLEAN()), type);
+    }
+
+    @Test
+    void notExpressionContainingDisjunctionWithStringsIsTypable() {
+        final FeelExpression expression = FeelParser.PARSER.parse("not(\"foo\", \"bar\")");
+        final Either<ExpressionType, ValidationResult.Builder.ElementStep> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(left(ExpressionTypes.STRING()), type);
+    }
 }
