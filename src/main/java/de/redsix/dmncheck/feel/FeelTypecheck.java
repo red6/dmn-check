@@ -84,7 +84,7 @@ public final class FeelTypecheck {
             case AND:
             case NOT:
                 return check(ExpressionTypes.BOOLEAN().equals(type),
-                        "Operator " + operator + "expects boolean but got " + type).orElse(left(type));
+                        "Operator " + operator + " expects boolean but got " + type).orElse(left(type));
             default:
                 return Eithers.right(ValidationResult.init.message("Unexpected operand " + operator));
 
