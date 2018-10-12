@@ -26,7 +26,7 @@ public final class PrettyPrintValidationResults {
 
         for (ValidationResult validationResult : validationResults) {
             final String errorMessage =
-                    "Element '" + delegate(validationResult.getElement()) + "'" + " of severity '" + validationResult.getElement()
+                    "Element '" + delegate(validationResult.getElement()) + "'" + " of type '" + validationResult.getElement()
                             .getElementType().getTypeName() + "'" + " has the following validation result: " + validationResult
                             .getMessage();
             getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
