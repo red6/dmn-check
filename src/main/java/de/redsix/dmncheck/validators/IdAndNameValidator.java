@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-abstract class IdAndNameValidator<T extends DmnElement & NamedElement> extends SimpleValidator<T> {
+public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> extends SimpleValidator<T> {
 
     public abstract String getName();
 
