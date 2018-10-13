@@ -1,6 +1,7 @@
 package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.validators.DuplicateRuleValidator;
+import de.redsix.dmncheck.validators.InputEntryTypeValidator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.hamcrest.MatcherAssert;
@@ -140,6 +141,11 @@ class CheckerMainTest {
         final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
         Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+    }
+
+    @Test
+    void shouldAcceptDishDecisionRequirementGraphExample() throws Exception {
+        testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn")));
     }
 
     private File getFile(final String filename) {
