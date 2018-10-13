@@ -4,6 +4,7 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.instance.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -33,6 +34,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    @Disabled // Will only work once camunda/camunda-dmn-model/pull/6 is merged
     void shouldAllowConnectedInputDataElement() {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
