@@ -4,8 +4,6 @@ import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
-import de.redsix.dmncheck.validators.core.GenericValidator;
-import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.Validator;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
@@ -155,15 +153,14 @@ class CheckerMain extends AbstractMojo {
         }
 
         final ScanResult scanResult = new ClassGraph()
+                .whitelistClasses(Validator.class.getName())
                 .whitelistPackagesNonRecursive(
                     Stream.of(scanSpec).filter(identifier -> !this.isClassIdentifier(identifier)).toArray(String[]::new)
                 )
                 .whitelistClasses(Stream.of(scanSpec).filter(this::isClassIdentifier).toArray(String[]::new))
                 .scan();
 
-        ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
-        validatorClasses = validatorClasses.union(scanResult.getSubclasses(GenericValidator.class.getName()));
-        validatorClasses = validatorClasses.union(scanResult.getSubclasses(SimpleValidator.class.getName()));
+        final ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
 
         return validatorClasses.loadClasses(Validator.class).stream()
                 .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
