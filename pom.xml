@@ -65,7 +65,7 @@
 
         <checker.framework.version>2.5.6</checker.framework.version>
         <junit.version>5.3.1</junit.version>
-        <derive4j.version>0.12.4</derive4j.version>
+        <derive4j.version>1.0.0</derive4j.version>
     </properties>
 
     <build>
