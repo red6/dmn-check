@@ -3,7 +3,15 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.instance.*;
+import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
+import org.camunda.bpm.model.dmn.instance.Decision;
+import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.camunda.bpm.model.dmn.instance.InformationRequirement;
+import org.camunda.bpm.model.dmn.instance.Input;
+import org.camunda.bpm.model.dmn.instance.InputData;
+import org.camunda.bpm.model.dmn.instance.InputExpression;
+import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
+import org.camunda.bpm.model.dmn.instance.Output;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -90,12 +98,23 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
     @Test
     void shouldAllowTwoConnectedDecision() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setName("someName");
+        decisionTable.getOutputs().add(output);
+
         final Decision otherDecision = modelInstance.newInstance(Decision.class);
 
         final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
         informationRequirement.setRequiredDecision(decision);
-
         otherDecision.addChildElement(informationRequirement);
+
+        final DecisionTable otherDecisionTable = modelInstance.newInstance(DecisionTable.class);
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        inputExpression.setTextContent("someName");
+        input.setInputExpression(inputExpression);
+        otherDecisionTable.getInputs().add(input);
+        otherDecision.addChildElement(otherDecisionTable);
 
         definitions.addChildElement(otherDecision);
 
@@ -107,6 +126,8 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     @Test
     void shouldDetectUnconnectdDecision() {
         final Decision otherDecision = modelInstance.newInstance(Decision.class);
+        final DecisionTable otherDecisiontable = modelInstance.newInstance(DecisionTable.class);
+        otherDecision.addChildElement(otherDecisiontable);
 
         definitions.addChildElement(otherDecision);
 
@@ -117,6 +138,39 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("The following decisions are not connected to an other decision: " + Arrays.asList(decision, otherDecision), validationResult.getMessage()),
                 () -> assertEquals(definitions, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
+    void shouldDetectTwoConnectedDecisionWithInOutputsThatDoNotMatch() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setName("someName");
+        decisionTable.getOutputs().add(output);
+
+        final Decision otherDecision = modelInstance.newInstance(Decision.class);
+
+        final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
+        informationRequirement.setRequiredDecision(decision);
+        otherDecision.addChildElement(informationRequirement);
+
+        final DecisionTable otherDecisionTable = modelInstance.newInstance(DecisionTable.class);
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        inputExpression.setTextContent("someOtherName");
+        input.setInputExpression(inputExpression);
+        otherDecisionTable.getInputs().add(input);
+        otherDecision.addChildElement(otherDecisionTable);
+
+        definitions.addChildElement(otherDecision);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
+                () -> assertEquals(otherDecision, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
