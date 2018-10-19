@@ -53,9 +53,9 @@ Using this configuration the plugin will search all folders of the current proje
                     <excludes>
                         <exclude>test.dmn</exclude>
                     </excludes>
-                    <validators>
-                        <validator>de.redsix.dmncheck.validators.ShadowedRuleValidator</validator>
-                    </validators>
+                    <validatorClasses>
+                        <validatorClass>de.redsix.dmncheck.validators.ShadowedRuleValidator</validatorClass>
+                    </validatorClasses>
                 </configuration>
                 
 ### Standalone usage

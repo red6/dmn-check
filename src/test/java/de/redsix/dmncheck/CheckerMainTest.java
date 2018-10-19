@@ -125,17 +125,15 @@ class CheckerMainTest {
 
     @Test
     void shouldLoadNoValidatorFromConfig() throws MojoExecutionException {
-        testee.setValidators(new String[] { });
+        testee.setValidatorPackages(new String[] { });
 
         testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
     }
 
     @Test
     void shouldLoadDuplicateRuleValidatorFromConfig() {
-        testee.setValidators(new String[] {
-                InputEntryTypeValidator.class.getCanonicalName(),
-                InputEntryTypeValidator.class.getPackage().getName()
-        });
+        testee.setValidatorClasses(new String[] {InputEntryTypeValidator.class.getCanonicalName()});
+        testee.setValidatorPackages(new String[] {InputEntryTypeValidator.class.getPackage().getName()});
 
         final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));

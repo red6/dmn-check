@@ -27,9 +27,12 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 class CheckerMain extends AbstractMojo {
@@ -47,7 +50,11 @@ class CheckerMain extends AbstractMojo {
 
     @Parameter
     @SuppressWarnings("nullness")
-    private String[] validators;
+    private String[] validatorPackages;
+
+    @Parameter
+    @SuppressWarnings("nullness")
+    private String[] validatorClasses;
 
     @Parameter( defaultValue = "${project}", readonly = true )
     @SuppressWarnings("nullness")
@@ -144,21 +151,19 @@ class CheckerMain extends AbstractMojo {
     }
 
     private List<Validator> getValidators() {
-        final String[] scanSpec;
-        if (validators == null) {
-            scanSpec = new String[] {VALIDATOR_PACKAGE};
-        } else if (validators.length > 0) {
-            scanSpec = validators;
-        } else {
-            return Collections.emptyList();
+        if (validatorPackages == null) {
+            validatorPackages = new String[] {VALIDATOR_PACKAGE, VALIDATOR_PACKAGE + ".core"};
+        }
+
+        if (validatorClasses == null) {
+            validatorClasses = new String[] { };
         }
 
         final ScanResult scanResult = new ClassGraph()
                 .whitelistClasses(Validator.class.getName())
-                .whitelistPackagesNonRecursive(
-                    Stream.of(scanSpec).filter(identifier -> !this.isClassIdentifier(identifier)).toArray(String[]::new)
-                )
-                .whitelistClasses(Stream.of(scanSpec).filter(this::isClassIdentifier).toArray(String[]::new))
+                .whitelistPackages(VALIDATOR_CORE_PACKAGE)
+                .whitelistPackagesNonRecursive(validatorPackages)
+                .whitelistClasses(validatorClasses)
                 .scan();
 
         final ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
@@ -168,11 +173,6 @@ class CheckerMain extends AbstractMojo {
                 .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                 .map(this::instantiateValidator)
                 .collect(Collectors.toList());
-    }
-
-    private boolean isClassIdentifier(String identifier) {
-        String lastPart = identifier.substring(identifier.lastIndexOf('.') + 1);
-        return !lastPart.isEmpty() && Character.isUpperCase(lastPart.charAt(0));
     }
 
     private Validator instantiateValidator(final Class<? extends Validator> validator) {
@@ -210,8 +210,12 @@ class CheckerMain extends AbstractMojo {
         this.searchPaths = searchPaths;
     }
 
-    void setValidators(final String[] validators) {
-        this.validators = validators;
+    void setValidatorPackages(String[] validatorPackages) {
+        this.validatorPackages = validatorPackages;
+    }
+
+    void setValidatorClasses(String[] validatorClasses) {
+        this.validatorClasses = validatorClasses;
     }
 
     void setProject(MavenProject project) {
