@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 class CheckerMain extends AbstractMojo {
 
     private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
+    private static final String VALIDATOR_CORE_PACKAGE = "de.redsix.dmncheck.validators.core";
 
     @Parameter
     @SuppressWarnings("nullness")
