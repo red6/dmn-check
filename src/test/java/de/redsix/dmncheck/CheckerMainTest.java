@@ -1,6 +1,5 @@
 package de.redsix.dmncheck;
 
-import de.redsix.dmncheck.validators.DuplicateRuleValidator;
 import de.redsix.dmncheck.validators.InputEntryTypeValidator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
