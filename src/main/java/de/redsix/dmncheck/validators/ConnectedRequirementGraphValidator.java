@@ -87,7 +87,7 @@ public class ConnectedRequirementGraphValidator extends SimpleValidator<Definiti
     private List<ValidationResult> validateConnectedDecisions(Collection<Decision> decisions) {
         final List<ValidationResult> validationResults = new ArrayList<>();
 
-        decisions.forEach(decision -> {
+        decisions.forEach(decision ->
             applyOnDecsionTable(decision, decisionTable -> {
                 final Set<String> inputIds = decisionTable.getInputs().stream()
                         .map(Input::getInputExpression)
@@ -97,7 +97,7 @@ public class ConnectedRequirementGraphValidator extends SimpleValidator<Definiti
                 decision.getInformationRequirements().stream()
                         .map(InformationRequirement::getRequiredDecision)
                         .filter(Objects::nonNull)
-                        .forEach(requiredDecision -> {
+                        .forEach(requiredDecision ->
                             applyOnDecsionTable(requiredDecision, requiredDecisionTable -> {
                                         final Set<String> outputIds = requiredDecisionTable.getOutputs().stream()
                                                 .map(OutputClause::getName)
@@ -112,10 +112,10 @@ public class ConnectedRequirementGraphValidator extends SimpleValidator<Definiti
                                                     .build());
                                         }
                                     }
-                            ).ifPresent(validationResults::add);
-                        });
-            }).ifPresent(validationResults::add);
-        });
+                            ).ifPresent(validationResults::add)
+                        );
+            }).ifPresent(validationResults::add)
+        );
 
         return validationResults;
     }
