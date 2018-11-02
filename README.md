@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
 [![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/de1a1aa377520c44c3a7/maintainability)](https://codeclimate.com/github/red6/dmn-check/maintainability)
- [![Maven Central Version](https://img.shields.io/maven-central/v/de.redsix/dmn-check.svg)](http://search.maven.org/#search|gav|1|g:"de.redsix"%20AND%20a:"dmn-check")
+[![Maven Central Version](https://img.shields.io/maven-central/v/de.redsix/dmn-check.svg)](http://search.maven.org/#search|gav|1|g:"de.redsix"%20AND%20a:"dmn-check")
 
 # DMN-Check Maven plugin
 
@@ -14,6 +14,7 @@ Currently the plugin checks among others for the following:
 * Shadowed rules
 * Types of the expressions
 * Correct use of enumerations
+* Correctly connected requirement graphs
 
 In section [Validations](#validations) you find a complete list with detailed descriptions of what they do.
 
@@ -125,7 +126,13 @@ DMN offers a rich expression language called FEEL that can be used to describe t
 
 ### Correct use of enumerations
 
-Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation. 
+Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
+
+### Correctly connected requirement graphs
+
+Besides decision tables DMN provides a way to connect decisions tables with each other. The resulting graphs are called Decision Requirement Graphs (DRG). You can visualize inputs and authorities for decision tables, too.
+
+`dmn-check` verifies that a DRG is a [connected graph](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) and that the in- and ouputs of connected decision tables are compatible.
 
 ## Releated work
 
