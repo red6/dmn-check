@@ -15,11 +15,11 @@ import org.camunda.bpm.model.dmn.instance.Output;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
@@ -32,12 +32,19 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
-        assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        assertEquals(2, validationResults.size());
+        final ValidationResult validationResult1 = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Input null is not connect to any decision.", validationResult.getMessage()),
-                () -> assertEquals(inputData, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+                () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
+                () -> assertEquals(decision, validationResult1.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
+        );
+
+        final ValidationResult validationResult2 = validationResults.get(1);
+        assertAll(
+                () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
+                () -> assertEquals(inputData, validationResult2.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
         );
     }
 
@@ -63,12 +70,19 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
-        assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        assertEquals(2, validationResults.size());
+        final ValidationResult validationResult1 = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Knowledge Source null is not connect to any decision.", validationResult.getMessage()),
-                () -> assertEquals(knowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+                () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
+                () -> assertEquals(decision, validationResult1.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
+        );
+
+        final ValidationResult validationResult2 = validationResults.get(1);
+        assertAll(
+                () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
+                () -> assertEquals(knowledgeSource, validationResult2.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
         );
     }
 
@@ -124,6 +138,41 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldDetectUnconnectdDecisionGraphs() {
+        final KnowledgeSource knowledgeSource = modelInstance.newInstance(KnowledgeSource.class);
+        definitions.addChildElement(knowledgeSource);
+
+        final AuthorityRequirement authorityRequirement = modelInstance.newInstance(AuthorityRequirement.class);
+        authorityRequirement.setRequiredAuthority(knowledgeSource);
+
+        decision.addChildElement(authorityRequirement);
+
+        final Decision otherDecision = modelInstance.newInstance(Decision.class);
+        final DecisionTable otherDecisiontable = modelInstance.newInstance(DecisionTable.class);
+        otherDecision.addChildElement(otherDecisiontable);
+
+        final KnowledgeSource otherKnowledgeSource = modelInstance.newInstance(KnowledgeSource.class);
+        definitions.addChildElement(otherKnowledgeSource);
+
+        final AuthorityRequirement otherAuthorityRequirement = modelInstance.newInstance(AuthorityRequirement.class);
+        otherAuthorityRequirement.setRequiredAuthority(otherKnowledgeSource);
+
+        otherDecision.addChildElement(otherAuthorityRequirement);
+
+        definitions.addChildElement(otherDecision);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertTrue(validationResult.getMessage().startsWith("Found unconnected requirement graphs:")),
+                () -> assertEquals(definitions, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
     void shouldDetectUnconnectdDecision() {
         final Decision otherDecision = modelInstance.newInstance(Decision.class);
         final DecisionTable otherDecisiontable = modelInstance.newInstance(DecisionTable.class);
@@ -133,12 +182,19 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
-        assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        assertEquals(2, validationResults.size());
+        final ValidationResult validationResult1 = validationResults.get(0);
         assertAll(
-                () -> assertEquals("The following decisions are not connected to an other decision: " + Arrays.asList(decision, otherDecision), validationResult.getMessage()),
-                () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+                () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
+                () -> assertEquals(decision, validationResult1.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
+        );
+
+        final ValidationResult validationResult2 = validationResults.get(1);
+        assertAll(
+                () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
+                () -> assertEquals(otherDecision, validationResult2.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
         );
     }
 

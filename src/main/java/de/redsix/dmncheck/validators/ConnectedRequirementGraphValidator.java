@@ -1,141 +1,104 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.core.SimpleValidator;
-import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
+import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import org.camunda.bpm.model.dmn.instance.Decision;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Definitions;
-import org.camunda.bpm.model.dmn.instance.InformationRequirement;
+import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputData;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
-import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class ConnectedRequirementGraphValidator extends SimpleValidator<Definitions> {
-
-    @Override
-    public boolean isApplicable(Definitions definitions) {
-        return true;
-    }
+public class ConnectedRequirementGraphValidator extends RequirementGraphValidator {
 
     @Override
-    public List<ValidationResult> validate(Definitions definitions) {
-        final List<ValidationResult> validationResults = new ArrayList<>();
-        final Collection<Decision> decisions = definitions.getModelInstance().getModelElementsByType(Decision.class);
+    public List<ValidationResult> validate(DirectedAcyclicGraph<DrgElement, DefaultEdge> drg) {
+        ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
 
-        unreferencedElements(InputData.class,
-                decision -> decision.getInformationRequirements().stream().map(InformationRequirement::getRequiredInput),
-                definitions, decisions)
-                .forEach(inputData ->
-                        validationResults.add(ValidationResult.init
-                                .message("Input " + inputData.getName() + " is not connect to any decision.")
-                                .element(inputData)
-                                .build())
-                );
+        if (connectivityInspector.isConnected()) {
+            return drg.edgeSet().stream()
+                    .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
+                    .collect(Collectors.toList());
+        } else {
+            final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
+                    .filter(connectedSet -> connectedSet.size() == 1)
+                    .collect(Collectors.toList());
 
-        unreferencedElements(KnowledgeSource.class,
-                decision -> decision.getAuthorityRequirements().stream().map(AuthorityRequirement::getRequiredAuthority),
-                definitions, decisions)
-                .forEach( knowledgeSource ->
-                        validationResults.add(ValidationResult.init
-                                .message("Knowledge Source " + knowledgeSource.getName() + " is not connect to any decision.")
-                                .element(knowledgeSource)
-                                .build())
-                );
-
-        if (unreferencedElements(Decision.class,
-                decision -> decision.getInformationRequirements().stream().map(InformationRequirement::getRequiredDecision),
-                definitions, decisions).size() > 1) {
-            validationResults.add(ValidationResult.init
-                    .message("The following decisions are not connected to an other decision: " + decisions)
-                    .element(definitions)
-                    .build());
+            if (connectedSetsOfSizeOne.isEmpty()) {
+                final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
+                        .filter(connectedSet -> connectedSet.size() > 1)
+                        .collect(Collectors.toList());
+                return Collections.singletonList(ValidationResult.init
+                        .message("Found unconnected requirement graphs: " + subgraphs)
+                        .element(subgraphs.iterator().next().iterator().next().getParentElement())
+                        .build());
+            } else {
+                return connectedSetsOfSizeOne.stream().map(
+                        connectedSetOfSizeOne -> ValidationResult.init
+                                .message("Element is not connected to requirement graph")
+                                .element(connectedSetOfSizeOne.iterator().next())
+                                .build()
+                ).collect(Collectors.toList());
+            }
         }
-
-        validationResults.addAll(validateConnectedDecisions(decisions));
-
-        return validationResults;
     }
 
-    private <T extends ModelElementInstance> Collection<T> unreferencedElements(Class<T> clazz, Function<Decision, Stream<T>> extract, Definitions definitions, Collection<Decision> decisions) {
-        final Collection<T> declaredElements = definitions.getModelInstance().getModelElementsByType(clazz);
+    private List<ValidationResult> checkInAndOuputs(DrgElement sourceElement, DrgElement targetElement) {
+        if (sourceElement instanceof Decision && targetElement instanceof Decision) {
+            final Decision sourceDecision = (Decision) sourceElement;
+            final Decision targetDecision = (Decision) targetElement;
 
-        final Set<T> requiredElementsInDecisions = decisions.stream()
-                .flatMap(extract::apply)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+            return applyOnDecsionTable(sourceDecision, sourceDecisionTable ->
+                    applyOnDecsionTable(targetDecision, targetDecisionTable -> {
 
-        declaredElements.removeAll(requiredElementsInDecisions);
-
-        return declaredElements;
-    }
-
-    private List<ValidationResult> validateConnectedDecisions(Collection<Decision> decisions) {
-        final List<ValidationResult> validationResults = new ArrayList<>();
-
-        decisions.forEach(decision ->
-            applyOnDecsionTable(decision, decisionTable -> {
-                final Set<String> inputIds = decisionTable.getInputs().stream()
+                final Set<String> inputIds = sourceDecisionTable.getInputs().stream()
                         .map(Input::getInputExpression)
                         .map(InputExpression::getTextContent)
                         .collect(Collectors.toSet());
 
-                decision.getInformationRequirements().stream()
-                        .map(InformationRequirement::getRequiredDecision)
-                        .filter(Objects::nonNull)
-                        .forEach(requiredDecision ->
-                            applyOnDecsionTable(requiredDecision, requiredDecisionTable -> {
-                                        final Set<String> outputIds = requiredDecisionTable.getOutputs().stream()
-                                                .map(OutputClause::getName)
-                                                .collect(Collectors.toSet());
+                final Set<String> outputIds = targetDecisionTable.getOutputs().stream()
+                        .map(OutputClause::getName)
+                        .collect(Collectors.toSet());
 
-                                        inputIds.retainAll(outputIds);
+                inputIds.retainAll(outputIds);
 
-                                        if (inputIds.isEmpty()) {
-                                            validationResults.add(ValidationResult.init
-                                                    .message("Inputs and outputs do not match in connected decisions.")
-                                                    .element(decision)
-                                                    .build());
-                                        }
-                                    }
-                            ).ifPresent(validationResults::add)
-                        );
-            }).ifPresent(validationResults::add)
-        );
-
-        return validationResults;
+                if (inputIds.isEmpty()) {
+                    return Collections.singletonList(
+                            ValidationResult.init
+                                    .message("Inputs and outputs do not match in connected decisions.")
+                                    .element(sourceDecision)
+                                    .build());
+                } else {
+                    return Collections.emptyList();
+                }
+            }));
+        } else {
+            // We only validate in- and outputs for decisions as they are the only elements
+            // with relevance in evaluation
+            return Collections.emptyList();
+        }
     }
 
-    private Optional<ValidationResult> applyOnDecsionTable(Decision decision, Consumer<DecisionTable> consumer) {
+    private List<ValidationResult> applyOnDecsionTable(Decision decision, Function<DecisionTable, List<ValidationResult>> validate) {
         final Collection<DecisionTable> decisionTables = decision.getChildElementsByType(DecisionTable.class);
 
         if (decisionTables.size() == 1) {
-            consumer.accept(decisionTables.iterator().next());
-            return Optional.empty();
+            return validate.apply(decisionTables.iterator().next());
         } else {
-            return Optional.of(ValidationResult.init
+            return Collections.singletonList(ValidationResult.init
                     .message("There is either no or more than one decision table.")
                     .element(decision)
                     .build());
         }
-    }
-
-    @Override
-    public Class<Definitions> getClassUnderValidation() {
-        return Definitions.class;
     }
 }
