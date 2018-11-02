@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators.core;
 
+import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
@@ -9,7 +10,6 @@ import org.camunda.bpm.model.dmn.instance.InformationRequirement;
 import org.camunda.bpm.model.dmn.instance.InputData;
 import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public abstract class RequirementGraphValidator implements Validator {
 
-    public abstract List<ValidationResult> validate(DirectedAcyclicGraph<DrgElement, DefaultEdge> drg);
+    public abstract List<ValidationResult> validate(RequirementGraph drg);
 
     @Override
     public List<ValidationResult> apply(DmnModelInstance dmnModelInstance) {
@@ -27,7 +27,7 @@ public abstract class RequirementGraphValidator implements Validator {
         final Collection<KnowledgeSource> knowledgeSources = dmnModelInstance.getModelElementsByType(KnowledgeSource.class);
         final Collection<InputData> inputData = dmnModelInstance.getModelElementsByType(InputData.class);
 
-        final DirectedAcyclicGraph<DrgElement, DefaultEdge> drg = new DirectedAcyclicGraph<>(DefaultEdge.class);
+        final RequirementGraph drg = new RequirementGraph(DefaultEdge.class);
 
         Stream.of(decisions, knowledgeSources, inputData).flatMap(Collection::stream).forEach(drg::addVertex);
 

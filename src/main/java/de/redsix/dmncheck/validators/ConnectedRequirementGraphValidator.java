@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import org.camunda.bpm.model.dmn.instance.Decision;
@@ -10,7 +11,6 @@ import org.camunda.bpm.model.dmn.instance.InputExpression;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class ConnectedRequirementGraphValidator extends RequirementGraphValidator {
 
     @Override
-    public List<ValidationResult> validate(DirectedAcyclicGraph<DrgElement, DefaultEdge> drg) {
+    public List<ValidationResult> validate(RequirementGraph drg) {
         ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
 
         if (connectivityInspector.isConnected()) {
