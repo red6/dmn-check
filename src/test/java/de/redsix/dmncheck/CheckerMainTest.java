@@ -145,6 +145,13 @@ class CheckerMainTest {
         testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn")));
     }
 
+    @Test
+    void shouldDetectCyclesInRequirementGraphs() {
+        final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
+                () -> testee.testFiles(Collections.singletonList(getFile("cyclic-diagram.dmn"))));
+        Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+    }
+
     private File getFile(final String filename) {
         ClassLoader classLoader = getClass().getClassLoader();
         final URL url = classLoader.getResource(filename);

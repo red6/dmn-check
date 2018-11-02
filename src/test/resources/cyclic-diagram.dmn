@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1uxukkt" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_13nychf" name="Decision 1">
+    <extensionElements>
+      <biodi:bounds x="257" y="197" width="180" height="80" />
+      <biodi:edge source="Decision_174w6zb">
+        <biodi:waypoints x="427" y="336" />
+        <biodi:waypoints x="375" y="277" />
+      </biodi:edge>
+    </extensionElements>
+    <informationRequirement>
+      <requiredDecision href="#Decision_174w6zb" />
+    </informationRequirement>
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="input2" camunda:inputVariable="input2">
+        <inputExpression id="inputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="input2" name="input2" typeRef="string" />
+    </decisionTable>
+  </decision>
+  <decision id="Decision_0ni5pm8" name="Decision 2">
+    <extensionElements>
+      <biodi:bounds x="495" y="198" width="180" height="80" />
+      <biodi:edge source="Decision_13nychf">
+        <biodi:waypoints x="437" y="237" />
+        <biodi:waypoints x="495" y="237" />
+      </biodi:edge>
+    </extensionElements>
+    <informationRequirement>
+      <requiredDecision href="#Decision_13nychf" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1xbr0s2">
+      <input id="InputClause_0a7wxng" label="input2" camunda:inputVariable="input2">
+        <inputExpression id="LiteralExpression_0i8g0ju" typeRef="string" />
+      </input>
+      <output id="OutputClause_053lvqx" label="input3" name="input3" typeRef="string" />
+    </decisionTable>
+  </decision>
+  <decision id="Decision_174w6zb" name="Decision 3">
+    <extensionElements>
+      <biodi:bounds x="372" y="336" width="180" height="80" />
+      <biodi:edge source="Decision_0ni5pm8">
+        <biodi:waypoints x="550" y="278" />
+        <biodi:waypoints x="500" y="336" />
+      </biodi:edge>
+    </extensionElements>
+    <informationRequirement>
+      <requiredDecision href="#Decision_0ni5pm8" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_1tum8z3">
+      <input id="InputClause_0ri10tj">
+        <inputExpression id="LiteralExpression_1ku404u" typeRef="string" />
+      </input>
+      <output id="OutputClause_00yk42z" typeRef="string" />
+    </decisionTable>
+  </decision>
+</definitions>

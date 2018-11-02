@@ -12,6 +12,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -30,23 +31,27 @@ public abstract class RequirementGraphValidator implements Validator {
 
         Stream.of(decisions, knowledgeSources, inputData).flatMap(Collection::stream).forEach(drg::addVertex);
 
-        for (Decision decision : decisions) {
-            decision.getInformationRequirements()
-                    .stream()
-                    .flatMap(this::collectDrgElements)
-                    .forEach(drgElement -> drg.addEdge(decision, drgElement));
+        try {
+            for (Decision decision : decisions) {
+                decision.getInformationRequirements().stream()
+                        .flatMap(this::collectDrgElements)
+                        .forEach(drgElement -> drg.addEdge(decision, drgElement));
 
-            decision.getAuthorityRequirements()
-                    .stream()
-                    .flatMap(this::collectDrgElements)
-                    .forEach(drgElement -> drg.addEdge(decision, drgElement));
-        }
+                decision.getAuthorityRequirements().stream()
+                        .flatMap(this::collectDrgElements)
+                        .forEach(drgElement -> drg.addEdge(decision, drgElement));
+            }
 
-        for (KnowledgeSource knowledgeSource : knowledgeSources) {
-            knowledgeSource.getAuthorityRequirement()
-                    .stream()
-                    .flatMap(this::collectDrgElements)
-                    .forEach(drgElement -> drg.addEdge(knowledgeSource, drgElement));
+            for (KnowledgeSource knowledgeSource : knowledgeSources) {
+                knowledgeSource.getAuthorityRequirement().stream()
+                        .flatMap(this::collectDrgElements)
+                        .forEach(drgElement -> drg.addEdge(knowledgeSource, drgElement));
+            }
+        } catch (IllegalArgumentException exception) {
+            return Collections.singletonList(ValidationResult.init
+                    .message("Error while construction requirement graph: " + exception.getMessage())
+                    .element(dmnModelInstance.getDefinitions())
+                    .build());
         }
 
         return validate(drg);
