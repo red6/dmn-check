@@ -226,7 +226,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
                 () -> assertEquals("Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
-                () -> assertEquals(otherDecision, validationResult.getElement()),
+                () -> assertEquals(decision, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }

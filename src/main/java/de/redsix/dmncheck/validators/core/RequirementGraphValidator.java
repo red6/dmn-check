@@ -35,17 +35,17 @@ public abstract class RequirementGraphValidator implements Validator {
             for (Decision decision : decisions) {
                 decision.getInformationRequirements().stream()
                         .flatMap(this::collectDrgElements)
-                        .forEach(drgElement -> drg.addEdge(decision, drgElement));
+                        .forEach(drgElement -> drg.addEdge(drgElement, decision));
 
                 decision.getAuthorityRequirements().stream()
                         .flatMap(this::collectDrgElements)
-                        .forEach(drgElement -> drg.addEdge(decision, drgElement));
+                        .forEach(drgElement -> drg.addEdge(drgElement, decision));
             }
 
             for (KnowledgeSource knowledgeSource : knowledgeSources) {
                 knowledgeSource.getAuthorityRequirement().stream()
                         .flatMap(this::collectDrgElements)
-                        .forEach(drgElement -> drg.addEdge(knowledgeSource, drgElement));
+                        .forEach(drgElement -> drg.addEdge(drgElement, knowledgeSource));
             }
         } catch (IllegalArgumentException exception) {
             return Collections.singletonList(ValidationResult.init

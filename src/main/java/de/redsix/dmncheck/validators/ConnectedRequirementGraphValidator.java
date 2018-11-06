@@ -61,12 +61,12 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
             return applyOnDecsionTable(sourceDecision, sourceDecisionTable ->
                     applyOnDecsionTable(targetDecision, targetDecisionTable -> {
 
-                final Set<String> inputIds = sourceDecisionTable.getInputs().stream()
+                final Set<String> inputIds = targetDecisionTable.getInputs().stream()
                         .map(Input::getInputExpression)
                         .map(InputExpression::getTextContent)
                         .collect(Collectors.toSet());
 
-                final Set<String> outputIds = targetDecisionTable.getOutputs().stream()
+                final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
                         .map(OutputClause::getName)
                         .collect(Collectors.toSet());
 
