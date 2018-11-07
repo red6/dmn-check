@@ -204,7 +204,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Variable 'x' has no type.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 

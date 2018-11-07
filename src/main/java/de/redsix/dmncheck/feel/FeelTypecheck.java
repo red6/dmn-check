@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static de.redsix.dmncheck.util.Eithers.left;
@@ -34,7 +36,7 @@ public final class FeelTypecheck {
                 .IntegerLiteral(integer -> left(ExpressionTypes.INTEGER()))
                 .StringLiteral(string -> left(ExpressionTypes.STRING()))
                 .VariableLiteral(name ->
-                    check(context.containsKey(name), "Variable '" + name + "' has no type.")
+                    check(context.containsKey(name), "Variable '" + name + "' has no type.", Optional.of(Severity.WARNING))
                     .orElse(left(context.get(name))))
                 .RangeExpression((__, lowerBound, upperBound, ___) -> typecheckRangeExpression(context, lowerBound, upperBound))
                 .UnaryExpression((operator, operand) -> typecheckUnaryExpression(context, operator, operand))
@@ -104,8 +106,14 @@ public final class FeelTypecheck {
     }
 
     private static Optional<Either<ExpressionType, ValidationResult.Builder.ElementStep>> check(final Boolean condition, final String errorMessage) {
+        return check(condition, errorMessage, Optional.empty());
+    }
+
+    private static Optional<Either<ExpressionType, ValidationResult.Builder.ElementStep>> check(final Boolean condition, final String errorMessage, final Optional<Severity> severity) {
         if (!condition) {
-            return Optional.of(Eithers.right(ValidationResult.init.message(errorMessage)));
+            final ValidationResult.Builder.SeverityStep validationResult = ValidationResult.init.message(errorMessage);
+            severity.ifPresent(validationResult::severity);
+            return Optional.of(Eithers.right(validationResult));
         } else {
             return Optional.empty();
         }
