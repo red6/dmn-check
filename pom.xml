@@ -63,7 +63,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>2.5.6</checker.framework.version>
+        <checker.framework.version>2.5.7</checker.framework.version>
         <junit.version>5.3.1</junit.version>
         <derive4j.version>1.1.0</derive4j.version>
     </properties>
