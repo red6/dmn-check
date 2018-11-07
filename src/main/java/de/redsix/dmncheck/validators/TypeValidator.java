@@ -90,7 +90,11 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
 
     private Either<Class<?>, ValidationResult.Builder.ElementStep> loadEnum(final String className) {
         try {
-            return left(ProjectClassLoader.instance.classLoader.loadClass(className));
+            if (ProjectClassLoader.instance.classLoader != null) {
+                return left(ProjectClassLoader.instance.classLoader.loadClass(className));
+            } else {
+                return right(ValidationResult.init.message("Classloader of project under validation not found"));
+            }
         } catch (ClassNotFoundException e) {
             return right(ValidationResult.init.message("Class " + className + " not found on project classpath."));
         }

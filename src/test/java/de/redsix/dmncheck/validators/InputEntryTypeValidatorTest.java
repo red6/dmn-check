@@ -183,6 +183,33 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         );    }
 
     @Test
+    void shouldFailIfProjectclassloaderIsAbsent() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        inputExpression.setTypeRef(TestEnum.class.getCanonicalName());
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("\"" + TestEnum.some.name() + "\"");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        ProjectClassLoader.instance.classLoader = null;
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Classloader of project under validation not found", validationResult.getMessage()),
+                () -> assertEquals(rule, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
     void shouldRejectUnboundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
