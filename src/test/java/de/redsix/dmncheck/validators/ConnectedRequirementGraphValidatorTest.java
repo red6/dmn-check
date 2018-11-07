@@ -241,7 +241,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         Definitions emptyListOfDefinitions = emptyModel.newInstance(Definitions.class);
         emptyModel.setDefinitions(emptyListOfDefinitions);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(emptyModel);
 
         assertEquals(0, validationResults.size());
     }
