@@ -3,9 +3,12 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
 import org.camunda.bpm.model.dmn.instance.Decision;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.camunda.bpm.model.dmn.instance.Definitions;
 import org.camunda.bpm.model.dmn.instance.InformationRequirement;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputData;
@@ -229,6 +232,18 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
                 () -> assertEquals(decision, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
+    }
+
+    @Test
+    void shouldAcceptFileWithNoDecisions() {
+        DmnModelInstance emptyModel = Dmn.createEmptyModel();
+
+        Definitions emptyListOfDefinitions = emptyModel.newInstance(Definitions.class);
+        emptyModel.setDefinitions(emptyListOfDefinitions);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
     }
 
 }

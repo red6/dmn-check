@@ -1,6 +1,7 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.drg.RequirementGraph;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import org.camunda.bpm.model.dmn.instance.Decision;
@@ -26,9 +27,11 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
 
         if (connectivityInspector.isConnected()) {
-            return drg.edgeSet().stream()
-                    .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
+            return drg.edgeSet().stream().flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
                     .collect(Collectors.toList());
+        } else if (connectivityInspector.connectedSets().isEmpty()) {
+            // Although an empty graph is not connected, we do not warn in this case as this is the responsiblity of an other validator
+            return Collections.emptyList();
         } else {
             final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
                     .filter(connectedSet -> connectedSet.size() == 1)
