@@ -16,13 +16,13 @@ final class Subsumption {
 
     static Optional<Boolean> subsumes(final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
         return FeelExpressions.caseOf(expression)
-                .Empty(() -> Optional.of(true))
+                .Empty_(Optional.of(true))
                 .BooleanLiteral((aBool) -> compareLiterals(aBool, FeelExpressions::getABoolean, otherExpression, comparison))
                 .DateLiteral((dateTime) -> compareLiterals(dateTime, FeelExpressions::getDateTime, otherExpression, comparison))
                 .DoubleLiteral((aDouble) -> compareLiterals(aDouble, FeelExpressions::getADouble, otherExpression, comparison))
                 .IntegerLiteral((integer) -> compareLiterals(integer, FeelExpressions::getAInteger, otherExpression, comparison))
                 .StringLiteral((string) ->  compareLiterals(string, FeelExpressions::getString, otherExpression, eq))
-                .VariableLiteral((__) -> Optional.of(true))
+                .VariableLiteral_(Optional.of(true))
                 .RangeExpression((leftInc, lowerBound, upperBound, rightInc) ->
                         subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression))
                 .UnaryExpression((operator, operand) -> subsumesUnaryExpression(operator, operand, otherExpression))

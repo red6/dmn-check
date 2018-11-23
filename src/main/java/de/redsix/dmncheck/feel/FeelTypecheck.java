@@ -29,7 +29,7 @@ public final class FeelTypecheck {
     public static Either<ExpressionType, ValidationResult.Builder.ElementStep> typecheck(final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
-                .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty(() -> left(ExpressionTypes.TOP()))
+                .<Either<ExpressionType, ValidationResult.Builder.ElementStep>>Empty_(left(ExpressionTypes.TOP()))
                 .BooleanLiteral(bool -> left(ExpressionTypes.BOOLEAN()))
                 .DateLiteral(dateTime -> left(ExpressionTypes.DATE()))
                 .DoubleLiteral(aDouble -> left(ExpressionTypes.DOUBLE()))
