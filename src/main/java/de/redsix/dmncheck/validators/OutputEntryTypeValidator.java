@@ -26,7 +26,7 @@ public class OutputEntryTypeValidator extends TypeValidator {
         final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes = decisionTable.getOutputs().stream()
                 .map(OutputClause::getTypeRef)
                 .map(ExpressionTypeParser::parse)
-                .collect(Either.sequence());
+                .collect(Either.reduce());
 
         return decisionTable.getRules().stream().flatMap(rule ->
                 eitherOutputTypes.match(

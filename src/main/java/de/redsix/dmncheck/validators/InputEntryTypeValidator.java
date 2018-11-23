@@ -26,7 +26,7 @@ public class InputEntryTypeValidator extends TypeValidator {
         final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherInputTypes = decisionTable.getInputs().stream()
                 .map(input -> input.getInputExpression().getTypeRef())
                 .map(ExpressionTypeParser::parse)
-                .collect(Either.sequence());
+                .collect(Either.reduce());
 
         return decisionTable.getRules().stream().flatMap(rule -> {
             final Stream<String> inputVariables = decisionTable.getInputs().stream().map(Input::getCamundaInputVariable);

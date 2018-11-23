@@ -23,7 +23,7 @@ public abstract class Either<A, B> {
         return this.match(Eithers::left, right -> Eithers.right(function.apply(right)));
     }
 
-    public static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> sequence() {
+    public static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> reduce() {
         return Collectors.reducing(
                 Eithers.right(new ArrayList<>()),
                 either -> either.map(Arrays::asList),

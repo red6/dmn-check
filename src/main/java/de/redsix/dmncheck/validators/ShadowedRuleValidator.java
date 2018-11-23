@@ -57,7 +57,7 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
             final Rule potentiallySubsumingRule) {
         return Util
                 .zip(rule.getInputEntries().stream(), potentiallySubsumingRule.getInputEntries().stream(), this::checkInputsForSubsumption)
-                .collect(Either.sequence());
+                .collect(Either.reduce());
     }
 
     private Either<ValidationResult.Builder.ElementStep, Optional<Boolean>> checkInputsForSubsumption(final InputEntry input,
