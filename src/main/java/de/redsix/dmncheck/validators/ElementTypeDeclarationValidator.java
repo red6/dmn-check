@@ -30,20 +30,19 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
                     .element(expression)
                     .build());
         } else {
-            final Either<ExpressionType, ValidationResult.Builder.ElementStep> eitherType = ExpressionTypeParser.parse(expressionType);
-            return eitherType.match(
-                    type -> {
-                        if (ExpressionTypes.TOP().equals(type)) {
-                            return Collections.singletonList(ValidationResult.init
+            final Either<ValidationResult.Builder.ElementStep, ExpressionType> eitherType = ExpressionTypeParser.parse(expressionType);
+            return eitherType.match(validationResult -> Collections.singletonList(validationResult.element(expression).build()), type -> {
+                if (ExpressionTypes.TOP().equals(type)) {
+                    return Collections.singletonList(
+                            ValidationResult.init
                                     .message("TOP is an internal type and cannot be used in declarations.")
                                     .severity(Severity.ERROR)
                                     .element(expression)
                                     .build());
-                        } else {
-                            return Collections.emptyList();
-                        }
-                    },
-                    validationResult -> Collections.singletonList(validationResult.element(expression).build()));
+                } else {
+                    return Collections.emptyList();
+                }
+            });
         }
     }
 }

@@ -11,25 +11,23 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static de.redsix.dmncheck.util.Eithers.left;
-
 @Data(value = @Derive(make = {Make.constructors, Make.caseOfMatching, Make.getters}))
 public abstract class Either<A, B> {
     public abstract <X> X match(Function<A, X> left, Function<B, X> right);
 
-    public <C> Either<C, B> bind(Function<A, Either<C, B>> function) {
-        return this.match(function, Eithers::right);
+    public <C> Either<A, C> bind(Function<B, Either<A, C>> function) {
+        return this.match(Eithers::left, function);
     }
 
-    public <C> Either<C, B> map(Function<A, C> function) {
-        return this.match(left -> left(function.apply(left)), Eithers::right);
+    public <C> Either<A, C> map(Function<B, C> function) {
+        return this.match(Eithers::left, right -> Eithers.right(function.apply(right)));
     }
 
-    public static <A, B> Collector<Either<A, B>, ?, Either<List<A>, B>> sequence() {
+    public static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> sequence() {
         return Collectors.reducing(
-                left(new ArrayList<>()),
+                Eithers.right(new ArrayList<>()),
                 either -> either.map(Arrays::asList),
-                (either, eithers) -> either.bind(a -> eithers.bind(listOfA -> left(appendAll(a, listOfA)))));
+                (either, eithers) -> either.bind(a -> eithers.bind(listOfA -> Eithers.right(appendAll(a, listOfA)))));
     }
 
     private static <A> List<A> appendAll(List<A> list1, List<A> list2) {

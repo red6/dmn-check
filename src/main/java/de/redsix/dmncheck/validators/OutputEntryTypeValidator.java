@@ -17,21 +17,21 @@ public class OutputEntryTypeValidator extends TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
-            return ExpressionTypeParser.parse(expressionType).match(parseResult -> true, parseError -> false);
+            return ExpressionTypeParser.parse(expressionType).match(parseError -> false, parseResult -> true);
         });
     }
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
-        final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherOutputTypes = decisionTable.getOutputs().stream()
+        final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes = decisionTable.getOutputs().stream()
                 .map(OutputClause::getTypeRef)
                 .map(ExpressionTypeParser::parse)
                 .collect(Either.sequence());
 
         return decisionTable.getRules().stream().flatMap(rule ->
                 eitherOutputTypes.match(
-                        outputTypes -> typecheck(rule, rule.getOutputEntries().stream(), outputTypes.stream()),
-                        validationResult -> Stream.of(validationResult.element(rule).build())))
+                        validationResult -> Stream.of(validationResult.element(rule).build()),
+                        outputTypes -> typecheck(rule, rule.getOutputEntries().stream(), outputTypes.stream())))
                 .collect(Collectors.toList());
     }
 

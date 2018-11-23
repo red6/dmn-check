@@ -48,24 +48,23 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
     private Stream<ValidationResult> identifySubsumedRules(final Integer n, final Rule rule, final ArrayList<Rule> rules) {
         return rules.stream()
                 .skip(n)
-                .flatMap(potentiallySubsumingRule ->
-                        collectSubsumptionResults(rule, potentiallySubsumingRule)
-                            .match(subsumptionResults -> isRuleSubsumed(subsumptionResults, rule, potentiallySubsumingRule),
-                                    validationResultElementStep -> Stream.of(validationResultElementStep.element(rule).build())));
+                .flatMap(potentiallySubsumingRule -> collectSubsumptionResults(rule, potentiallySubsumingRule)
+                        .match(validationResultElementStep -> Stream.of(validationResultElementStep.element(rule).build()),
+                                subsumptionResults -> isRuleSubsumed(subsumptionResults, rule, potentiallySubsumingRule)));
     }
 
-    private Either<List<Optional<Boolean>>, ValidationResult.Builder.ElementStep> collectSubsumptionResults(final Rule rule,
+    private Either<ValidationResult.Builder.ElementStep, List<Optional<Boolean>>> collectSubsumptionResults(final Rule rule,
             final Rule potentiallySubsumingRule) {
         return Util
                 .zip(rule.getInputEntries().stream(), potentiallySubsumingRule.getInputEntries().stream(), this::checkInputsForSubsumption)
                 .collect(Either.sequence());
     }
 
-    private Either<Optional<Boolean>, ValidationResult.Builder.ElementStep> checkInputsForSubsumption(final InputEntry input,
+    private Either<ValidationResult.Builder.ElementStep, Optional<Boolean>> checkInputsForSubsumption(final InputEntry input,
             final InputEntry potentiallySubsumingInput) {
         return FeelParser.parse(input.getTextContent()).bind(inputExpression ->
                 FeelParser.parse(potentiallySubsumingInput.getTextContent()).bind(potentiallySubsumingInputExpression ->
-                        Eithers.left(potentiallySubsumingInputExpression.subsumes(inputExpression))));
+                        Eithers.right(potentiallySubsumingInputExpression.subsumes(inputExpression))));
     }
 
     private Stream<ValidationResult> isRuleSubsumed(final List<Optional<Boolean>> subsumptionResults, final Rule rule,

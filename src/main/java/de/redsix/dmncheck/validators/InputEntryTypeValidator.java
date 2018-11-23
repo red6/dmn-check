@@ -17,13 +17,13 @@ public class InputEntryTypeValidator extends TypeValidator {
     public boolean isApplicable(DecisionTable decisionTable) {
         return decisionTable.getInputs().stream().allMatch(input -> {
             final String expressionType = input.getInputExpression().getTypeRef();
-            return ExpressionTypeParser.parse(expressionType).match(parseResult -> true, parseError -> false);
+            return ExpressionTypeParser.parse(expressionType).match(parseError -> false, parseResult -> true);
         });
     }
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable) {
-        final Either<List<ExpressionType>, ValidationResult.Builder.ElementStep> eitherInputTypes = decisionTable.getInputs().stream()
+        final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherInputTypes = decisionTable.getInputs().stream()
                 .map(input -> input.getInputExpression().getTypeRef())
                 .map(ExpressionTypeParser::parse)
                 .collect(Either.sequence());
@@ -32,8 +32,8 @@ public class InputEntryTypeValidator extends TypeValidator {
             final Stream<String> inputVariables = decisionTable.getInputs().stream().map(Input::getCamundaInputVariable);
 
             return eitherInputTypes.match(
-                    inputTypes -> typecheck(rule, rule.getInputEntries().stream(), inputVariables, inputTypes.stream()),
-                    validationResult -> Stream.of(validationResult.element(rule).build()));
+                    validationResult -> Stream.of(validationResult.element(rule).build()),
+                    inputTypes -> typecheck(rule, rule.getInputEntries().stream(), inputVariables, inputTypes.stream()));
         }).collect(Collectors.toList());
     }
 

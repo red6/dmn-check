@@ -37,11 +37,11 @@ public final class ExpressionTypeParser {
 
     static final Parser<ExpressionType> PARSER = Parsers.or(STRING, BOOLEAN, INTEGER, LONG, DOUBLE, DATE, ENUM, TOP).from(TOKENIZER, IGNORED);
 
-    public static Either<ExpressionType, ValidationResult.Builder.ElementStep> parse(final CharSequence charSequence) {
+    public static Either<ValidationResult.Builder.ElementStep, ExpressionType> parse(final CharSequence charSequence) {
         try {
-            return Eithers.left(charSequence != null ? PARSER.parse(charSequence) : ExpressionTypes.TOP());
+            return Eithers.right(charSequence != null ? PARSER.parse(charSequence) : ExpressionTypes.TOP());
         } catch (final ParserException e) {
-            return Eithers.right(ValidationResult.init.message("Could not parse FEEL expression type '" + charSequence + "'"));
+            return Eithers.left(ValidationResult.init.message("Could not parse FEEL expression type '" + charSequence + "'"));
         }
     }
 }

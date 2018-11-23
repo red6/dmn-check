@@ -65,46 +65,46 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
                     } else {
                         return Optional.of(ValidationResult.init.message(errorMessage()).severity(Severity.ERROR));
                     }
-                }).match(Function.identity(), Optional::of);
+                }).match(Optional::of, Function.identity());
     }
 
     private Optional<ValidationResult.Builder.ElementStep> checkEnumValue(final String className, final String stringValue) {
         return loadEnum(className)
                 .bind(this::isEnum)
                 .bind(clazz -> doesStringBelongToEnum(className, stringValue, clazz))
-                .match((__) -> Optional.empty(), Optional::of);
+                .match( Optional::of, (__) -> Optional.empty());
     }
 
-    private Either<Class<?>, ValidationResult.Builder.ElementStep> doesStringBelongToEnum(String className, String stringValue,
+    private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(String className, String stringValue,
             Class<?> clazz) {
         final List<String> enumConstants = Arrays.stream(((Class<? extends Enum>) clazz).getEnumConstants()).map(Enum::name)
                 .collect(Collectors.toList());
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
         if (enumConstants.contains(value)) {
-            return left(clazz);
+            return right(clazz);
         } else {
-            return right(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
+            return left(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
         }
     }
 
-    private Either<Class<?>, ValidationResult.Builder.ElementStep> loadEnum(final String className) {
+    private Either<ValidationResult.Builder.ElementStep, Class<?>> loadEnum(final String className) {
         try {
             if (ProjectClassLoader.instance.classLoader != null) {
-                return left(ProjectClassLoader.instance.classLoader.loadClass(className));
+                return right(ProjectClassLoader.instance.classLoader.loadClass(className));
             } else {
-                return right(ValidationResult.init.message("Classloader of project under validation not found"));
+                return left(ValidationResult.init.message("Classloader of project under validation not found"));
             }
         } catch (ClassNotFoundException e) {
-            return right(ValidationResult.init.message("Class " + className + " not found on project classpath."));
+            return left(ValidationResult.init.message("Class " + className + " not found on project classpath."));
         }
     }
 
-    private Either<Class<?>, ValidationResult.Builder.ElementStep> isEnum(Class<?> clazz) {
+    private Either<ValidationResult.Builder.ElementStep, Class<?>> isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
-            return left(clazz);
+            return right(clazz);
         } else {
-            return right(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
+            return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
     }
 

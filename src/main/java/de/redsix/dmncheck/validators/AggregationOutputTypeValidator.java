@@ -33,16 +33,18 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
                     .element(output)
                     .build());
         } else {
-            final Either<ExpressionType, ValidationResult.Builder.ElementStep> eitherType = ExpressionTypeParser.parse(output.getTypeRef());
-            return eitherType.match(type -> {
+            final Either< ValidationResult.Builder.ElementStep, ExpressionType> eitherType = ExpressionTypeParser.parse(output.getTypeRef());
+            return eitherType.match(validationResult -> Collections.singletonList(validationResult.element(output).build()), type -> {
                 if (!ExpressionType.isNumeric(type)) {
                     return Collections.singletonList(
-                            ValidationResult.init.message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
-                                    .element(output).build());
+                            ValidationResult.init
+                                    .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
+                                    .element(output)
+                                    .build());
                 } else {
                     return Collections.emptyList();
                 }
-            }, validationResult -> Collections.singletonList(validationResult.element(output).build()));
+            });
         }
     }
 
