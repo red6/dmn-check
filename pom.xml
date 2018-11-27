@@ -7,7 +7,7 @@
     <groupId>de.redsix</groupId>
     <artifactId>dmn-check</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <name>dmn-check</name>
     <url>https://github.com/red6/dmn-check</url>
     <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect bugs</description>
