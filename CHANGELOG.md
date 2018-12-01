@@ -1,3 +1,17 @@
+## 1.0.6 (2018-12-01)
+
+Bugfixes:
+
+  - not() can contain arbitrary well-typed expressions
+  - Input variables without types are reported as warnings instead of errors
+
+Features:
+
+  - Validate knowledge sources
+  - Validate requirement graphs (they have to be connected and acyclic) 
+  - Validate that there is at least one decision
+  - Separate validator classed and packages in the configuration
+
 ## 1.0.5 (2018-06-21)
 
 Bugfixes:
