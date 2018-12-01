@@ -61,35 +61,39 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
             final Decision sourceDecision = (Decision) sourceElement;
             final Decision targetDecision = (Decision) targetElement;
 
-            return applyOnDecsionTable(sourceDecision, sourceDecisionTable ->
-                    applyOnDecsionTable(targetDecision, targetDecisionTable -> {
-
-                final Set<String> inputIds = targetDecisionTable.getInputs().stream()
-                        .map(Input::getInputExpression)
-                        .map(InputExpression::getTextContent)
-                        .collect(Collectors.toSet());
-
-                final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
-                        .map(OutputClause::getName)
-                        .collect(Collectors.toSet());
-
-                inputIds.retainAll(outputIds);
-
-                if (inputIds.isEmpty()) {
-                    return Collections.singletonList(
-                            ValidationResult.init
-                                    .message("Inputs and outputs do not match in connected decisions.")
-                                    .element(sourceDecision)
-                                    .build());
-                } else {
-                    return Collections.emptyList();
-                }
-            }));
+            return checkInAndOutputs(sourceDecision, targetDecision);
         } else {
             // We only validate in- and outputs for decisions as they are the only elements
             // with relevance in evaluation
             return Collections.emptyList();
         }
+    }
+
+    private List<ValidationResult> checkInAndOutputs(Decision sourceDecision, Decision targetDecision) {
+        return applyOnDecsionTable(sourceDecision, sourceDecisionTable ->
+                applyOnDecsionTable(targetDecision, targetDecisionTable -> {
+
+            final Set<String> inputIds = targetDecisionTable.getInputs().stream()
+                    .map(Input::getInputExpression)
+                    .map(InputExpression::getTextContent)
+                    .collect(Collectors.toSet());
+
+            final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
+                    .map(OutputClause::getName)
+                    .collect(Collectors.toSet());
+
+            inputIds.retainAll(outputIds);
+
+            if (inputIds.isEmpty()) {
+                return Collections.singletonList(
+                        ValidationResult.init
+                                .message("Inputs and outputs do not match in connected decisions.")
+                                .element(sourceDecision)
+                                .build());
+            } else {
+                return Collections.emptyList();
+            }
+        }));
     }
 
     private List<ValidationResult> applyOnDecsionTable(Decision decision, Function<DecisionTable, List<ValidationResult>> validate) {
