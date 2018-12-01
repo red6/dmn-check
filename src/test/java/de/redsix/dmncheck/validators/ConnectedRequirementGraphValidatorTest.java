@@ -141,6 +141,33 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
+    void shouldAllowTwoConnectedDecisionWithFeelExpressionsAsInputs() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setName("someName");
+        decisionTable.getOutputs().add(output);
+
+        final Decision otherDecision = modelInstance.newInstance(Decision.class);
+
+        final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
+        informationRequirement.setRequiredDecision(decision);
+        otherDecision.addChildElement(informationRequirement);
+
+        final DecisionTable otherDecisionTable = modelInstance.newInstance(DecisionTable.class);
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        inputExpression.setTextContent("> someName");
+        input.setInputExpression(inputExpression);
+        otherDecisionTable.getInputs().add(input);
+        otherDecision.addChildElement(otherDecisionTable);
+
+        definitions.addChildElement(otherDecision);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
+    }
+
+    @Test
     void shouldDetectUnconnectdDecisionGraphs() {
         final KnowledgeSource knowledgeSource = modelInstance.newInstance(KnowledgeSource.class);
         definitions.addChildElement(knowledgeSource);
@@ -217,6 +244,39 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         inputExpression.setTextContent("someOtherName");
+        input.setInputExpression(inputExpression);
+        otherDecisionTable.getInputs().add(input);
+        otherDecision.addChildElement(otherDecisionTable);
+
+        definitions.addChildElement(otherDecision);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
+                () -> assertEquals(decision, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
+    void shouldDetectTwoConnectedDecisionWithInOutputsThatDoNotMatchWithFeelExpressionsAsInputs() {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setName("someName");
+        decisionTable.getOutputs().add(output);
+
+        final Decision otherDecision = modelInstance.newInstance(Decision.class);
+
+        final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
+        informationRequirement.setRequiredDecision(decision);
+        otherDecision.addChildElement(informationRequirement);
+
+        final DecisionTable otherDecisionTable = modelInstance.newInstance(DecisionTable.class);
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        inputExpression.setTextContent("< someOtherName");
         input.setInputExpression(inputExpression);
         otherDecisionTable.getInputs().add(input);
         otherDecision.addChildElement(otherDecisionTable);

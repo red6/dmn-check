@@ -1,8 +1,10 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.drg.RequirementGraph;
-import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.feel.FeelExpression;
+import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import org.camunda.bpm.model.dmn.instance.Decision;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
@@ -73,26 +75,32 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         return applyOnDecsionTable(sourceDecision, sourceDecisionTable ->
                 applyOnDecsionTable(targetDecision, targetDecisionTable -> {
 
-            final Set<String> inputIds = targetDecisionTable.getInputs().stream()
+            final Either<ValidationResult.Builder.ElementStep, List<FeelExpression>> eitherInputExpressions = targetDecisionTable.getInputs().stream()
                     .map(Input::getInputExpression)
                     .map(InputExpression::getTextContent)
-                    .collect(Collectors.toSet());
+                    .map(FeelParser::parse)
+                    .collect(Either.reduce());
 
-            final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
-                    .map(OutputClause::getName)
-                    .collect(Collectors.toSet());
+            Either<ValidationResult.Builder.ElementStep, Boolean> doInAndOutputsMatch = eitherInputExpressions.map(inputExpressions -> {
+                final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
+                        .map(OutputClause::getName)
+                        .collect(Collectors.toSet());
 
-            inputIds.retainAll(outputIds);
+                return inputExpressions.stream().anyMatch(inputExpression ->
+                        outputIds.stream().anyMatch(inputExpression::containsVariable));
+            });
 
-            if (inputIds.isEmpty()) {
-                return Collections.singletonList(
-                        ValidationResult.init
-                                .message("Inputs and outputs do not match in connected decisions.")
-                                .element(sourceDecision)
-                                .build());
-            } else {
-                return Collections.emptyList();
-            }
+            return doInAndOutputsMatch.match(elementStep -> Collections.singletonList(elementStep.element(targetDecision).build()), matching -> {
+                if (matching) {
+                    return Collections.<ValidationResult>emptyList();
+                } else {
+                    return Collections.singletonList(
+                            ValidationResult.init
+                                    .message("Inputs and outputs do not match in connected decisions.")
+                                    .element(sourceDecision)
+                                    .build());
+                }
+            });
         }));
     }
 
