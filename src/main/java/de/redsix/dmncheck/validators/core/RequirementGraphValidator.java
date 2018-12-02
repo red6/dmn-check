@@ -5,6 +5,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
 import org.camunda.bpm.model.dmn.instance.Decision;
+import org.camunda.bpm.model.dmn.instance.Definitions;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.dmn.instance.InformationRequirement;
 import org.camunda.bpm.model.dmn.instance.InputData;
@@ -27,7 +28,7 @@ public abstract class RequirementGraphValidator implements Validator {
         final Collection<KnowledgeSource> knowledgeSources = dmnModelInstance.getModelElementsByType(KnowledgeSource.class);
         final Collection<InputData> inputData = dmnModelInstance.getModelElementsByType(InputData.class);
 
-        final RequirementGraph drg = new RequirementGraph(DefaultEdge.class);
+        final RequirementGraph drg = new RequirementGraph(DefaultEdge.class, dmnModelInstance.getDefinitions());
 
         Stream.of(decisions, knowledgeSources, inputData).flatMap(Collection::stream).forEach(drg::addVertex);
 

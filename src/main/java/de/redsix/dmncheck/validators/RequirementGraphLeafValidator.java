@@ -30,7 +30,7 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
         } else {
             return Collections.singletonList(ValidationResult.init
                     .message("Requirement graphs may only contain one leaf node")
-                    .element(drg.iterator().next())
+                    .element(drg.getDefinitions())
                     .build());
         }
     }

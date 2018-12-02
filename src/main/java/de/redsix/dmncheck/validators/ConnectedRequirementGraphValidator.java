@@ -45,7 +45,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                         .collect(Collectors.toList());
                 return Collections.singletonList(ValidationResult.init
                         .message("Found unconnected requirement graphs: " + subgraphs)
-                        .element(subgraphs.iterator().next().iterator().next().getParentElement())
+                        .element(drg.getDefinitions())
                         .build());
             } else {
                 return connectedSetsOfSizeOne.stream().map(
