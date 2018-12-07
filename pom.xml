@@ -59,8 +59,7 @@
     </distributionManagement>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <checker.framework.version>2.5.8</checker.framework.version>
@@ -77,6 +76,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+
                         <useIncrementalCompilation>false</useIncrementalCompilation>
 
                         <annotationProcessorPaths>
