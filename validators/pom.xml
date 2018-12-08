@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dmn-check</artifactId>
+        <groupId>de.redsix</groupId>
+        <version>1.1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dmn-check-validators</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.redsix</groupId>
+            <artifactId>dmn-check-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.6.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jparsec</groupId>
+            <artifactId>jparsec</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

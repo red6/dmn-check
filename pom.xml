@@ -6,8 +6,15 @@
 
     <groupId>de.redsix</groupId>
     <artifactId>dmn-check</artifactId>
-    <packaging>maven-plugin</packaging>
-    <version>1.0.7-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <version>1.1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>core</module>
+        <module>validators</module>
+        <module>maven-plugin</module>
+    </modules>
+
     <name>dmn-check</name>
     <url>https://github.com/red6/dmn-check</url>
     <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect bugs</description>
@@ -93,23 +100,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.5</version>
-                <configuration>
-                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>mojo-descriptor</id>
-                        <goals>
-                            <goal>descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
@@ -322,26 +312,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.camunda.bpm.model</groupId>
-            <artifactId>camunda-dmn-model</artifactId>
-            <version>7.10.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.4</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>3.5.4</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
             <version>1.${junit-minor.version}</version>
@@ -384,42 +354,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.5.2</version>
-            <scope>provided</scope>
-
-            <!-- Work around vulnerability PLXUTILS-161 !-->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-artifact</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Work around vulnerability PLXUTILS-161 !-->
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>3.5.4</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jparsec</groupId>
-            <artifactId>jparsec</artifactId>
-            <version>3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.derive4j</groupId>
-            <artifactId>derive4j</artifactId>
-            <version>${derive4j.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <version>${checker.framework.version}</version>
@@ -432,15 +366,10 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.6.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>1.3.0</version>
+            <groupId>org.derive4j</groupId>
+            <artifactId>derive4j</artifactId>
+            <version>${derive4j.version}</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
