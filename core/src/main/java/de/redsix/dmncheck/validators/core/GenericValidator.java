@@ -3,7 +3,6 @@ package de.redsix.dmncheck.validators.core;
 import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,20 +20,20 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
     public abstract Class<T> getClassUnderValidation();
 
     public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
-        final ModelElementType elementType = dmnModelInstance.getModel().getType(getClassUnderValidation());
         final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());
         return elements.stream()
                 .filter(this::isApplicable)
-                .flatMap(element -> getElementsUnderValidation(elementType, element))
+                .flatMap(this::getElementsUnderValidation)
                 .flatMap(element -> validate(element).stream())
                 .collect(Collectors.toList());
     }
 
-    private Stream<T> getElementsUnderValidation(final ModelElementType elementType, final S element) {
+    private Stream<T> getElementsUnderValidation(final S element) {
         final Stream<T> childElementsUnderValidation = element.getChildElementsByType(getClassUnderValidation()).stream();
 
         @SuppressWarnings("unchecked")
-        final Stream<T> rootElementUnderValidation = element.getElementType().equals(elementType) ? Stream.of((T) element) : Stream.empty();
+        final Stream<T> rootElementUnderValidation =
+                getClassUnderValidation().equals(getClassUsedToCheckApplicability()) ? Stream.of((T) element) : Stream.empty();
 
         return Stream.concat(childElementsUnderValidation, rootElementUnderValidation);
     }
