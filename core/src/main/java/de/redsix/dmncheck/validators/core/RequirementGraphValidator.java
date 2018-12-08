@@ -5,7 +5,6 @@ import de.redsix.dmncheck.result.ValidationResult;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
 import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.Definitions;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.dmn.instance.InformationRequirement;
 import org.camunda.bpm.model.dmn.instance.InputData;
