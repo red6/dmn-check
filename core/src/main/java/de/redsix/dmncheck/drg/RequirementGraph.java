@@ -7,7 +7,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 
 public class RequirementGraph extends DirectedAcyclicGraph<DrgElement, DefaultEdge> {
 
-    private Definitions definitions;
+    private final Definitions definitions;
 
     public RequirementGraph(Class<? extends DefaultEdge> edgeClass, Definitions definitions) {
         super(edgeClass);
