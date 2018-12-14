@@ -37,7 +37,7 @@ public final class PrettyPrintValidationResults {
         if (element instanceof Rule) {
             return prettify((Rule) element);
         } else {
-            return element.getRawTextContent();
+            return element.getRawTextContent().trim();
         }
     }
 
