@@ -31,10 +31,10 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
     private Stream<T> getElementsUnderValidation(final S element) {
         final Stream<T> childElementsUnderValidation = element.getChildElementsByType(getClassUnderValidation()).stream();
 
-        @SuppressWarnings("unchecked")
-        final Stream<T> rootElementUnderValidation =
-                getClassUnderValidation().equals(getClassUsedToCheckApplicability()) ? Stream.of((T) element) : Stream.empty();
-
-        return Stream.concat(childElementsUnderValidation, rootElementUnderValidation);
+        if (getClassUnderValidation().isInstance(element)) {
+            return Stream.concat(childElementsUnderValidation, Stream.of((T) element));
+        } else {
+            return childElementsUnderValidation;
+        }
     }
 }
