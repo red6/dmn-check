@@ -76,12 +76,13 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
     }
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(String className, String stringValue,
-            Class<?> clazz) {
-        final List<String> enumConstants = Arrays.stream(((Class<? extends Enum>) clazz).getEnumConstants()).map(Enum::name)
+            Class<? extends Enum> clazz) {
+        final Enum[] enumConstants = clazz.getEnumConstants();
+        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum[] {} : enumConstants).map(Enum::name)
                 .collect(Collectors.toList());
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
-        if (enumConstants.contains(value)) {
+        if (enumConstantNames.contains(value)) {
             return right(clazz);
         } else {
             return left(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
@@ -100,9 +101,9 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<?>> isEnum(Class<?> clazz) {
+    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum>> isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
-            return right(clazz);
+            return right((Class<? extends Enum>)clazz);
         } else {
             return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
