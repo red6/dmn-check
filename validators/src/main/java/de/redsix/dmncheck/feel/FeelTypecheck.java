@@ -34,9 +34,15 @@ public final class FeelTypecheck {
                 .DoubleLiteral(aDouble -> right(ExpressionTypes.DOUBLE()))
                 .IntegerLiteral(integer -> right(ExpressionTypes.INTEGER()))
                 .StringLiteral(string -> right(ExpressionTypes.STRING()))
-                .VariableLiteral(name ->
-                    check(context.containsKey(name), "Variable '" + name + "' has no type.", Optional.of(Severity.WARNING))
-                    .orElse(right(context.get(name))))
+                .VariableLiteral(name -> {
+                    if (context.containsKey(name)) {
+                        return right(context.get(name));
+                    } else {
+                        return left(ValidationResult.init
+                                .message("Variable '" + name + "' has no type.")
+                                .severity(Severity.WARNING));
+                    }
+                })
                 .RangeExpression((__, lowerBound, upperBound, ___) -> typecheckRangeExpression(context, lowerBound, upperBound))
                 .UnaryExpression((operator, operand) -> typecheckUnaryExpression(context, operator, operand))
                 .BinaryExpression((left, operator, right) -> typecheckBinaryExpression(context, left, operator, right))
@@ -105,13 +111,8 @@ public final class FeelTypecheck {
     }
 
     private static Optional<Either<ValidationResult.Builder.ElementStep, ExpressionType>> check(final Boolean condition, final String errorMessage) {
-        return check(condition, errorMessage, Optional.empty());
-    }
-
-    private static Optional<Either<ValidationResult.Builder.ElementStep, ExpressionType>> check(final Boolean condition, final String errorMessage, final Optional<Severity> severity) {
         if (!condition) {
             final ValidationResult.Builder.SeverityStep validationResult = ValidationResult.init.message(errorMessage);
-            severity.ifPresent(validationResult::severity);
             return Optional.of(left(validationResult));
         } else {
             return Optional.empty();
