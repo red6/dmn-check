@@ -70,6 +70,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <checker.framework.version>2.5.8</checker.framework.version>
+        <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
+
         <junit-minor.version>3.2</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
         <derive4j.version>1.1.0</derive4j.version>
@@ -219,7 +221,7 @@
                                     </annotationProcessorPaths>
 
                                     <compilerArgs>
-                                        <arg>-Xbootclasspath/p:${org.checkerframework:jdk8:jar}</arg>
+                                        <arg>-Xbootclasspath/p:${annotatedJdk}</arg>
                                         <arg>-Astubs=checkerframework/stubs</arg>
                                         <arg>-AstubWarnIfNotFound</arg>
                                     </compilerArgs>
