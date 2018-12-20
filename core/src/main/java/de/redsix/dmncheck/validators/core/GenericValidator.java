@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 public abstract class GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance> implements Validator {
 
-    public abstract boolean isApplicable(final S element);
+    protected abstract boolean isApplicable(final S element);
 
-    public abstract List<ValidationResult> validate(final T element);
+    protected abstract List<ValidationResult> validate(final T element);
 
-    public abstract Class<S> getClassUsedToCheckApplicability();
+    protected abstract Class<S> getClassUsedToCheckApplicability();
 
-    public abstract Class<T> getClassUnderValidation();
+    protected abstract Class<T> getClassUnderValidation();
 
     public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
         final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());

@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public abstract class RequirementGraphValidator implements Validator {
 
-    public abstract List<ValidationResult> validate(RequirementGraph drg);
+    protected abstract List<ValidationResult> validate(RequirementGraph drg);
 
     @Override
     public List<ValidationResult> apply(DmnModelInstance dmnModelInstance) {

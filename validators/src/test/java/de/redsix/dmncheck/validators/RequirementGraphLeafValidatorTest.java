@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
 
-    private RequirementGraphLeafValidator testee = new RequirementGraphLeafValidator();
+    private final RequirementGraphLeafValidator testee = new RequirementGraphLeafValidator();
 
     @Test
     void shouldAcceptGraphWithSingleDecision() {

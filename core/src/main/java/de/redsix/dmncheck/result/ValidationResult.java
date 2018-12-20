@@ -2,8 +2,6 @@ package de.redsix.dmncheck.result;
 
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-
-
 public class ValidationResult {
 
     private final Severity severity;

@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> extends SimpleValidator<T> {
 
-    public abstract String getName();
+    protected abstract String getName();
 
     @Override
     public boolean isApplicable(T element) {
