@@ -53,12 +53,12 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         return buildValidationResults(intermediateResults, dmnElement);
     }
 
-    private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(DmnElement inputEntry, FeelTypecheck.Context context,
+    private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(DmnElement dmnElement, FeelTypecheck.Context context,
             ExpressionType expectedType) {
-        return FeelParser.parse(inputEntry.getTextContent()).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
+        return FeelParser.parse(dmnElement.getTextContent()).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
                 .map(type -> {
                     if (type.isSubtypeOf(ExpressionTypes.STRING()) && ExpressionTypes.getClassName(expectedType).isPresent()) {
-                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), inputEntry.getTextContent());
+                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), dmnElement.getTextContent());
                     } else if (type.isSubtypeOf(expectedType) || ExpressionTypes.TOP().equals(type)) {
                         return Optional.<ValidationResult.Builder.ElementStep>empty();
                     } else {
