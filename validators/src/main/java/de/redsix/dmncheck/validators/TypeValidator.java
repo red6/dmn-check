@@ -10,9 +10,8 @@ import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.Util;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
-import org.camunda.bpm.model.dmn.instance.Rule;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +23,11 @@ import java.util.stream.Stream;
 import static de.redsix.dmncheck.util.Eithers.left;
 import static de.redsix.dmncheck.util.Eithers.right;
 
-public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
+abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
 
     abstract String errorMessage();
 
-    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
+    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
             final Stream<ExpressionType> types) {
         final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
                 .zip(expressions, variables, types, (expression, variable, type) -> {
@@ -39,10 +38,10 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
                     return typecheckExpression(expression, context, type);
                 });
 
-        return buildValidationResults(intermediateResults, rule);
+        return buildValidationResults(intermediateResults, dmnElement);
     }
 
-    Stream<ValidationResult> typecheck(final Rule rule, final Stream<? extends DmnElement> expressions,
+    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<? extends DmnElement> expressions,
             final Stream<ExpressionType> types) {
         final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
                 .zip(expressions, types, (expression, type) -> {
@@ -51,7 +50,7 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
                     return typecheckExpression(expression, emptyContext, type);
                 });
 
-        return buildValidationResults(intermediateResults, rule);
+        return buildValidationResults(intermediateResults, dmnElement);
     }
 
     private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(DmnElement inputEntry, FeelTypecheck.Context context,
@@ -110,16 +109,11 @@ public abstract class TypeValidator extends SimpleValidator<DecisionTable> {
     }
 
     private Stream<ValidationResult> buildValidationResults(final Stream<Optional<ValidationResult.Builder.ElementStep>> elementSteps,
-            final Rule rule) {
+            final DmnElement dmnElement) {
         return elementSteps
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(validationResultBuilder -> validationResultBuilder.element(rule))
+                .map(validationResultBuilder -> validationResultBuilder.element(dmnElement))
                 .map(ValidationResult.Builder.BuildStep::build);
-    }
-
-    @Override
-    public Class<DecisionTable> getClassUnderValidation() {
-        return DecisionTable.class;
     }
 }

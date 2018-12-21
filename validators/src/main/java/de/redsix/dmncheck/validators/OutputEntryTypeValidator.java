@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class OutputEntryTypeValidator extends TypeValidator {
+public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable) {
@@ -33,6 +33,11 @@ public class OutputEntryTypeValidator extends TypeValidator {
                         validationResult -> Stream.of(validationResult.element(rule).build()),
                         outputTypes -> typecheck(rule, rule.getOutputEntries().stream(), outputTypes.stream())))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected Class<DecisionTable> getClassUnderValidation() {
+        return DecisionTable.class;
     }
 
     @Override
