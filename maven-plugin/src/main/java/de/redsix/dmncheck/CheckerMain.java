@@ -17,6 +17,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.checkerframework.checker.initialization.qual.UnderInitialization;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,9 @@ class CheckerMain extends AbstractMojo {
     @Parameter( defaultValue = "${project}", readonly = true )
     @SuppressWarnings("nullness")
     private MavenProject project;
+
+    @MonotonicNonNull
+    private List<Validator> validators;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -151,6 +156,10 @@ class CheckerMain extends AbstractMojo {
     }
 
     private List<Validator> getValidators() {
+        if (validators != null) {
+            return validators;
+        }
+
         if (validatorPackages == null) {
             validatorPackages = new String[] {VALIDATOR_PACKAGE, VALIDATOR_PACKAGE + ".core"};
         }
@@ -168,11 +177,13 @@ class CheckerMain extends AbstractMojo {
 
         final ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
 
-        return validatorClasses.loadClasses(Validator.class).stream()
+        validators = validatorClasses.loadClasses(Validator.class).stream()
                 .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
                 .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                 .map(this::instantiateValidator)
                 .collect(Collectors.toList());
+
+        return validators;
     }
 
     private Validator instantiateValidator(final Class<? extends Validator> validator) {
