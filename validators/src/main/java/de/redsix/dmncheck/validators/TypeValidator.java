@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static de.redsix.dmncheck.util.Eithers.left;
 import static de.redsix.dmncheck.util.Eithers.right;
 
-abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
+public abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
 
     abstract String errorMessage();
 
