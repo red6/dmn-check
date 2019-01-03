@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -22,12 +23,12 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable) {
+    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable) {
+    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
         return decisionTable.getRules().stream()
                 .collect(Collectors.groupingBy(ConflictingRuleValidator::extractInputEntriesTextContent)).entrySet().stream()
                 .map(entry -> entry.getValue().stream().collect(Collectors.toCollection(

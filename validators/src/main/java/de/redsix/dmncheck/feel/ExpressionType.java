@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.feel;
 
+import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.derive4j.Data;
 
@@ -22,6 +23,7 @@ public abstract class ExpressionType {
         R DOUBLE();
         R DATE();
         R ENUM(String className);
+        R ITEMDEFINITION(ItemDefinition itemDefinition);
     }
 
     public abstract <R> R match(ExpressionType.Cases<R> cases);

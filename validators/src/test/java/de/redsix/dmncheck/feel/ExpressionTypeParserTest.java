@@ -1,7 +1,12 @@
 package de.redsix.dmncheck.feel;
 
 import de.redsix.dmncheck.validators.util.TestEnum;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,7 +14,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseEmpty() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("");
 
         final ExpressionType expectedType = ExpressionTypes.TOP();
 
@@ -18,7 +25,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseBool() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("boolean");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("boolean");
 
         final ExpressionType expectedType = ExpressionTypes.BOOLEAN();
 
@@ -27,7 +36,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseInteger() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("integer");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("integer");
 
         final ExpressionType expectedType = ExpressionTypes.INTEGER();
 
@@ -36,7 +47,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseString() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("string");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("string");
 
         final ExpressionType expectedType = ExpressionTypes.STRING();
 
@@ -45,7 +58,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseDouble() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("double");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("double");
 
         final ExpressionType expectedType = ExpressionTypes.DOUBLE();
 
@@ -54,7 +69,9 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseDate() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse("date");
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("date");
 
         final ExpressionType expectedType = ExpressionTypes.DATE();
 
@@ -63,9 +80,25 @@ class ExpressionTypeParserTest {
 
     @Test
     void shouldParseEnum() {
-        final ExpressionType type = ExpressionTypeParser.PARSER.parse(TestEnum.class.getCanonicalName());
+        final List<ItemDefinition> itemDefinitions = Collections.emptyList();
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse(TestEnum.class.getCanonicalName());
 
         final ExpressionType expectedType = ExpressionTypes.ENUM(TestEnum.class.getCanonicalName());
+
+        assertEquals(expectedType, type);
+    }
+
+    @Test
+    void shouldParseItemDefinition() {
+        final ItemDefinition itemDefinition = Dmn.createEmptyModel().newInstance(ItemDefinition.class);
+        itemDefinition.setName("myItemDefinition");
+
+        final List<ItemDefinition> itemDefinitions = Collections.singletonList(itemDefinition);
+
+        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("myItemDefinition");
+
+        final ExpressionType expectedType = ExpressionTypes.ITEMDEFINITION(itemDefinition);
 
         assertEquals(expectedType, type);
     }

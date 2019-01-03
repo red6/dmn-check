@@ -3,6 +3,7 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
@@ -17,12 +18,12 @@ import java.util.stream.Stream;
 public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable) {
+    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable) {
+    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
         return Stream.concat(validateColumn(decisionTable, decisionTable.getInputs(), Input::getLabel).stream(),
                 validateColumn(decisionTable, decisionTable.getOutputs(), Output::getLabel).stream())
                 .collect(Collectors.toList());

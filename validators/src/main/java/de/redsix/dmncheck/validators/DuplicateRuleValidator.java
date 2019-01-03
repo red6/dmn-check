@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -21,12 +22,12 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable) {
+    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return !HitPolicy.COLLECT.equals(decisionTable.getHitPolicy());
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable) {
+    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
         final Collection<Rule> rules = decisionTable.getRules();
         final List<List<String>> expressions = new ArrayList<>();
         final List<ValidationResult> result = new ArrayList<>();

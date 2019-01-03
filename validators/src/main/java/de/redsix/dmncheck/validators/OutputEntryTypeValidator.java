@@ -4,6 +4,7 @@ import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
 
@@ -14,18 +15,18 @@ import java.util.stream.Stream;
 public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable) {
+    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
-            return ExpressionTypeParser.parse(expressionType).match(parseError -> false, parseResult -> true);
+            return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions()).match(parseError -> false, parseResult -> true);
         });
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable) {
+    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
         final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes = decisionTable.getOutputs().stream()
                 .map(OutputClause::getTypeRef)
-                .map(ExpressionTypeParser::parse)
+                .map(typeRef -> ExpressionTypeParser.parse(typeRef, validationContext.getItemDefinitions()))
                 .collect(Either.reduce());
 
         return decisionTable.getRules().stream().flatMap(rule ->

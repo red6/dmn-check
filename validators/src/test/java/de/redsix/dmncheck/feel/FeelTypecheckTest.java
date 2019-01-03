@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static de.redsix.dmncheck.util.Eithers.right;
@@ -54,7 +55,7 @@ class FeelTypecheckTest {
 
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(ExpressionTypeParser.parse(expectedType), type);
+        assertEquals(ExpressionTypeParser.parse(expectedType, Collections.emptyList()), type);
     }
 
     @Test
@@ -93,7 +94,7 @@ class FeelTypecheckTest {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(ExpressionTypeParser.parse(expectedType), type);
+        assertEquals(ExpressionTypeParser.parse(expectedType, Collections.emptyList()), type);
     }
 
     @Test

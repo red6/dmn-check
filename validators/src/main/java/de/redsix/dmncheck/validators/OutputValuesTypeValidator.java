@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.Output;
 
 import java.util.Collections;
@@ -12,17 +13,17 @@ import java.util.stream.Stream;
 public class OutputValuesTypeValidator extends TypeValidator<Output> {
 
     @Override
-    public boolean isApplicable(final Output output) {
+    public boolean isApplicable(final Output output, ValidationContext validationContext) {
         final String expressionType = output.getTypeRef();
         return output.getOutputValues() != null
-                && ExpressionTypeParser.parse(expressionType).match(parseError -> false, parseResult -> true);
+                && ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions()).match(parseError -> false, parseResult -> true);
     }
 
     @Override
-    public List<ValidationResult> validate(final Output output) {
+    public List<ValidationResult> validate(final Output output, ValidationContext validationContext) {
         final String expressionType = output.getTypeRef();
 
-        return ExpressionTypeParser.parse(expressionType)
+        return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
                 .match(validationResult -> Collections.singletonList(validationResult.element(output).build()),
                         inputType -> typecheck(output, Stream.of(output.getOutputValues()), Stream.of(inputType))
                                 .collect(Collectors.toList()));

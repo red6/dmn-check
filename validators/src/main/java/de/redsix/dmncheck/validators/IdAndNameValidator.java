@@ -3,6 +3,7 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.NamedElement;
 
@@ -15,12 +16,12 @@ public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> ex
     protected abstract String getName();
 
     @Override
-    public boolean isApplicable(T element) {
+    public boolean isApplicable(T element, ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(T element) {
+    public List<ValidationResult> validate(T element, ValidationContext validationContext) {
         final List<ValidationResult> validationResults = new ArrayList<>();
 
         if (Objects.isNull(element.getId())) {

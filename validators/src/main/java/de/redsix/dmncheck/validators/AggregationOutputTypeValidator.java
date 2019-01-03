@@ -6,6 +6,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.GenericValidator;
+import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
@@ -18,14 +19,14 @@ import java.util.Objects;
 public class AggregationOutputTypeValidator extends GenericValidator<DecisionTable, Output> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable) {
+    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return Objects.nonNull(decisionTable.getAggregation()) &&
                 Arrays.asList(BuiltinAggregator.MAX, BuiltinAggregator.MIN, BuiltinAggregator.SUM).contains(
                         decisionTable.getAggregation());
     }
 
     @Override
-    public List<ValidationResult> validate(Output output) {
+    public List<ValidationResult> validate(Output output, ValidationContext validationContext) {
         if (output.getTypeRef() == null) {
             return Collections.singletonList(ValidationResult.init
                     .message("An aggregation is used but no output type is defined")
@@ -33,7 +34,7 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
                     .element(output)
                     .build());
         } else {
-            final Either< ValidationResult.Builder.ElementStep, ExpressionType> eitherType = ExpressionTypeParser.parse(output.getTypeRef());
+            final Either< ValidationResult.Builder.ElementStep, ExpressionType> eitherType = ExpressionTypeParser.parse(output.getTypeRef(), validationContext.getItemDefinitions());
             return eitherType.match(validationResult -> Collections.singletonList(validationResult.element(output).build()), type -> {
                 if (!ExpressionType.isNumeric(type)) {
                     return Collections.singletonList(
