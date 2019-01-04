@@ -11,9 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class KnowledgeSourceValidatorTest extends WithDecisionTable {
+class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
     
-    private final KnowledgeSourceValidator testee = new KnowledgeSourceValidator();
+    private final KnowledgeSourceIdAndNameValidator testee = new KnowledgeSourceIdAndNameValidator();
 
     private KnowledgeSource knowledgeSource;
 

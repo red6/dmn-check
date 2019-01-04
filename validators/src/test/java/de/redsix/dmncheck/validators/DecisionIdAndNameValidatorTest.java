@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DecisionValidatorTest extends WithDecisionTable {
+class DecisionIdAndNameValidatorTest extends WithDecisionTable {
     
-    private final DecisionValidator testee = new DecisionValidator();
+    private final DecisionIdAndNameValidator testee = new DecisionIdAndNameValidator();
 
     @Test
     void shouldErrorIfDecisionHasNoId() {
