@@ -174,9 +174,9 @@ class CheckerMain extends AbstractMojo {
                 .whitelistClasses(validatorClasses)
                 .scan();
 
-        final ClassInfoList validatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
+        final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
 
-        validators = validatorClasses.loadClasses(Validator.class).stream()
+        validators = allValidatorClasses.loadClasses(Validator.class).stream()
                 .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
                 .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                 .map(this::instantiateValidator)
