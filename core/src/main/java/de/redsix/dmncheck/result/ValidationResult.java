@@ -33,7 +33,7 @@ public class ValidationResult {
 
     public static final Builder.MessageStep init = message -> (new Builder.SeverityStep() {
 
-        Severity type = Severity.ERROR;
+        Severity severity = Severity.ERROR;
 
         @Override
         public Builder.BuildStep element(ModelElementInstance element) {
@@ -45,8 +45,8 @@ public class ValidationResult {
                 }
 
                 @Override
-                public Severity getType() {
-                    return type;
+                public Severity getSeverity() {
+                    return severity;
                 }
 
                 @Override
@@ -56,19 +56,19 @@ public class ValidationResult {
 
                 @Override
                 public ValidationResult build() {
-                    return new ValidationResult(message, element, type);
+                    return new ValidationResult(message, element, severity);
                 }
             };
         }
 
         @Override
-        public Severity getType() {
-            return type;
+        public Severity getSeverity() {
+            return severity;
         }
 
         @Override
-        public Builder.ElementStep severity(Severity type) {
-            this.type = type;
+        public Builder.ElementStep severity(Severity severity) {
+            this.severity = severity;
             return this;
         }
 
@@ -86,19 +86,19 @@ public class ValidationResult {
         }
 
         public interface SeverityStep extends ElementStep {
-            ElementStep severity(Severity type);
+            ElementStep severity(Severity severity);
             String getMessage();
         }
 
         public interface ElementStep {
             BuildStep element(ModelElementInstance element);
-            Severity getType();
+            Severity getSeverity();
             String getMessage();
         }
 
         public interface BuildStep {
             ModelElementInstance getElement();
-            Severity getType();
+            Severity getSeverity();
             String getMessage();
             ValidationResult build();
         }
