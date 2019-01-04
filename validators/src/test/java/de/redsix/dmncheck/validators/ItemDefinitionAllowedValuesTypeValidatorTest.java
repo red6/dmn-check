@@ -2,15 +2,17 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.instance.*;
+import de.redsix.dmncheck.validators.util.WithItemDefinition;
+import org.camunda.bpm.model.dmn.instance.AllowedValues;
+import org.camunda.bpm.model.dmn.instance.TypeRef;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ItemDefinitionAllowedValuesTypeValidatorTest extends WithDecisionTable {
+class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
 
     private final ItemDefinitionAllowedValuesTypeValidator testee = new ItemDefinitionAllowedValuesTypeValidator();
 
@@ -22,11 +24,8 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithDecisionTable {
         final AllowedValues allowedValues = modelInstance.newInstance(AllowedValues.class);
         allowedValues.setTextContent("1, 2, 3");
 
-        final ItemDefinition itemDefinition = modelInstance.newInstance(ItemDefinition.class);
         itemDefinition.setTypeRef(typeRef);
         itemDefinition.setAllowedValues(allowedValues);
-
-        definitions.addChildElement(itemDefinition);
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
@@ -41,11 +40,8 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithDecisionTable {
         final AllowedValues allowedValues = modelInstance.newInstance(AllowedValues.class);
         allowedValues.setTextContent("1, 2, 3");
 
-        final ItemDefinition itemDefinition = modelInstance.newInstance(ItemDefinition.class);
         itemDefinition.setTypeRef(typeRef);
         itemDefinition.setAllowedValues(allowedValues);
-
-        definitions.addChildElement(itemDefinition);
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
