@@ -37,8 +37,8 @@ final class Subsumption {
                         case GT: return subsumes(operand, lowerBound, leftInc ? lt : le);
                         case LE: return subsumes(upperBound, operand, rightInc ? le : lt);
                         case GE: return subsumes(operand, lowerBound, leftInc ? le : lt);
+                        default: return Optional.of(false);
                     }
-                    return Optional.of(false);
                 })
                 .UnaryExpression((otherOperator, otherOperand) -> {
                     if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
