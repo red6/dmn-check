@@ -29,32 +29,14 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
 
         if (connectivityInspector.isConnected()) {
-            return drg.edgeSet().stream().flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
+            return drg.edgeSet().stream()
+                    .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
                     .collect(Collectors.toList());
         } else if (connectivityInspector.connectedSets().isEmpty()) {
-            // Although an empty graph is not connected, we do not warn in this case as this is the responsiblity of an other validator
+            // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of an other validator
             return Collections.emptyList();
         } else {
-            final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
-                    .filter(connectedSet -> connectedSet.size() == 1)
-                    .collect(Collectors.toList());
-
-            if (connectedSetsOfSizeOne.isEmpty()) {
-                final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
-                        .filter(connectedSet -> connectedSet.size() > 1)
-                        .collect(Collectors.toList());
-                return Collections.singletonList(ValidationResult.init
-                        .message("Found unconnected requirement graphs: " + subgraphs)
-                        .element(drg.getDefinitions())
-                        .build());
-            } else {
-                return connectedSetsOfSizeOne.stream().map(
-                        connectedSetOfSizeOne -> ValidationResult.init
-                                .message("Element is not connected to requirement graph")
-                                .element(connectedSetOfSizeOne.iterator().next())
-                                .build()
-                ).collect(Collectors.toList());
-            }
+            return reportUnconnectedComponents(drg, connectivityInspector);
         }
     }
 
@@ -114,6 +96,29 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                     .message("There is either no or more than one decision table.")
                     .element(decision)
                     .build());
+        }
+    }
+
+    private List<ValidationResult> reportUnconnectedComponents(RequirementGraph drg, ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector) {
+        final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
+                .filter(connectedSet -> connectedSet.size() == 1)
+                .collect(Collectors.toList());
+
+        if (connectedSetsOfSizeOne.isEmpty()) {
+            final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
+                    .filter(connectedSet -> connectedSet.size() > 1)
+                    .collect(Collectors.toList());
+            return Collections.singletonList(ValidationResult.init
+                    .message("Found unconnected requirement graphs: " + subgraphs)
+                    .element(drg.getDefinitions())
+                    .build());
+        } else {
+            return connectedSetsOfSizeOne.stream().map(
+                    connectedSetOfSizeOne -> ValidationResult.init
+                            .message("Element is not connected to requirement graph")
+                            .element(connectedSetOfSizeOne.iterator().next())
+                            .build()
+            ).collect(Collectors.toList());
         }
     }
 }
