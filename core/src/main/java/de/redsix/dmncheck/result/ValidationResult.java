@@ -33,7 +33,7 @@ public class ValidationResult {
 
     public static final Builder.MessageStep init = message -> (new Builder.SeverityStep() {
 
-        Severity severity = Severity.ERROR;
+        private Severity severity = Severity.ERROR;
 
         @Override
         public Builder.BuildStep element(ModelElementInstance element) {
