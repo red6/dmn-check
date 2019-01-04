@@ -18,6 +18,10 @@ import java.util.Objects;
 
 public final class ExpressionTypeParser {
 
+    private ExpressionTypeParser() {
+
+    }
+
     private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
 
     private static Parser<?> TOKENIZER(Collection<ItemDefinition> itemDefinitions) {
