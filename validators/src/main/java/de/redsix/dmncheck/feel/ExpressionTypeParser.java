@@ -14,6 +14,7 @@ import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public final class ExpressionTypeParser {
 
@@ -22,6 +23,7 @@ public final class ExpressionTypeParser {
     private static Parser<?> TOKENIZER(Collection<ItemDefinition> itemDefinitions) {
         final Parser<?> itemDefinitionTokenizer = itemDefinitions.stream()
                 .map(NamedElement::getName)
+                .filter(Objects::nonNull)
                 .map(name -> Patterns.string(name).toScanner("itemDefinition").source().map(s -> Tokens.fragment(s, "itemDefinitionFragment")))
                 .reduce(Parsers.never(), Parsers::or);
 
