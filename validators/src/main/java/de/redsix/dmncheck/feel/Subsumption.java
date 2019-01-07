@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 final class Subsumption {
 
-    private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}
+    private interface Comparison<A> extends BiPredicate<Comparable<A>, A> {}
 
     static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
     private static final Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
