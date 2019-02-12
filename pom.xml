@@ -72,7 +72,7 @@
         <checker.framework.version>2.6.0</checker.framework.version>
         <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
 
-        <junit-minor.version>3.2</junit-minor.version>
+        <junit-minor.version>4.0</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
         <derive4j.version>1.1.0</derive4j.version>
     </properties>
