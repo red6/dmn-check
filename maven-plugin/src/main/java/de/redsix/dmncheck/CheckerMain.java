@@ -61,8 +61,7 @@ class CheckerMain extends AbstractMojo {
     @SuppressWarnings("nullness")
     private MavenProject project;
 
-    @MonotonicNonNull
-    private List<Validator> validators;
+    private @MonotonicNonNull List<Validator> validators;
 
     @Override
     public void execute() throws MojoExecutionException {
