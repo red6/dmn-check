@@ -17,8 +17,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * Generic validator that facilitates writing validations on graph-based representation of the DMN model instance.
+ *
+ */
 public abstract class RequirementGraphValidator implements Validator {
 
+    /**
+     * Returns a list of validation results for a requirement graph (see {@link RequirementGraph}).
+     *
+     * @param drg Requirement graph used for validation
+     * @return A possibly empty list of validation results
+     */
     protected abstract List<ValidationResult> validate(RequirementGraph drg);
 
     @Override

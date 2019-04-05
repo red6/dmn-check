@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+/**
+ * The validation context is used in validators with a local view of the DMN model instance to provide access to global
+ * attributes of the DMN model instance.
+ *
+ * Note: Reading from the validation context is cached.
+ */
 public class ValidationContext {
 
     private class Memoizer<T, U> {
@@ -28,6 +34,11 @@ public class ValidationContext {
                 .doMemoize(dmnModelInstance::getModelElementsByType);
     }
 
+    /**
+     * Provides access to the item definitions of a DMN model instance.
+     *
+     * @return A list of item definitions
+     */
     public Collection<ItemDefinition> getItemDefinitions() {
         return itemDefinitions.apply(ItemDefinition.class);
     }
