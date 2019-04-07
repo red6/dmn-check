@@ -2,6 +2,18 @@ package de.redsix.dmncheck.result;
 
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
+/**
+ * A validation result consists of the following:
+ *
+ *  1) A message that describes the validation result
+ *  2) A severity indicating how severe the result is
+ *  3) A reference to the DMN element that caused result
+ *
+ * In this context a validation result always describes
+ * an error or a warning. There is currently no way to
+ * express positive validation results, except returning
+ * no validation results at all.
+ */
 public class ValidationResult {
 
     private final Severity severity;
