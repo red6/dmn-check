@@ -24,7 +24,7 @@ This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses 
 
 ## Usage
 
-`dmn-check` can be used either as a normal plugin inside your projects `pom.xml` or as a standalone program.
+`dmn-check` can be used either as a normal Maven plugin inside your projects `pom.xml` or as a standalone program.
 
 ### Configuration in POM
 
@@ -44,7 +44,7 @@ The following example shows the basic configuration of the plugin:
                 </executions>
             </plugin>
 
-Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators that should be executed. The following example shows how you can make use of these options by restricting the search path to the folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only the ShadowedRuleValidator should be executed. To specify validators you have to use the fully-qualified name.
+Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators that should be executed. The following example shows how you can make use of these options by restricting the search path to the folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators you have to use the fully-qualified name.
 
                 <configuration>
                     <searchPaths>
