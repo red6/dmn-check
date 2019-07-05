@@ -69,7 +69,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>2.8.2</checker.framework.version>
+        <checker.framework.version>2.9.0</checker.framework.version>
         <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
 
         <junit-minor.version>5.0</junit-minor.version>
