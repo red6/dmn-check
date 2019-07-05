@@ -74,7 +74,7 @@
 
         <junit-minor.version>5.0</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
-        <derive4j.version>1.1.0</derive4j.version>
+        <derive4j.version>1.1.1</derive4j.version>
     </properties>
 
     <build>
