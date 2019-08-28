@@ -7,7 +7,7 @@ cache:
   - $HOME/.m2
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 before_install:
   - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo "$GPG_SECRET_KEYS" | base64 --decode | gpg2 --import; fi
