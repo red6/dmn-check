@@ -27,7 +27,7 @@ deploy:
     on:
       repo: red6/dmn-check
       tags: true
-      jdk: oraclejdk8
+      jdk: openjdk8
 
   -
     provider: script
@@ -36,4 +36,4 @@ deploy:
     on:
       repo: red6/dmn-check
       branch: master
-      jdk: oraclejdk8
+      jdk: openjdk8
