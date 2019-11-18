@@ -52,10 +52,15 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    @Disabled // Will only work once camunda/camunda-dmn-model/pull/6 is merged
     void shouldAllowConnectedInputDataElement() {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
+
+        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of InputDataReferenceImpl. If we
+        // do not do this and call InformationRequirement.setRequiredInput the id of our InputData node is associated with an
+        // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when
+        // creating a DMN model programmatically using the parser of camunda-dmn-model everything is fine.
+        modelInstance.getModelElementsByType(InputData.class);
 
         final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
         informationRequirement.setRequiredInput(inputData);
