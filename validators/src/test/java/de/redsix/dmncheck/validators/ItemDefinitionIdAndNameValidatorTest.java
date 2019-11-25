@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
 
-    private ItemDefinitionIdAndNameValidator testee = new ItemDefinitionIdAndNameValidator();
+    private final ItemDefinitionIdAndNameValidator testee = new ItemDefinitionIdAndNameValidator();
 
     @Test
     void shouldErrorIfDecisionHasNoId() {
