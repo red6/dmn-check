@@ -30,15 +30,15 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
         return decisionTable.getRules().stream()
-                .collect(Collectors.groupingBy(ConflictingRuleValidator::extractInputEntriesTextContent)).entrySet().stream()
-                .map(entry -> entry.getValue().stream().collect(Collectors.toCollection(
-                        () -> new TreeSet<>(Comparator.comparing(ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
-                .filter(rules -> rules.size() > 1)
-                .map(rules -> ValidationResult.init
+                        .collect(Collectors.groupingBy(ConflictingRuleValidator::extractInputEntriesTextContent)).values().stream()
+                        .map(rules -> rules.stream().collect(Collectors.toCollection(() -> new TreeSet<>(
+                                    Comparator.comparing(ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
+                            .filter(rules -> rules.size() > 1)
+                            .map(rules -> ValidationResult.init
                         .message("Rule is conflicting with rules " + rules.stream().skip(1).map(Rule::getId).collect(Collectors.toList()))
                         .element(rules.first())
                         .build())
-                .collect(Collectors.toList());
+                            .collect(Collectors.toList());
     }
 
     private static List<String> extractInputEntriesTextContent(Rule rule) {
