@@ -47,10 +47,10 @@ public final class PrettyPrintValidationResults {
     }
 
     private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final Log log) {
-        switch (severity) {
-            case ERROR: return log::error;
-            case WARNING: return log::warn;
-            default: return log::error;
+        if (severity == Severity.WARNING) {
+            return log::warn;
         }
+
+        return log::error;
     }
 }
