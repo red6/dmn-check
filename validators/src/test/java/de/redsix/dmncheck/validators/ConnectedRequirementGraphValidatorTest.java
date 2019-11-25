@@ -15,7 +15,6 @@ import org.camunda.bpm.model.dmn.instance.InputData;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
 import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
 import org.camunda.bpm.model.dmn.instance.Output;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
