@@ -27,7 +27,7 @@ public class ValidatorLoader {
         final ScanResult scanResult = new ClassGraph()
                 .whitelistClasses(Validator.class.getName())
                 .whitelistPackages(VALIDATOR_CORE_PACKAGE)
-                .whitelistPackagesNonRecursive(packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_PACKAGE + ".core"} : packages)
+                .whitelistPackagesNonRecursive(packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_CORE_PACKAGE} : packages)
                 .whitelistClasses(classes == null ? new String[]{} : classes)
                 .scan();
 
