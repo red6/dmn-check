@@ -4,10 +4,8 @@ import de.redsix.dmncheck.result.PrettyPrintValidationResults;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
+import de.redsix.dmncheck.util.ValidatorLoader;
 import de.redsix.dmncheck.validators.core.Validator;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfoList;
-import io.github.classgraph.ScanResult;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -21,7 +19,6 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -37,9 +34,6 @@ import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 class CheckerMain extends AbstractMojo {
-
-    private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
-    private static final String VALIDATOR_CORE_PACKAGE = "de.redsix.dmncheck.validators.core";
 
     @Parameter
     @SuppressWarnings("nullness")
@@ -158,39 +152,9 @@ class CheckerMain extends AbstractMojo {
             return validators;
         }
 
-        if (validatorPackages == null) {
-            validatorPackages = new String[] {VALIDATOR_PACKAGE, VALIDATOR_PACKAGE + ".core"};
-        }
-
-        if (validatorClasses == null) {
-            validatorClasses = new String[] { };
-        }
-
-        final ScanResult scanResult = new ClassGraph()
-                .whitelistClasses(Validator.class.getName())
-                .whitelistPackages(VALIDATOR_CORE_PACKAGE)
-                .whitelistPackagesNonRecursive(validatorPackages)
-                .whitelistClasses(validatorClasses)
-                .scan();
-
-        final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
-
-        validators = allValidatorClasses.loadClasses(Validator.class).stream()
-                .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
-                .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
-                .map(this::instantiateValidator)
-                .collect(Collectors.toList());
+        validators = ValidatorLoader.getValidators(validatorPackages, validatorClasses);
 
         return validators;
-    }
-
-    private Validator instantiateValidator(final Class<? extends Validator> validator) {
-        try {
-            return validator.newInstance();
-        }
-        catch (IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException("Failed to load validator " + validator, e);
-        }
     }
 
     private void loadProjectclasspath() throws MojoExecutionException {
