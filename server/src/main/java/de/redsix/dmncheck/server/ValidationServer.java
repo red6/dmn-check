@@ -3,6 +3,7 @@ package de.redsix.dmncheck.server;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ValidatorLoader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelException;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
@@ -24,11 +25,16 @@ public class ValidationServer {
             final ByteArrayInputStream dmnXmlStream = new ByteArrayInputStream(request.body().getBytes(StandardCharsets.UTF_8));
 
             try {
+                // Do not validate against the xml schema now. Errors from the xml validation are hard to map back into the editor.
+                FieldUtils.writeField(Dmn.INSTANCE, "dmnParser", new NonValidatingDmnParser(), true);
+
                 final DmnModelInstance modelInstance = Dmn.readModelFromStream(dmnXmlStream);
                 return validationServer.runValidators(modelInstance).toString();
             } catch (DmnModelException e) {
+                e.printStackTrace();
                 return ExceptionUtils.getRootCause(e).getMessage();
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.getMessage();
             }
         });
