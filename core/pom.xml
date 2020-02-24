@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.camunda.bpm.model</groupId>
             <artifactId>camunda-dmn-model</artifactId>
-            <version>7.11.0</version>
+            <version>7.12.0</version>
         </dependency>
 
         <dependency>
