@@ -12,5 +12,6 @@
 
 module.exports = {
   name: 'dmn-check Plugin',
-  script: './dist/client.js'
+  script: './dist/client.js',
+  style: './style/style.css'
 };

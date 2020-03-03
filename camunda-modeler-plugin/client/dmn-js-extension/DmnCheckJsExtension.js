@@ -1,4 +1,4 @@
-function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle) {
+function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
 
     eventBus.on('elements.changed', (_) => {
 
@@ -13,7 +13,14 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle) {
                     log("Request complete! response:", results);
                     JSON.parse(results).items.forEach(result => {
                         const shape = elementRegistry.get(result.id);
-                        log(shape);
+
+                        overlays.add(shape, 'badge', {
+                            position: {
+                                bottom: 0,
+                                left: 0
+                            },
+                            html: '<div title="' + result.message + '" class="badge badge-' + result.severity.toLowerCase() + '"></div>'
+                        });
                     });
                 })
             });
@@ -30,7 +37,7 @@ function log(...args) {
     console.log('[DmnCheckJsExtension]', ...args);
 }
 
-DmnCheckJsExtension.$inject = [ 'eventBus', 'drd', 'elementRegistry', 'moddle'];
+DmnCheckJsExtension.$inject = [ 'eventBus', 'drd', 'elementRegistry', 'moddle', 'overlays'];
 
 module.exports = DmnCheckJsExtension;
 

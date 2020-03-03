@@ -1,0 +1,25 @@
+.badge {
+    position:relative;
+}
+.badge:after {
+    content:'🞩';
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    font-size:1.2em;
+    color:white;
+    width:20px;
+    height:20px;
+    text-align:center;
+    line-height:20px;
+    border-radius:50%;
+    box-shadow:0 0 1px #333;
+}
+
+.badge-warning:after {
+    background: orange;
+}
+
+.badge-error:after {
+    background: red;
+}
