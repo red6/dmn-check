@@ -18,9 +18,10 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
                 body: xml
             }).then(res => {
                 res.text().then(function (results) {
+
                     log("Request complete! response:", results);
                     JSON.parse(results).items.forEach(result => {
-                        const shape = elementRegistry.get(result.id);
+                        const shape = elementRegistry.get(result.drgElementId);
 
                         overlays.add(shape, 'badge', {
                             position: {

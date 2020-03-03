@@ -7,6 +7,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelException;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.dmn.instance.DrgElement;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -51,9 +53,19 @@ public class ValidationServer {
     private JSONObject validationResultsToJson(final List<ValidationResult> validationResults) {
         return new JSONObject().put("items", validationResults.stream().map(vr -> new JSONObject().put("id", vr.getElement()
                                                                                                                .getAttributeValue("id"))
+                                                                                                  .put("drgElementId", getDrgElementParent(vr.getElement()).getAttributeValue("id"))
                                                                                                   .put("message", vr.getMessage())
                                                                                                   .put("severity",
                                                                                                        vr.getSeverity().toString()))
                                                               .collect(Collectors.toList()));
+    }
+
+    private DrgElement getDrgElementParent(final ModelElementInstance elementInstance) {
+
+        if (elementInstance instanceof DrgElement) {
+            return (DrgElement) elementInstance;
+        } else {
+            return this.getDrgElementParent(elementInstance.getParentElement());
+        }
     }
 }
