@@ -7,6 +7,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelException;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,8 @@ public class ValidationServer {
                 FieldUtils.writeField(Dmn.INSTANCE, "dmnParser", new NonValidatingDmnParser(), true);
 
                 final DmnModelInstance modelInstance = Dmn.readModelFromStream(dmnXmlStream);
-                return validationServer.runValidators(modelInstance).toString();
+                final List<ValidationResult> validationResults = validationServer.runValidators(modelInstance);
+                return validationServer.validationResultsToJson(validationResults).toString();
             } catch (DmnModelException e) {
                 e.printStackTrace();
                 return ExceptionUtils.getRootCause(e).getMessage();
@@ -44,5 +46,14 @@ public class ValidationServer {
         return ValidatorLoader.getValidators().stream()
                                 .flatMap(validator -> validator.apply(dmnModelInstance).stream())
                                 .collect(Collectors.toList());
+    }
+
+    private JSONObject validationResultsToJson(final List<ValidationResult> validationResults) {
+        return new JSONObject().put("items", validationResults.stream().map(vr -> new JSONObject().put("id", vr.getElement()
+                                                                                                               .getAttributeValue("id"))
+                                                                                                  .put("message", vr.getMessage())
+                                                                                                  .put("severity",
+                                                                                                       vr.getSeverity().toString()))
+                                                              .collect(Collectors.toList()));
     }
 }
