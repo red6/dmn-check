@@ -1,7 +1,15 @@
 function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
 
-    eventBus.on('elements.changed', (_) => {
+    eventBus.on('import.done', function() {
+        validate();
+    });
 
+
+    eventBus.on('elements.changed', function() {
+        validate();
+    });
+
+    function validate() {
         moddle.toXML(drd._definitions, {}, (err, xml) => {
             log("Start validation.");
 
@@ -27,8 +35,7 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
 
             log("Validation finished.");
         });
-
-    });
+    }
 }
 
 
