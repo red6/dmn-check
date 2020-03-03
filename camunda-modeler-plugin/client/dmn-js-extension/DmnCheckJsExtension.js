@@ -10,6 +10,8 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
     });
 
     function validate() {
+        const map = {};
+
         moddle.toXML(drd._definitions, {}, (err, xml) => {
             log("Start validation.");
 
@@ -26,10 +28,12 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays) {
                         overlays.add(shape, 'badge', {
                             position: {
                                 bottom: 0,
-                                left: 0
+                                left: 21 * map[result.drgElementId]
                             },
                             html: '<div title="' + result.message + '" class="badge badge-' + result.severity.toLowerCase() + '"></div>'
                         });
+
+                        map[result.drgElementId] = ~~map[result.drgElementId] + 1;
                     });
                 })
             });
