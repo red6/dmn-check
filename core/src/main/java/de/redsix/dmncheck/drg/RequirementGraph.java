@@ -31,10 +31,11 @@ public class RequirementGraph extends DirectedAcyclicGraph<DrgElement, DefaultEd
     public static RequirementGraph from(final DmnModelInstance dmnModelInstance) throws IllegalArgumentException {
         final Collection<Decision> decisions = dmnModelInstance.getModelElementsByType(Decision.class);
         final Collection<KnowledgeSource> knowledgeSources = dmnModelInstance.getModelElementsByType(KnowledgeSource.class);
+        final Collection<InputData> inputData = dmnModelInstance.getModelElementsByType(InputData.class);
 
         final RequirementGraph drg = new RequirementGraph(DefaultEdge.class, dmnModelInstance.getDefinitions());
 
-        Stream.of(decisions, knowledgeSources).flatMap(Collection::stream).forEach(drg::addVertex);
+        Stream.of(decisions, knowledgeSources, inputData).flatMap(Collection::stream).forEach(drg::addVertex);
 
         for (Decision decision : decisions) {
             decision.getInformationRequirements().stream()
