@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +37,11 @@ public class ValidationServer {
                 return validationServer.validationResultsToJson(validationResults).toString();
             } catch (DmnModelException e) {
                 e.printStackTrace();
-                return ExceptionUtils.getRootCause(e).getMessage();
+                return new JSONObject().put("items", Collections
+                        .singleton(new JSONObject().put("message", ExceptionUtils.getRootCause(e).getMessage())));
             } catch (Exception e) {
                 e.printStackTrace();
-                return e.getMessage();
+                return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", e.getMessage())));
             }
         });
     }
