@@ -1,3 +1,26 @@
+## 1.1.0 (2020-03-04)
+
+With release 1.1.0 dmn-check was split into four maven projects
+
+  - core: containing api-level code
+  - validators: containing all validators that ship with dmn-check
+  - maven-plugin: containing the code for the Maven plugin
+  - server: containing a Spark webserver providing a validation service
+  
+together with a Camunda modeler plugin that interacts with the validation server.
+
+Bugfixes:
+
+  - NullPointerException in enum validation
+  
+Features:
+
+  - Validate that there is exactly one leaf in a requirement graph
+  - Validate types of predefined input and output values
+  - Validate types of allowed values in item definitions
+  - Validate input data elements
+  - Validate id and name of definitions elements
+
 ## 1.0.6 (2018-12-01)
 
 Bugfixes:
