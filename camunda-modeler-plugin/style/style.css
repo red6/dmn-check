@@ -25,7 +25,10 @@
 }
 
 .message-box {
+    font-size: 1.5em;
     position: absolute;
     bottom: 20px;
     left: 20px;
+    background: red;
+    color: white;
 }
