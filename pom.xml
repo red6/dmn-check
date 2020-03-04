@@ -72,7 +72,7 @@
         <checker.framework.version>2.9.0</checker.framework.version>
         <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
 
-        <junit-minor.version>5.2</junit-minor.version>
+        <junit-minor.version>6.0</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
         <derive4j.version>1.1.1</derive4j.version>
     </properties>
@@ -344,7 +344,7 @@
         <dependency>
             <groupId>org.junit-pioneer</groupId>
             <artifactId>junit-pioneer</artifactId>
-            <version>0.3.3</version>
+            <version>0.5.4</version>
             <scope>test</scope>
         </dependency>
 
