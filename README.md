@@ -5,11 +5,17 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/de1a1aa377520c44c3a7/maintainability)](https://codeclimate.com/github/red6/dmn-check/maintainability)
 [![Maven Central Version](https://img.shields.io/maven-central/v/de.redsix/dmn-check.svg)](http://search.maven.org/#search|gav|1|g:"de.redsix"%20AND%20a:"dmn-check")
 
-# DMN-Check Maven plugin
+# dmn-check
 
-This is a Maven plugin which performs various static analyses on [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files to detect inconsistencies and bugs.
+This is a tool for the validation of [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files. It performs various static analyses to detect inconsistencies and bugs in your decision models.
 
-Currently the plugin checks among others for the following:
+You can use dmn-check in three ways.
+
+* As a Maven plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your artifacts.
+* Integrated into the development of your decision models by using the [Camunda Modeler](https://camunda.com/products/modeler/) plugin.
+* Integrated into your custom tools by using the provided Maven modules (dmn-check-core and dmn-check-validators).
+
+Currently dmn-check checks among others for the following:
 * Duplicate rules
 * Conflicting rules
 * Shadowed rules
@@ -19,21 +25,23 @@ Currently the plugin checks among others for the following:
 
 In section [Validations](#validations) you find a complete list with detailed descriptions of what they do.
 
-## Prerequisites
+## Maven Plugin
+
+### Prerequisites
 
 This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
 
-## Usage
+### Usage
 
 `dmn-check` can be used either as a normal Maven plugin inside your projects `pom.xml` or as a standalone program.
 
-### Configuration in POM
+#### Configuration in POM
 
 The following example shows the basic configuration of the plugin:
 		
 	        <plugin>
                 <groupId>de.redsix</groupId>
-                <artifactId>dmn-check</artifactId>
+                <artifactId>dmn-check-maven-plugin</artifactId>
                 <version>...</version>
                 <executions>
                     <execution>
@@ -60,11 +68,11 @@ Using this configuration the plugin will search all folders of the current proje
                     </validatorClasses>
                 </configuration>
                 
-### Standalone usage
+#### Standalone usage
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
 
-        mvn de.redsix:dmn-check:check-dmn
+        mvn de.redsix:dmn-check-maven-plugin:check-dmn
 
 ## Validations
 
