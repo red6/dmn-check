@@ -64,8 +64,11 @@ class CheckerMainTest {
         // additional empty directory
         Files.createDirectory(folder1.resolve("folder1-0"));
 
-        final List<String> result = testee
-                .getFileNames("dmn", Collections.singletonList(temporaryFolder));
+        final List<String> result = testee.getFileNames(Collections.singletonList(temporaryFolder))
+                                          .stream()
+                                          .map(Path::toAbsolutePath)
+                                          .map(Path::toString)
+                                          .collect(Collectors.toList());
 
         MatcherAssert.assertThat(result, Matchers.containsInAnyOrder(dmnFileNames.toArray()));
     }

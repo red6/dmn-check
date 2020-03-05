@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,8 +108,8 @@ class CheckerMain extends AbstractMojo {
     }
 
     List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
-        final List<String> fileNames = getFileNames(".dmn", searchPaths);
-        final List<File> files = fileNames.stream().map(File::new).collect(Collectors.toList());
+        final List<Path> fileNames = getFileNames(searchPaths);
+        final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
         return files.stream().filter(file -> {
             if (getExcludeList().contains(file.getName())) {
                 getLog().info("Skipped File: " + file);
@@ -118,13 +120,14 @@ class CheckerMain extends AbstractMojo {
         }).collect(Collectors.toList());
     }
 
-    List<String> getFileNames(final String suffix, final List<Path> dirs) {
+    List<Path> getFileNames(final List<Path> dirs) {
+        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**.dmn");
+
         return dirs.stream().flatMap(dir -> {
             try {
                 return Files.walk(dir)
                         .filter(Files::isRegularFile)
-                        .map(path -> path.toAbsolutePath().toString())
-                        .filter(absolutePath -> absolutePath.endsWith(suffix));
+                        .filter(matcher::matches);
             } catch (IOException e) {
                 throw new RuntimeException("Could not determine DMN files.", e);
             }
