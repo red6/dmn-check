@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public interface PluginBase {
 
-    PrettyPrintValidationResults.CustomLogger getLogger();
+    PrettyPrintValidationResults.PluginLogger getPluginLogger();
 
     List<String> getExcludeList();
 
@@ -55,13 +55,13 @@ public interface PluginBase {
             final List<ValidationResult> validationResults = runValidators(dmnModelInstance);
 
             if (!validationResults.isEmpty()) {
-                PrettyPrintValidationResults.logPrettified(file, validationResults, getLogger());
+                PrettyPrintValidationResults.logPrettified(file, validationResults, getPluginLogger());
                 encounteredError = validationResults.stream()
                                                     .anyMatch(result -> Severity.ERROR.equals(result.getSeverity()));
             }
         }
         catch (Exception e) {
-            getLogger().error.accept(e.getMessage());
+            getPluginLogger().error.accept(e.getMessage());
             encounteredError = true;
         }
 
@@ -79,7 +79,7 @@ public interface PluginBase {
         final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
         return files.stream().filter(file -> {
             if (getExcludeList().contains(file.getName())) {
-                getLogger().info.accept("Skipped File: " + file);
+                getPluginLogger().info.accept("Skipped File: " + file);
                 return false;
             } else {
                 return true;

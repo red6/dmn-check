@@ -52,8 +52,8 @@ class CheckerMain extends AbstractMojo implements PluginBase {
     }
 
     @Override
-    public PrettyPrintValidationResults.CustomLogger getLogger() {
-        return new PrettyPrintValidationResults.CustomLogger(getLog()::info, getLog()::warn, getLog()::error);
+    public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
+        return new PrettyPrintValidationResults.PluginLogger(getLog()::info, getLog()::warn, getLog()::error);
     }
 
     @Override

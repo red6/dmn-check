@@ -21,18 +21,18 @@ public final class PrettyPrintValidationResults {
 
     }
 
-    public static class CustomLogger {
+    public static class PluginLogger {
         protected Consumer<@PolyNull CharSequence> info;
         protected Consumer<@PolyNull CharSequence> warn;
         protected Consumer<@PolyNull CharSequence> error;
 
-        public CustomLogger(final Consumer<@PolyNull CharSequence> info, final Consumer<@PolyNull CharSequence> warn, final Consumer<@PolyNull CharSequence> error) {
+        public PluginLogger(final Consumer<@PolyNull CharSequence> info, final Consumer<@PolyNull CharSequence> warn, final Consumer<@PolyNull CharSequence> error) {
             this.info = info;
             this.warn = warn;
             this.error = error;
         }
     }
-    public static void logPrettified(final File file, final List<ValidationResult> validationResults, final CustomLogger log) {
+    public static void logPrettified(final File file, final List<ValidationResult> validationResults, final PluginLogger log) {
         log.info.accept("Validation results for file " + file.getAbsolutePath());
 
         validationResults.sort(Comparator.comparing(ValidationResult::getSeverity).reversed());
@@ -59,7 +59,7 @@ public final class PrettyPrintValidationResults {
                              rule.getOutputEntries().stream().map(OutputEntry::getTextContent)).collect(Collectors.joining(","));
     }
 
-    private static Consumer<@PolyNull CharSequence> getLoggingMethod(final Severity severity, final CustomLogger logger) {
+    private static Consumer<@PolyNull CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {
         if (severity == Severity.WARNING) {
             return logger.warn;
         }

@@ -29,13 +29,13 @@ class PluginBaseTest {
 
     private PluginBase testee = Mockito.spy(PluginBase.class);
 
-    private PrettyPrintValidationResults.CustomLogger emptyLogger = new PrettyPrintValidationResults.CustomLogger(
+    private PrettyPrintValidationResults.PluginLogger emptyLogger = new PrettyPrintValidationResults.PluginLogger(
             __ -> { }, __ -> { }, __ -> { });
 
     @BeforeEach
     void init() {
 
-        when(testee.getLogger()).thenReturn(emptyLogger);
+        when(testee.getPluginLogger()).thenReturn(emptyLogger);
     }
 
     @Test
