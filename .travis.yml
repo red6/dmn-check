@@ -15,6 +15,7 @@ before_install:
 
 install:
   - mvn --settings .travis/settings.xml clean install -P checkerframework
+  - cd gradle-plugin; ./gradlew build --scan -s
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
