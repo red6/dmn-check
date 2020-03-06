@@ -1,0 +1,33 @@
+plugins {
+    id 'maven-publish'
+    id 'java'
+    id 'java-gradle-plugin'
+}
+
+group 'de.redsix'
+version '1.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'de.redsix'
+            artifactId = 'dmn-check-gradle-plugin'
+            version = '1.0.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile group: 'de.redsix', name: 'dmn-check-plugin-base', version: '1.2.0-SNAPSHOT'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
