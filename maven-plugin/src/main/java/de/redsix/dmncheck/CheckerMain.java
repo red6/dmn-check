@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
-class CheckerMain extends AbstractMojo implements PluginBase {
+public class CheckerMain extends AbstractMojo implements PluginBase {
 
     @Parameter
     @SuppressWarnings("nullness")
