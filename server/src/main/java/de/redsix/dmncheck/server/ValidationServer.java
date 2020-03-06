@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static spark.Spark.port;
 import static spark.Spark.post;
 
 public class ValidationServer {
@@ -24,6 +25,7 @@ public class ValidationServer {
     public static void main(String[] args) {
         ValidationServer validationServer = new ValidationServer();
 
+        port(42000);
         post("/validate", (request, response) -> {
 
             final ByteArrayInputStream dmnXmlStream = new ByteArrayInputStream(request.body().getBytes(StandardCharsets.UTF_8));

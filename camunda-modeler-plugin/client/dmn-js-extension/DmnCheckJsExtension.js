@@ -21,7 +21,7 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays, c
         moddle.toXML(drd._definitions, {}, (err, xml) => {
             log("Start validation.");
 
-            fetch('http://localhost:4567/validate', {
+            fetch('http://localhost:42000/validate', {
                 method: "POST",
                 body: xml
             }).then(res => {
