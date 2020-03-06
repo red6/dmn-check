@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>validators</module>
+        <module>server</module>
         <module>maven-plugin</module>
         <module>plugin-base</module>
     </modules>
