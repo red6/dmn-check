@@ -1,3 +1,10 @@
+## 1.1.1 (2020-03-06)
+
+Bugfixes:
+
+  - Release missing module dmn-check-server
+  - Change server port to 42000
+
 ## 1.1.0 (2020-03-04)
 
 With release 1.1.0 dmn-check was split into four maven projects
