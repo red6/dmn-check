@@ -29,8 +29,6 @@ public interface PluginBase {
 
     String[] getValidatorClasses();
 
-    void loadProjectclasspath() throws Exception;
-
     default boolean validate() {
         final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);

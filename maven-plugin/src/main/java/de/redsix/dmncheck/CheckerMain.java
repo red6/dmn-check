@@ -84,7 +84,6 @@ class CheckerMain extends AbstractMojo implements PluginBase {
         return validatorClasses;
     }
 
-    @Override
     public void loadProjectclasspath() throws MojoExecutionException {
         final List<URL> listUrl = new ArrayList<>();
 
