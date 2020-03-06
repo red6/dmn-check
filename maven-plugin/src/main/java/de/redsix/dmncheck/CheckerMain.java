@@ -1,11 +1,8 @@
 package de.redsix.dmncheck;
 
-import de.redsix.dmncheck.result.PrettyPrintValidationResults;
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.plugin.PluginBase;
+import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
 import de.redsix.dmncheck.util.ProjectClassLoader;
-import de.redsix.dmncheck.util.ValidatorLoader;
-import de.redsix.dmncheck.validators.core.Validator;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -13,29 +10,18 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
-class CheckerMain extends AbstractMojo {
+class CheckerMain extends AbstractMojo implements PluginBase {
 
     @Parameter
     @SuppressWarnings("nullness")
@@ -57,84 +43,21 @@ class CheckerMain extends AbstractMojo {
     @SuppressWarnings("nullness")
     private MavenProject project;
 
-    private @MonotonicNonNull List<Validator> validators;
-
     @Override
     public void execute() throws MojoExecutionException {
         loadProjectclasspath();
-
-        final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
-        final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
-
-        testFiles(filesToTest);
-    }
-
-    void testFiles(final List<File> files) throws MojoExecutionException {
-        boolean encounteredError = false;
-        for (File file : files) {
-            encounteredError |= testFile(file);
-        }
-
-        if (encounteredError) {
+        if(validate()) {
             throw new MojoExecutionException("Some files are not valid, see previous logs.");
         }
     }
 
-    private boolean testFile(final File file) {
-        boolean encounteredError = false;
-
-        try {
-            final DmnModelInstance dmnModelInstance = Dmn.readModelFromFile(file);
-            final List<ValidationResult> validationResults = runValidators(dmnModelInstance);
-
-            if (!validationResults.isEmpty()) {
-                PrettyPrintValidationResults.logPrettified(file, validationResults, getLog());
-                encounteredError = validationResults.stream()
-                        .anyMatch(result -> Severity.ERROR.equals(result.getSeverity()));
-            }
-        }
-        catch (Exception e) {
-            getLog().error(e);
-            encounteredError = true;
-        }
-
-        return encounteredError;
+    @Override
+    public PrettyPrintValidationResults.CustomLogger getLogger() {
+        return new PrettyPrintValidationResults.CustomLogger(getLog()::info, getLog()::warn, getLog()::error);
     }
 
-    private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
-        return getValidators().stream()
-                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
-                .collect(Collectors.toList());
-    }
-
-    List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
-        final List<Path> fileNames = getFileNames(searchPaths);
-        final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
-        return files.stream().filter(file -> {
-            if (getExcludeList().contains(file.getName())) {
-                getLog().info("Skipped File: " + file);
-                return false;
-            } else {
-                return true;
-            }
-        }).collect(Collectors.toList());
-    }
-
-    List<Path> getFileNames(final List<Path> dirs) {
-        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**.dmn");
-
-        return dirs.stream().flatMap(dir -> {
-            try {
-                return Files.walk(dir)
-                        .filter(Files::isRegularFile)
-                        .filter(matcher::matches);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not determine DMN files.", e);
-            }
-        }).collect(Collectors.toList());
-    }
-
-    private List<String> getExcludeList() {
+    @Override
+    public List<String> getExcludeList() {
         if (excludes != null) {
             return Arrays.asList(excludes);
         } else {
@@ -142,7 +65,8 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    private List<String> getSearchPathList() {
+    @Override
+    public List<String> getSearchPathList() {
         if (searchPaths != null) {
             return Arrays.asList(searchPaths);
         } else {
@@ -150,17 +74,18 @@ class CheckerMain extends AbstractMojo {
         }
     }
 
-    private List<Validator> getValidators() {
-        if (validators != null) {
-            return validators;
-        }
-
-        validators = ValidatorLoader.getValidators(validatorPackages, validatorClasses);
-
-        return validators;
+    @Override
+    public String[] getValidatorPackages() {
+        return validatorPackages;
     }
 
-    private void loadProjectclasspath() throws MojoExecutionException {
+    @Override
+    public String[] getValidatorClasses() {
+        return validatorClasses;
+    }
+
+    @Override
+    public void loadProjectclasspath() throws MojoExecutionException {
         final List<URL> listUrl = new ArrayList<>();
 
         Set<Artifact> deps = project.getArtifacts();

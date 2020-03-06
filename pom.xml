@@ -13,6 +13,7 @@
         <module>core</module>
         <module>validators</module>
         <module>maven-plugin</module>
+        <module>plugin-base</module>
     </modules>
 
     <name>dmn-check</name>
