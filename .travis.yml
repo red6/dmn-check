@@ -15,7 +15,7 @@ before_install:
 
 install:
   - mvn --settings .travis/settings.xml clean install -P checkerframework
-  - cd camunda-modeler-plugin; npm install; npm run bundle
+  - cd camunda-modeler-plugin; npm install; npm run bundle; cd -
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
