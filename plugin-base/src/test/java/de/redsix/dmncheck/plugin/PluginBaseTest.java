@@ -85,8 +85,8 @@ class PluginBaseTest {
 
 
     @Test
-    void shouldAcceptDishDecisionRequirementGraphExample() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn")));
+    void shouldAcceptDishDecisionRequirementGraphExample() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn"))));
     }
 
     @Test
@@ -97,13 +97,13 @@ class PluginBaseTest {
 
 
     @Test
-    void shouldSkipFileIfHitpolicyIsCollect() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn")));
+    void shouldSkipFileIfHitpolicyIsCollect() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn"))));
     }
 
     @Test
-    void shouldAcceptDishDecisionExample() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn")));
+    void shouldAcceptDishDecisionExample() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn"))));
     }
 
     @Test
