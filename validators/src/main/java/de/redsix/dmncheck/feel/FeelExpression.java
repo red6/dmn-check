@@ -47,6 +47,18 @@ public abstract class FeelExpression {
                 .DisjunctionExpression((head, tail) -> head.containsVariable(name) || tail.containsVariable(name));
     }
 
+    public boolean isLiteral() {
+        return FeelExpressions.caseOf(this)
+                       .BooleanLiteral_(true)
+                       .DateLiteral_(true)
+                       .DoubleLiteral_(true)
+                       .IntegerLiteral_(true)
+                       .StringLiteral_(true)
+                       .VariableLiteral_(true)
+                       .otherwise_(false);
+
+    }
+
     @Override
     public abstract int hashCode();
 

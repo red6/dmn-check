@@ -9,6 +9,7 @@ final class Subsumption {
     private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}
 
     static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
+    private static final Comparison<?> nq = (a, b) -> a.compareTo(b) != 0;
     private static final Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
     private static final Comparison<?> lt = (a, b) -> a.compareTo(b) < 0;
     private static final Comparison<?> ge = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) > 0;
@@ -52,7 +53,13 @@ final class Subsumption {
                         return Optional.of(false);
                     }
                 })
-                .otherwise_(Optional.of(false));
+                .otherwise(() -> {
+                    if (operator.equals(Operator.NOT) && otherExpression.isLiteral()) {
+                        return subsumes(operand, otherExpression, nq);
+                    } else {
+                        return Optional.of(false);
+                    }
+                });
     }
 
     private static Optional<Boolean> subsumesRangeExpression(boolean leftInc, FeelExpression lowerBound, FeelExpression upperBound,
@@ -79,7 +86,7 @@ final class Subsumption {
             case LT: return lt;
             case GT: return gt;
             case GE: return ge;
-            default: throw new IllegalArgumentException();
+            default: return eq;
         }
     }
 
