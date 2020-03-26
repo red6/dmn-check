@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SubsumptionTest {
 
     @ParameterizedTest
-    @CsvSource({"1", "\"a\"", "[1..2]", "<3"})
+    @CsvSource({"1", "\"a\"", "[1..2]", "<3", "not(3)"})
     void emptySubsumesEverything(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
@@ -20,7 +20,7 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"1", "\"a\"", "[1..2]", "<3"})
+    @CsvSource({"1", "\"a\"", "[1..2]", "<3", "not(3)"})
     void nothingSubsumesEmptyExceptEmpty(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final FeelExpression emptyExpression = FeelExpressions.Empty();
@@ -88,8 +88,20 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
+    @CsvSource({"x, not(3)", "not(3), not(3)", "not(3), 4"})
+    void subsumptionForNotPositveCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
+    @ParameterizedTest
     @CsvSource({"true, false", "false, true"})
     void subsumptionForBooleanIsEqualityNegativeCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"not(x), not(y)", "not(3), x", "3, not(3)", "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)"})
+    void subsumptionForNotNegativeCases(final String subsumingInput, final String subsumedInput) {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
