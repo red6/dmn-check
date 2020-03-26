@@ -44,9 +44,8 @@ final class Subsumption {
                     if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
                         return Optional.of(true);
                     }
-                    if (isGreater(fromOperator(operator)) && isGreater(fromOperator(otherOperator))) {
-                        return subsumes(otherOperand, operand, fromOperator(operator));
-                    } else if (isLess(fromOperator(operator)) && isLess(fromOperator(otherOperator))) {
+
+                    if (operator.isGreaterThan() && otherOperator.isGreaterThan() || operator.isLessThan() && otherOperator.isLessThan()) {
                         return subsumes(otherOperand, operand, fromOperator(operator));
                     } else {
                         return Optional.of(false);
@@ -83,11 +82,4 @@ final class Subsumption {
         }
     }
 
-    private static boolean isLess(final Comparison comparison) {
-        return comparison.equals(le) ||comparison.equals(lt) ;
-    }
-
-    private static boolean isGreater(final Comparison comparison) {
-        return comparison.equals(ge) ||comparison.equals(gt) ;
-    }
 }
