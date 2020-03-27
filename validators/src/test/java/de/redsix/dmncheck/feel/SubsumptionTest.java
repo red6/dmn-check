@@ -105,6 +105,18 @@ class SubsumptionTest {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
+    @ParameterizedTest
+    @CsvSource({"[1..3], 2", "[1..3], 1", "[1..3], 3"})
+    void subsumptionRangeExpressionsAndLiteralsPositiveCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"(1..3], 1", "[1..3), 3", "[1..3], 4", "[1..3], 0"})
+    void subsumptionRangeExpressionsAndLiteralsNegativeCases(final String subsumingInput, final String subsumedInput) {
+        assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
+    }
+
     private static void assertLeftIsSubsumedByRight(String subsumingInput, String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);

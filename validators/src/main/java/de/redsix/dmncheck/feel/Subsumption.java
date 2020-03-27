@@ -71,8 +71,16 @@ final class Subsumption {
                                         subsumes(otherUpperBound, upperBound, rightInc ? le : lt).flatMap(
                                                 subsumesUpperBound ->
                                                         Optional.of(subsumesLowerBound && subsumesUpperBound))))
-
-                .otherwise_(Optional.of(false));
+                .otherwise(() -> {
+                    if (otherExpression.isLiteral()) {
+                        return subsumes(lowerBound, otherExpression, leftInc ? le : lt).flatMap(
+                                subsumedByLowerBound -> subsumes(upperBound, otherExpression, rightInc ? ge : gt).flatMap(
+                                        subsumedByUpperBound -> Optional.of(subsumedByLowerBound && subsumedByUpperBound)
+                                ));
+                    } else {
+                        return Optional.of(false);
+                    }
+                });
     }
 
     private static <R extends Comparable> Optional<Boolean> compareLiterals(R value,
