@@ -9,6 +9,7 @@ final class Subsumption {
     private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}
 
     static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
+    private static final Comparison<?> nq = (a, b) -> a.compareTo(b) != 0;
     private static final Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
     private static final Comparison<?> lt = (a, b) -> a.compareTo(b) < 0;
     private static final Comparison<?> ge = (a, b) -> a.compareTo(b) == 0 ||  a.compareTo(b) > 0;
@@ -44,15 +45,20 @@ final class Subsumption {
                     if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
                         return Optional.of(true);
                     }
-                    if (isGreater(fromOperator(operator)) && isGreater(fromOperator(otherOperator))) {
-                        return subsumes(otherOperand, operand, fromOperator(operator));
-                    } else if (isLess(fromOperator(operator)) && isLess(fromOperator(otherOperator))) {
+
+                    if (operator.isGreaterThan() && otherOperator.isGreaterThan() || operator.isLessThan() && otherOperator.isLessThan()) {
                         return subsumes(otherOperand, operand, fromOperator(operator));
                     } else {
                         return Optional.of(false);
                     }
                 })
-                .otherwise_(Optional.of(false));
+                .otherwise(() -> {
+                    if (operator.equals(Operator.NOT) && otherExpression.isLiteral()) {
+                        return subsumes(operand, otherExpression, nq);
+                    } else {
+                        return Optional.of(false);
+                    }
+                });
     }
 
     private static Optional<Boolean> subsumesRangeExpression(boolean leftInc, FeelExpression lowerBound, FeelExpression upperBound,
@@ -64,8 +70,16 @@ final class Subsumption {
                                         subsumes(otherUpperBound, upperBound, rightInc ? le : lt).flatMap(
                                                 subsumesUpperBound ->
                                                         Optional.of(subsumesLowerBound && subsumesUpperBound))))
-
-                .otherwise_(Optional.of(false));
+                .otherwise(() -> {
+                    if (otherExpression.isLiteral()) {
+                        return subsumes(lowerBound, otherExpression, leftInc ? le : lt).flatMap(
+                                subsumedByLowerBound -> subsumes(upperBound, otherExpression, rightInc ? ge : gt).flatMap(
+                                        subsumedByUpperBound -> Optional.of(subsumedByLowerBound && subsumedByUpperBound)
+                                ));
+                    } else {
+                        return Optional.of(false);
+                    }
+                });
     }
 
     private static <R extends Comparable> Optional<Boolean> compareLiterals(R value,
@@ -79,15 +93,8 @@ final class Subsumption {
             case LT: return lt;
             case GT: return gt;
             case GE: return ge;
-            default: throw new IllegalArgumentException();
+            default: return eq;
         }
     }
 
-    private static boolean isLess(final Comparison comparison) {
-        return comparison.equals(le) ||comparison.equals(lt) ;
-    }
-
-    private static boolean isGreater(final Comparison comparison) {
-        return comparison.equals(ge) ||comparison.equals(gt) ;
-    }
 }

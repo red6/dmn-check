@@ -25,4 +25,12 @@ public enum  Operator {
     public String toString() {
         return name;
     }
+
+    public boolean isLessThan() {
+        return this.equals(LT) || this.equals(LE);
+    }
+
+    public boolean isGreaterThan() {
+        return this.equals(GT) || this.equals(GE);
+    }
 }
