@@ -1,3 +1,19 @@
+## 1.1.3
+
+Bugfixes:
+
+  - Support expressions containing not in the subsumption check (issue #5)
+
+Features:
+
+  - Add support for range expression - literal subsumptions
+
+## 1.1.2
+
+Bugfixes:
+
+  - Assemble a JAR with all the dependencies for the server module
+
 ## 1.1.1 (2020-03-06)
 
 Bugfixes:
