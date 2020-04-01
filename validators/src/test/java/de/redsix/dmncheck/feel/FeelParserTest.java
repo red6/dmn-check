@@ -3,6 +3,7 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
+import org.jparsec.error.ParserException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,6 +23,7 @@ import static de.redsix.dmncheck.feel.FeelExpressions.StringLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.UnaryExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.VariableLiteral;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FeelParserTest {
@@ -127,14 +129,8 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldRespectPrecedenceOfMinus() {
-        final FeelExpression expression = FeelParser.PARSER.parse("2 * -3");
-
-        final FeelExpression expectedExpression = BinaryExpression(
-                IntegerLiteral(2), Operator.MUL, UnaryExpression(Operator.SUB, IntegerLiteral(3))
-        );
-
-        assertEquals(expectedExpression, expression);
+    void shouldNotParseDashWithinExpressionsAsEmpty() {
+        assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("2 * -"));
     }
 
     @Test

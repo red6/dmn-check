@@ -116,14 +116,14 @@ public final class FeelParser {
         final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), feelParserReference.lazy(), OPERATORS.token(")"))
                                                        .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
 
-        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(parseEmpty(), literalParser, parseNot,
+        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, parseNot,
                                                                                                parseRangeExpression);
 
         final Parser<FeelExpression> feelExpressionParser = createBinaryExpressionParser(feelExpressionParserWithoutBinaryExpressions);
 
         feelParserReference.set(feelExpressionParser);
 
-        return feelExpressionParser;
+        return Parsers.or(parseEmpty(), feelExpressionParser);
     }
 
     static final Parser<FeelExpression> PARSER = feelExpressionParser().from(TOKENIZER, IGNORED);
