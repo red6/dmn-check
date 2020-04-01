@@ -24,11 +24,19 @@ final class Subsumption {
                 .DoubleLiteral((aDouble) -> compareLiterals(aDouble, FeelExpressions::getADouble, otherExpression, comparison))
                 .IntegerLiteral((integer) -> compareLiterals(integer, FeelExpressions::getAInteger, otherExpression, comparison))
                 .StringLiteral((string) ->  compareLiterals(string, FeelExpressions::getString, otherExpression, eq))
-                .VariableLiteral_(Optional.of(true))
+                .VariableLiteral((name) ->  subsumesVariableLiteral(name, otherExpression, comparison))
                 .RangeExpression((leftInc, lowerBound, upperBound, rightInc) ->
                         subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression))
                 .UnaryExpression((operator, operand) -> subsumesUnaryExpression(operator, operand, otherExpression))
                 .otherwise_(Optional.empty());
+    }
+
+    private static Optional<Boolean> subsumesVariableLiteral(String name, FeelExpression otherExpression, Comparison comparison) {
+        return FeelExpressions.caseOf(otherExpression)
+                .VariableLiteral(otherName -> Optional.of(comparison.test(name, otherName)))
+                .UnaryExpression(((operator, operand) -> Operator.NOT.equals(operator) ?
+                        subsumesVariableLiteral(name, operand, nq) : Optional.of(true)))
+                .otherwise_(Optional.of(true));
     }
 
     private static Optional<Boolean> subsumesUnaryExpression(Operator operator, FeelExpression operand, FeelExpression otherExpression) {
