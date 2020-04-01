@@ -106,7 +106,7 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"not(x), not(y)", "not(3), x", "3, not(3)", "null, not(null)" , "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)"})
+    @CsvSource({"x, not(x)", "not(x), not(y)", "not(3), x", "3, not(3)", "null, not(null)" , "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)"})
     void subsumptionForNotNegativeCases(final String subsumingInput, final String subsumedInput) {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
