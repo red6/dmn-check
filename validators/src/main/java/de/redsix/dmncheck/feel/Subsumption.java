@@ -18,6 +18,7 @@ final class Subsumption {
     static Optional<Boolean> subsumes(final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
         return FeelExpressions.caseOf(expression)
                 .Empty_(Optional.of(true))
+                .Null_(FeelExpressions.caseOf(otherExpression).Null_(Optional.of(true)).otherwise_(Optional.of(false)))
                 .BooleanLiteral((aBool) -> compareLiterals(aBool, FeelExpressions::getABoolean, otherExpression, comparison))
                 .DateLiteral((dateTime) -> compareLiterals(dateTime, FeelExpressions::getDateTime, otherExpression, comparison))
                 .DoubleLiteral((aDouble) -> compareLiterals(aDouble, FeelExpressions::getADouble, otherExpression, comparison))

@@ -18,6 +18,7 @@ import static de.redsix.dmncheck.feel.FeelExpressions.DisjunctionExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.DoubleLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.Empty;
 import static de.redsix.dmncheck.feel.FeelExpressions.IntegerLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.Null;
 import static de.redsix.dmncheck.feel.FeelExpressions.RangeExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.StringLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.UnaryExpression;
@@ -79,6 +80,15 @@ class FeelParserTest {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = FeelExpressions.BooleanLiteral(expectedValue);
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseNull() {
+        final FeelExpression expression = FeelParser.PARSER.parse("null");
+
+        final FeelExpression expectedExpression = Null();
 
         assertEquals(expectedExpression, expression);
     }

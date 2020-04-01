@@ -29,6 +29,7 @@ public final class FeelTypecheck {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
                 .<Either<ValidationResult.Builder.ElementStep, ExpressionType>>Empty_(right(ExpressionTypes.TOP()))
+                .Null_(right(ExpressionTypes.TOP()))
                 .BooleanLiteral(bool -> right(ExpressionTypes.BOOLEAN()))
                 .DateLiteral(dateTime -> right(ExpressionTypes.DATE()))
                 .DoubleLiteral(aDouble -> right(ExpressionTypes.DOUBLE()))

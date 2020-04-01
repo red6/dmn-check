@@ -34,6 +34,8 @@ public final class FeelParser {
             Patterns.regex("\"[^\"]*\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source()
                     .map(s -> Tokens.fragment(s, "booleanfragment")),
+            Patterns.string("null").toScanner("null").source()
+                    .map(s -> Tokens.fragment(s, "nullfragment")),
             Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source()
                     .map(s -> Tokens.fragment(s, "variablefragment")),
             Patterns.regex("[0-9]+\\.[0-9]+").toScanner("strict-decimal").source()
@@ -54,6 +56,9 @@ public final class FeelParser {
 
     private static final Parser<FeelExpression> BOOLEAN = Terminals.fragment("booleanfragment")
             .map(Boolean::new).map(FeelExpressions::BooleanLiteral);
+
+    private static final Parser<FeelExpression> NULL = Terminals.fragment("nullfragment")
+                                                                .map(__ -> FeelExpressions.Null());
 
     private static final Parser<FeelExpression> DATE = Parsers.between(OPERATORS.token("date and time(\""),
             Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpressions::DateLiteral), OPERATORS.token("\")"));
@@ -116,7 +121,7 @@ public final class FeelParser {
         final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), feelParserReference.lazy(), OPERATORS.token(")"))
                                                        .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
 
-        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, parseNot,
+        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, NULL, parseNot,
                                                                                                parseRangeExpression);
 
         final Parser<FeelExpression> feelExpressionParser = createBinaryExpressionParser(feelExpressionParserWithoutBinaryExpressions);

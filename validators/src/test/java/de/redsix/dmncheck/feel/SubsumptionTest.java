@@ -35,6 +35,12 @@ class SubsumptionTest {
     }
 
     @Test
+    void nullSubsumesNull() {
+        final FeelExpression nullExpression = FeelExpressions.Null();
+        assertEquals(Optional.of(true), Subsumption.subsumes(nullExpression, nullExpression, Subsumption.eq));
+    }
+
+    @Test
     void identicalStringsSubsumeEachOther() {
         final FeelExpression stringExpression = FeelParser.PARSER.parse("\"somestring\"");
         assertEquals(Optional.of(true), Subsumption.subsumes(stringExpression, stringExpression, Subsumption.eq));
@@ -100,7 +106,7 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"not(x), not(y)", "not(3), x", "3, not(3)", "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)"})
+    @CsvSource({"not(x), not(y)", "not(3), x", "3, not(3)", "null, not(null)" , "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)"})
     void subsumptionForNotNegativeCases(final String subsumingInput, final String subsumedInput) {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
