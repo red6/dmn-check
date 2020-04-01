@@ -341,7 +341,7 @@ class FeelParserTest {
         final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
-                + "<, >, <=, >=, -, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, date and time(\", not(, [, ] or ( expected, EOF encountered.";
+                + "INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment or date and time(\" expected, EOF encountered.";
 
         assertTrue(Eithers.getLeft(result).isPresent());
         assertEquals(expectedErrorMessage, Eithers.getLeft(result).get().getMessage());
