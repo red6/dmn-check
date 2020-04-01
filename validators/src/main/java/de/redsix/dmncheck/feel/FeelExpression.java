@@ -14,6 +14,7 @@ public abstract class FeelExpression {
 
     public interface Cases<R> {
         R Empty();
+        R Null();
         R BooleanLiteral(Boolean aBoolean);
         R DateLiteral(LocalDateTime dateTime);
         R DoubleLiteral(Double aDouble);
@@ -35,6 +36,7 @@ public abstract class FeelExpression {
     public boolean containsVariable(final String name) {
         return FeelExpressions.caseOf(this)
                 .Empty_(false)
+                .Null_(false)
                 .BooleanLiteral_(false)
                 .DateLiteral_(false)
                 .DoubleLiteral_(false)
