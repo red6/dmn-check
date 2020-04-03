@@ -102,6 +102,17 @@ public final class FeelParser {
                 .build(feelExpressionParser);
     }
 
+    private static Parser<FeelExpression> parseNot(Parser<FeelExpression> feelParserReference) {
+        return Parsers.between(OPERATORS.token("not("), feelParserReference, OPERATORS.token(")")).map(expression -> {
+            if (expression.containsNot()) {
+                // TODO: How can this constraint be expressed in the grammar?
+                throw new RuntimeException("Negations cannot be nested in FEEL expressions.");
+            } else {
+                return FeelExpressions.UnaryExpression(Operator.NOT, expression);
+            }
+        });
+    }
+
     private static Parser<FeelExpression> parseEmpty() {
         return Parsers.EOF.map((__) -> FeelExpressions.Empty())
                 .or(Terminals.fragment("emptyfragment").map((__) -> FeelExpressions.Empty()));
@@ -118,10 +129,8 @@ public final class FeelParser {
 
         final Parser<FeelExpression> parseRangeExpression = createRangeExpressionParser(literalParser);
 
-        final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), feelParserReference.lazy(), OPERATORS.token(")"))
-                                                       .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
-
-        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, NULL, parseNot,
+        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, NULL,
+                                                                                               parseNot(feelParserReference.lazy()),
                                                                                                parseRangeExpression);
 
         final Parser<FeelExpression> feelExpressionParser = createBinaryExpressionParser(feelExpressionParserWithoutBinaryExpressions);

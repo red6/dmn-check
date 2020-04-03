@@ -61,6 +61,22 @@ public abstract class FeelExpression {
 
     }
 
+    public boolean containsNot() {
+        return FeelExpressions.caseOf(this)
+                              .Empty_(false)
+                              .Null_(false)
+                              .BooleanLiteral_(false)
+                              .DateLiteral_(false)
+                              .DoubleLiteral_(false)
+                              .IntegerLiteral_(false)
+                              .StringLiteral_(false)
+                              .VariableLiteral_(false)
+                              .RangeExpression((__, lowerBound, upperBound, ___) -> lowerBound.containsNot() || upperBound.containsNot())
+                              .UnaryExpression((operator, expression) -> operator.equals(Operator.NOT))
+                              .BinaryExpression((left, __, right) -> left.containsNot() || right.containsNot())
+                              .DisjunctionExpression((head, tail) -> head.containsNot() || tail.containsNot());
+    }
+
     @Override
     public abstract int hashCode();
 
