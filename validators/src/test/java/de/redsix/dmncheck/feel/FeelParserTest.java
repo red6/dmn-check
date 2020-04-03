@@ -324,6 +324,12 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldNotParseNestedNegations() {
+        final Throwable throwable = assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("not(not(true))"));
+        assertEquals("Negations cannot be nested in FEEL expressions.\nline 1, column 15", throwable.getMessage());
+    }
+
+    @Test
     void shouldParseDateExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
