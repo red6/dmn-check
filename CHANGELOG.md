@@ -1,3 +1,10 @@
+## 1.1.4
+
+Bugfixes:
+
+  - Support null as an expression (issue #7)
+  - Ensure that a dash is not parsed as Empty within expressions
+
 ## 1.1.3
 
 Bugfixes:
