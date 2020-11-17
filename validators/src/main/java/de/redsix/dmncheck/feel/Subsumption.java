@@ -23,7 +23,7 @@ final class Subsumption {
                 .DateLiteral((dateTime) -> compareLiterals(dateTime, FeelExpressions::getDateTime, otherExpression, comparison))
                 .DoubleLiteral((aDouble) -> compareLiterals(aDouble, FeelExpressions::getADouble, otherExpression, comparison))
                 .IntegerLiteral((integer) -> compareLiterals(integer, FeelExpressions::getAInteger, otherExpression, comparison))
-                .StringLiteral((string) ->  compareLiterals(string, FeelExpressions::getString, otherExpression, eq))
+                .StringLiteral((string) ->  compareLiterals(string, FeelExpressions::getString, otherExpression, comparison))
                 .VariableLiteral((name) ->  subsumesVariableLiteral(name, otherExpression, comparison))
                 .RangeExpression((leftInc, lowerBound, upperBound, rightInc) ->
                         subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression))
