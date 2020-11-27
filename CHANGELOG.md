@@ -1,3 +1,11 @@
+## 1.1.5
+
+Bugfixes:
+
+  - Fix subsumption for string literals (issue #9)
+  - Enforce that negations are not nested in FEEL expressions
+  - Refine subsumption for variables
+
 ## 1.1.4
 
 Bugfixes:
