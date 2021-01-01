@@ -75,9 +75,9 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     }
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(String className, String stringValue,
-            Class<? extends Enum> clazz) {
-        final Enum[] enumConstants = clazz.getEnumConstants();
-        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum[] {} : enumConstants).map(Enum::name)
+            Class<? extends Enum<?>> clazz) {
+        final Enum<?>[] enumConstants = clazz.getEnumConstants();
+        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants).map(Enum::name)
                 .collect(Collectors.toList());
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
@@ -100,9 +100,9 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum>> isEnum(Class<?> clazz) {
+    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
-            return right((Class<? extends Enum>)clazz);
+            return right(clazz.asSubclass(Enum.class));
         } else {
             return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
