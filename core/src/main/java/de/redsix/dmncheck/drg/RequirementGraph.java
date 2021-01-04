@@ -35,7 +35,12 @@ public class RequirementGraph extends DirectedAcyclicGraph<DrgElement, DefaultEd
 
         final RequirementGraph drg = new RequirementGraph(DefaultEdge.class, dmnModelInstance.getDefinitions());
 
-        Stream.of(decisions, knowledgeSources, inputData).flatMap(Collection::stream).forEach(drg::addVertex);
+        // checkerframework cannot figure out the types in this case without an explicit declaration
+        // found   : @UnknownRegex Stream<?[ extends @UnknownRegex DrgElement super @UnknownRegex Void]>
+        // required: @UnknownRegex Stream<?[ extends capture#385[ extends @UnknownRegex DrgElement super @RegexBottom Void] super @RegexBottom Void]>
+        Stream.<Collection<? extends DrgElement>>of(decisions, knowledgeSources, inputData)
+              .flatMap(Collection::stream)
+              .forEach(drg::addVertex);
 
         for (Decision decision : decisions) {
             decision.getInformationRequirements().stream()

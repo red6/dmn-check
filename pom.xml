@@ -71,8 +71,9 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>2.9.0</checker.framework.version>
-        <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
+        <checker.framework.version>3.8.0</checker.framework.version>
+        <javac.version>9+181-r4173-1</javac.version>
+        <annotatedJdk>${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</annotatedJdk>
 
         <junit-minor.version>7.0</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
@@ -223,8 +224,10 @@
                                         </path>
                                     </annotationProcessorPaths>
 
+                                    <fork>true</fork>
+
                                     <compilerArgs>
-                                        <arg>-Xbootclasspath/p:${annotatedJdk}</arg>
+                                        <arg>-J-Xbootclasspath/p:${annotatedJdk}</arg>
                                         <arg>-Astubs=checkerframework/stubs</arg>
                                         <arg>-AstubWarnIfNotFound</arg>
                                     </compilerArgs>
@@ -246,10 +249,9 @@
             </build>
             <dependencies>
                 <dependency>
-                    <groupId>org.checkerframework</groupId>
-                    <artifactId>jdk8</artifactId>
-                    <version>${checker.framework.version}</version>
-                    <scope>provided</scope>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>javac</artifactId>
+                    <version>${javac.version}</version>
                 </dependency>
             </dependencies>
         </profile>

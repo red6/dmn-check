@@ -11,16 +11,20 @@ import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static spark.Spark.port;
 import static spark.Spark.post;
 
 public class ValidationServer {
+
+    public static final String UNKNOWN_ERROR = "Unknown Error";
 
     public static void main(String[] args) {
         ValidationServer validationServer = new ValidationServer();
@@ -39,11 +43,13 @@ public class ValidationServer {
                 return validationServer.validationResultsToJson(validationResults).toString();
             } catch (DmnModelException e) {
                 e.printStackTrace();
-                return new JSONObject().put("items", Collections
-                        .singleton(new JSONObject().put("message", ExceptionUtils.getRootCause(e).getMessage())));
-            } catch (Exception e) {
+                return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", Optional
+                        .ofNullable(ExceptionUtils.getRootCause(e).getMessage()).orElse(UNKNOWN_ERROR))));
+            }
+            catch (Exception e) {
                 e.printStackTrace();
-                return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", e.getMessage())));
+                return new JSONObject().put("items", Collections
+                        .singleton(new JSONObject().put("message", Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR))));
             }
         });
     }

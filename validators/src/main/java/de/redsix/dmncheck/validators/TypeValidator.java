@@ -102,7 +102,11 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
 
     private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
-            return right(clazz.asSubclass(Enum.class));
+            // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because asSubclass introduces
+            // a fresh type variable. Therefore we cast the value to the correct type.
+            // equality constraints: Class<? extends Enum<?>>
+            // lower bounds: Class<CAP#1>
+            return right((Class<? extends Enum<?>>)clazz);
         } else {
             return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
