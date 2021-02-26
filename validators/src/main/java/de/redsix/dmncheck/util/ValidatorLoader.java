@@ -36,10 +36,10 @@ public class ValidatorLoader {
         inputParameterHash = Objects.hash(packages, classes);
 
         final ScanResult scanResult = new ClassGraph()
-                .whitelistClasses(Validator.class.getName())
-                .whitelistPackages(VALIDATOR_CORE_PACKAGE)
-                .whitelistPackagesNonRecursive(packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_CORE_PACKAGE} : packages)
-                .whitelistClasses(classes == null ? new String[]{} : classes)
+                .acceptClasses(Validator.class.getName())
+                .acceptPackages(VALIDATOR_CORE_PACKAGE)
+                .acceptPackagesNonRecursive(packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_CORE_PACKAGE} : packages)
+                .acceptClasses(classes == null ? new String[]{} : classes)
                 .scan();
 
         final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());

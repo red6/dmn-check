@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class, TempDirectory.class})
+@ExtendWith(MockitoExtension.class)
 class PluginBaseTest {
 
     private PluginBase testee = Mockito.spy(PluginBase.class);
@@ -39,7 +39,7 @@ class PluginBaseTest {
     }
 
     @Test
-    void readsAllDmnFilesRecursively(@TempDirectory.TempDir Path temporaryFolder) throws IOException {
+    void readsAllDmnFilesRecursively(@TempDir Path temporaryFolder) throws IOException {
         Path folder1 = temporaryFolder.resolve("folder1");
         Path folder1_1 = folder1.resolve("folder1-1");
         Path folder2 = temporaryFolder.resolve("folder2");
@@ -85,8 +85,8 @@ class PluginBaseTest {
 
 
     @Test
-    void shouldAcceptDishDecisionRequirementGraphExample() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn")));
+    void shouldAcceptDishDecisionRequirementGraphExample() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn"))));
     }
 
     @Test
@@ -97,13 +97,13 @@ class PluginBaseTest {
 
 
     @Test
-    void shouldSkipFileIfHitpolicyIsCollect() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn")));
+    void shouldSkipFileIfHitpolicyIsCollect() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn"))));
     }
 
     @Test
-    void shouldAcceptDishDecisionExample() throws Exception {
-        testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn")));
+    void shouldAcceptDishDecisionExample() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn"))));
     }
 
     @Test

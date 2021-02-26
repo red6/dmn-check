@@ -7,6 +7,7 @@ import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.checkerframework.framework.qual.HasQualifierParameter;
 
 import java.io.File;
 import java.util.Comparator;
@@ -22,11 +23,11 @@ public final class PrettyPrintValidationResults {
     }
 
     public static class PluginLogger {
-        protected Consumer<@PolyNull CharSequence> info;
-        protected Consumer<@PolyNull CharSequence> warn;
-        protected Consumer<@PolyNull CharSequence> error;
+        protected Consumer<CharSequence> info;
+        protected Consumer<CharSequence> warn;
+        protected Consumer<CharSequence> error;
 
-        public PluginLogger(final Consumer<@PolyNull CharSequence> info, final Consumer<@PolyNull CharSequence> warn, final Consumer<@PolyNull CharSequence> error) {
+        public PluginLogger(final Consumer<CharSequence> info, final Consumer<CharSequence> warn, final Consumer<CharSequence> error) {
             this.info = info;
             this.warn = warn;
             this.error = error;
@@ -59,7 +60,7 @@ public final class PrettyPrintValidationResults {
                              rule.getOutputEntries().stream().map(OutputEntry::getTextContent)).collect(Collectors.joining(","));
     }
 
-    private static Consumer<@PolyNull CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {
+    private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {
         if (severity == Severity.WARNING) {
             return logger.warn;
         }

@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface PluginBase {
@@ -59,7 +60,7 @@ public interface PluginBase {
             }
         }
         catch (Exception e) {
-            getPluginLogger().error.accept(e.getMessage());
+            getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unkown Error"));
             encounteredError = true;
         }
 

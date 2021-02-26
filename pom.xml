@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>validators</module>
+        <module>server</module>
         <module>maven-plugin</module>
         <module>plugin-base</module>
     </modules>
@@ -70,11 +71,13 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>2.9.0</checker.framework.version>
-        <annotatedJdk>${settings.localRepository}/org/checkerframework/jdk8/${checker.framework.version}/jdk8-${checker.framework.version}.jar</annotatedJdk>
+        <checker.framework.version>3.8.0</checker.framework.version>
+        <javac.version>9+181-r4173-1</javac.version>
+        <annotatedJdk>${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</annotatedJdk>
 
-        <junit-minor.version>6.0</junit-minor.version>
+        <junit-minor.version>7.0</junit-minor.version>
         <junit.version>5.${junit-minor.version}</junit.version>
+        <mockito.version>3.6.0</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
     </properties>
 
@@ -221,8 +224,10 @@
                                         </path>
                                     </annotationProcessorPaths>
 
+                                    <fork>true</fork>
+
                                     <compilerArgs>
-                                        <arg>-Xbootclasspath/p:${annotatedJdk}</arg>
+                                        <arg>-J-Xbootclasspath/p:${annotatedJdk}</arg>
                                         <arg>-Astubs=checkerframework/stubs</arg>
                                         <arg>-AstubWarnIfNotFound</arg>
                                     </compilerArgs>
@@ -244,10 +249,9 @@
             </build>
             <dependencies>
                 <dependency>
-                    <groupId>org.checkerframework</groupId>
-                    <artifactId>jdk8</artifactId>
-                    <version>${checker.framework.version}</version>
-                    <scope>provided</scope>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>javac</artifactId>
+                    <version>${javac.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -345,7 +349,7 @@
         <dependency>
             <groupId>org.junit-pioneer</groupId>
             <artifactId>junit-pioneer</artifactId>
-            <version>0.5.4</version>
+            <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
 

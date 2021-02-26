@@ -75,9 +75,9 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     }
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(String className, String stringValue,
-            Class<? extends Enum> clazz) {
-        final Enum[] enumConstants = clazz.getEnumConstants();
-        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum[] {} : enumConstants).map(Enum::name)
+            Class<? extends Enum<?>> clazz) {
+        final Enum<?>[] enumConstants = clazz.getEnumConstants();
+        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants).map(Enum::name)
                 .collect(Collectors.toList());
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
@@ -100,9 +100,13 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum>> isEnum(Class<?> clazz) {
+    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
-            return right((Class<? extends Enum>)clazz);
+            // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because asSubclass introduces
+            // a fresh type variable. Therefore we cast the value to the correct type.
+            // equality constraints: Class<? extends Enum<?>>
+            // lower bounds: Class<CAP#1>
+            return right((Class<? extends Enum<?>>)clazz);
         } else {
             return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }

@@ -1,3 +1,41 @@
+## 1.1.5
+
+Bugfixes:
+
+  - Fix subsumption for string literals (issue #9)
+  - Enforce that negations are not nested in FEEL expressions
+  - Refine subsumption for variables
+
+## 1.1.4
+
+Bugfixes:
+
+  - Support null as an expression (issue #7)
+  - Ensure that a dash is not parsed as Empty within expressions
+
+## 1.1.3
+
+Bugfixes:
+
+  - Support expressions containing not in the subsumption check (issue #5)
+
+Features:
+
+  - Add support for range expression - literal subsumptions
+
+## 1.1.2
+
+Bugfixes:
+
+  - Assemble a JAR with all the dependencies for the server module
+
+## 1.1.1 (2020-03-06)
+
+Bugfixes:
+
+  - Release missing module dmn-check-server
+  - Change server port to 42000
+
 ## 1.1.0 (2020-03-04)
 
 With release 1.1.0 dmn-check was split into four maven projects

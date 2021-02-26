@@ -34,6 +34,8 @@ public final class FeelParser {
             Patterns.regex("\"[^\"]*\"").toScanner("string").source().map(s -> Tokens.fragment(s, "stringfragment")),
             Patterns.string("true").or(Patterns.string("false")).toScanner("boolean").source()
                     .map(s -> Tokens.fragment(s, "booleanfragment")),
+            Patterns.string("null").toScanner("null").source()
+                    .map(s -> Tokens.fragment(s, "nullfragment")),
             Patterns.regex("([a-zA-Z_$][\\w$\\.]*)").toScanner("variable").source()
                     .map(s -> Tokens.fragment(s, "variablefragment")),
             Patterns.regex("[0-9]+\\.[0-9]+").toScanner("strict-decimal").source()
@@ -55,6 +57,9 @@ public final class FeelParser {
     private static final Parser<FeelExpression> BOOLEAN = Terminals.fragment("booleanfragment")
             .map(Boolean::new).map(FeelExpressions::BooleanLiteral);
 
+    private static final Parser<FeelExpression> NULL = Terminals.fragment("nullfragment")
+                                                                .map(__ -> FeelExpressions.Null());
+
     private static final Parser<FeelExpression> DATE = Parsers.between(OPERATORS.token("date and time(\""),
             Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpressions::DateLiteral), OPERATORS.token("\")"));
 
@@ -65,22 +70,21 @@ public final class FeelParser {
                         .RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
     }
 
-    private static Parser<FeelExpression> createRangeExpressionParser(final Parser.Reference<FeelExpression> reference) {
+    private static Parser<FeelExpression> createRangeExpressionParser(final Parser<FeelExpression> expressionParser) {
         return Parsers.or(
-                parseRangeExpression(op("[", true), reference.lazy(), op("]", true)),
-                parseRangeExpression(op("]", false), reference.lazy(), op("]", true)),
-                parseRangeExpression(op("[", true), reference.lazy(), op("[", false)),
-                parseRangeExpression(op("(", false), reference.lazy(), op("]", true)),
-                parseRangeExpression(op("[", true), reference.lazy(), op(")", false)),
-                parseRangeExpression(op("(", false), reference.lazy(), op(")", false)),
-                parseRangeExpression(op("]", false), reference.lazy(), op(")", false)),
-                parseRangeExpression(op("(", false), reference.lazy(), op("[", false)),
-                parseRangeExpression(op("]", false), reference.lazy(), op("[", false))
+                parseRangeExpression(op("[", true), expressionParser, op("]", true)),
+                parseRangeExpression(op("]", false), expressionParser, op("]", true)),
+                parseRangeExpression(op("[", true), expressionParser, op("[", false)),
+                parseRangeExpression(op("(", false), expressionParser, op("]", true)),
+                parseRangeExpression(op("[", true), expressionParser, op(")", false)),
+                parseRangeExpression(op("(", false), expressionParser, op(")", false)),
+                parseRangeExpression(op("]", false), expressionParser, op(")", false)),
+                parseRangeExpression(op("(", false), expressionParser, op("[", false)),
+                parseRangeExpression(op("]", false), expressionParser, op("[", false))
         );
     }
 
-    private static Parser<FeelExpression> createBinaryExpressionParser(final Parser<FeelExpression> parseRangeExpression,
-            final Parser<FeelExpression> parseNot) {
+    private static Parser<FeelExpression> createBinaryExpressionParser(final Parser<FeelExpression> feelExpressionParser) {
         return new OperatorTable<FeelExpression>()
                 .infixr(op(",", FeelExpressions::DisjunctionExpression), 0)
                 .prefix(op("<", v -> FeelExpressions.UnaryExpression(Operator.LT, v)), 5)
@@ -95,7 +99,18 @@ public final class FeelParser {
                 .infixl(op("**", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.EXP, r)), 20)
                 .infixl(op("/", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.DIV, r)), 20)
                 .prefix(op("-", v -> FeelExpressions.UnaryExpression(Operator.SUB, v)), 30)
-                .build(Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE, parseNot, parseRangeExpression));
+                .build(feelExpressionParser);
+    }
+
+    private static Parser<FeelExpression> parseNot(Parser<FeelExpression> feelParserReference) {
+        return Parsers.between(OPERATORS.token("not("), feelParserReference, OPERATORS.token(")")).map(expression -> {
+            if (expression.containsNot()) {
+                // TODO: How can this constraint be expressed in the grammar?
+                throw new RuntimeException("Negations cannot be nested in FEEL expressions.");
+            } else {
+                return FeelExpressions.UnaryExpression(Operator.NOT, expression);
+            }
+        });
     }
 
     private static Parser<FeelExpression> parseEmpty() {
@@ -107,22 +122,25 @@ public final class FeelParser {
         return OPERATORS.token(name).retn(value);
     }
 
-    private static Parser<FeelExpression> parser() {
-        final Parser.Reference<FeelExpression> reference = Parser.newReference();
+    private static Parser<FeelExpression> feelExpressionParser() {
+        final Parser.Reference<FeelExpression> feelParserReference = Parser.newReference();
 
-        final Parser<FeelExpression> parseRangeExpression = createRangeExpressionParser(reference);
+        final Parser<FeelExpression> literalParser = Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE);
 
-        final Parser<FeelExpression> parseNot = Parsers.between(OPERATORS.token("not("), reference.lazy(), OPERATORS.token(")"))
-                .map(expression -> FeelExpressions.UnaryExpression(Operator.NOT, expression));
+        final Parser<FeelExpression> parseRangeExpression = createRangeExpressionParser(literalParser);
 
-        final Parser<FeelExpression> parseBinaryExpression = createBinaryExpressionParser(parseRangeExpression, parseNot);
+        final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions = Parsers.or(literalParser, NULL,
+                                                                                               parseNot(feelParserReference.lazy()),
+                                                                                               parseRangeExpression);
 
-        reference.set(parseBinaryExpression);
+        final Parser<FeelExpression> feelExpressionParser = createBinaryExpressionParser(feelExpressionParserWithoutBinaryExpressions);
 
-        return reference.lazy();
+        feelParserReference.set(feelExpressionParser);
+
+        return Parsers.or(parseEmpty(), feelExpressionParser);
     }
 
-    static final Parser<FeelExpression> PARSER = Parsers.or(parseEmpty(), parser()).from(TOKENIZER, IGNORED);
+    static final Parser<FeelExpression> PARSER = feelExpressionParser().from(TOKENIZER, IGNORED);
 
     public static Either<ValidationResult.Builder.ElementStep, FeelExpression> parse(final CharSequence charSequence) {
         try {

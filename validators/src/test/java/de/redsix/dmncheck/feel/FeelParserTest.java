@@ -3,6 +3,7 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
+import org.jparsec.error.ParserException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,11 +18,13 @@ import static de.redsix.dmncheck.feel.FeelExpressions.DisjunctionExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.DoubleLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.Empty;
 import static de.redsix.dmncheck.feel.FeelExpressions.IntegerLiteral;
+import static de.redsix.dmncheck.feel.FeelExpressions.Null;
 import static de.redsix.dmncheck.feel.FeelExpressions.RangeExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.StringLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.UnaryExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.VariableLiteral;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FeelParserTest {
@@ -82,6 +85,15 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldParseNull() {
+        final FeelExpression expression = FeelParser.PARSER.parse("null");
+
+        final FeelExpression expectedExpression = Null();
+
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     void shouldParseVariableLiteralWithAttribute() {
         final FeelExpression expression = FeelParser.PARSER.parse("foo.bar");
 
@@ -127,14 +139,8 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldRespectPrecedenceOfMinus() {
-        final FeelExpression expression = FeelParser.PARSER.parse("2 * -3");
-
-        final FeelExpression expectedExpression = BinaryExpression(
-                IntegerLiteral(2), Operator.MUL, UnaryExpression(Operator.SUB, IntegerLiteral(3))
-        );
-
-        assertEquals(expectedExpression, expression);
+    void shouldNotParseDashWithinExpressionsAsEmpty() {
+        assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("2 * -"));
     }
 
     @Test
@@ -318,6 +324,12 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldNotParseNestedNegations() {
+        final Throwable throwable = assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("not(not(true))"));
+        assertEquals("Negations cannot be nested in FEEL expressions.\nline 1, column 15", throwable.getMessage());
+    }
+
+    @Test
     void shouldParseDateExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
@@ -341,7 +353,7 @@ class FeelParserTest {
         final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
-                + "<, >, <=, >=, -, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, date and time(\", not(, [, ] or ( expected, EOF encountered.";
+                + "INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment or date and time(\" expected, EOF encountered.";
 
         assertTrue(Eithers.getLeft(result).isPresent());
         assertEquals(expectedErrorMessage, Eithers.getLeft(result).get().getMessage());
