@@ -7,6 +7,7 @@ import io.github.classgraph.ScanResult;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Objects;
@@ -56,9 +57,9 @@ public class ValidatorLoader {
 
     private static Validator instantiateValidator(final Class<? extends Validator> validator) {
         try {
-            return validator.newInstance();
+            return validator.getDeclaredConstructor().newInstance();
         }
-        catch (IllegalAccessException | InstantiationException e) {
+        catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException("Failed to load validator " + validator, e);
         }
     }

@@ -55,7 +55,7 @@ public final class FeelParser {
             .map(s -> s.substring(1, s.length() -1 )).map(FeelExpressions::StringLiteral);
 
     private static final Parser<FeelExpression> BOOLEAN = Terminals.fragment("booleanfragment")
-            .map(Boolean::new).map(FeelExpressions::BooleanLiteral);
+            .map(Boolean::valueOf).map(FeelExpressions::BooleanLiteral);
 
     private static final Parser<FeelExpression> NULL = Terminals.fragment("nullfragment")
                                                                 .map(__ -> FeelExpressions.Null());
