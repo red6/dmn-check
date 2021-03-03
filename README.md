@@ -29,7 +29,7 @@ In section [Validations](#validations) you find a complete list with detailed de
 
 ### Prerequisites
 
-This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
+This plugin requires Java 11 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
 
 ### Usage
 
