@@ -1,11 +1,12 @@
 package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,20 +15,39 @@ public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<Item
 
     @Override
     public boolean isApplicable(ItemDefinition itemDefinition, ValidationContext validationContext) {
-        final String expressionType = itemDefinition.getTypeRef().getTextContent();
         return itemDefinition.getAllowedValues() != null
-                && ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions()).match(parseError -> false, parseResult -> true);
+            || itemDefinition.getItemComponents().stream().anyMatch(itemComponent -> itemComponent.getAllowedValues() != null);
     }
 
     @Override
     public List<ValidationResult> validate(ItemDefinition itemDefinition, ValidationContext validationContext) {
 
-        final String expressionType = itemDefinition.getTypeRef().getTextContent();
+        final Collection<ItemDefinition> itemDefinitionsAndComponents = itemDefinition.getItemComponents().stream()
+            .filter(itemComponent -> itemComponent.getAllowedValues() != null)
+            .collect(Collectors.toList());
 
-        return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
-                .match(validationResult -> Collections.singletonList(validationResult.element(itemDefinition).build()),
-                        inputType -> typecheck(itemDefinition, Stream.of(itemDefinition.getAllowedValues()), Stream.of(inputType))
-                                .collect(Collectors.toList()));
+        if (itemDefinition.getAllowedValues() != null) {
+            itemDefinitionsAndComponents.add(itemDefinition);
+        }
+
+        return itemDefinitionsAndComponents
+            .stream()
+            .flatMap(itemDefinitionOrComponent -> {
+                if (itemDefinitionOrComponent.getTypeRef() == null) {
+                    return Stream.of(ValidationResult.init
+                                         .message("ItemDefintion uses AllowedValues without a type declaration")
+                                         .severity(Severity.WARNING)
+                                         .element(itemDefinitionOrComponent)
+                                         .build());
+                } else {
+                   final String expressionType = itemDefinitionOrComponent.getTypeRef().getTextContent();
+                   return ExpressionTypeParser
+                       .parse(expressionType, validationContext.getItemDefinitions())
+                       .match(validationResult -> Stream.of(validationResult.element(itemDefinitionOrComponent).build()),
+                              inputType -> typecheck(itemDefinitionOrComponent, Stream.of(itemDefinitionOrComponent.getAllowedValues()),
+                                                     Stream.of(inputType)));
+               }})
+            .collect(Collectors.toList());
     }
 
     @Override
