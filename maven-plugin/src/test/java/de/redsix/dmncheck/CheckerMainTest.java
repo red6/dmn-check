@@ -117,6 +117,11 @@ class CheckerMainTest {
     }
 
     @Test
+    void shouldAcceptDishDecisionDmnStandard13Example() throws MojoExecutionException {
+        testee.testFiles(Collections.singletonList(getFile("dish-decision-1-3.dmn")));
+    }
+
+    @Test
     void shouldHandleInvalidDMNFiles() {
         final MojoExecutionException assertionError = Assertions.assertThrows(MojoExecutionException.class,
                 () -> testee.testFiles(Collections.singletonList(getFile("empty.dmn"))));
