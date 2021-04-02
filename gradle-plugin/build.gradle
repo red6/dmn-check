@@ -9,6 +9,15 @@ version '1.0.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'de.redsix.dmncheck'
+            implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
+        }
+    }
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
