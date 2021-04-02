@@ -4,6 +4,7 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithItemDefinition;
 import org.camunda.bpm.model.dmn.instance.AllowedValues;
+import org.camunda.bpm.model.dmn.instance.ItemComponent;
 import org.camunda.bpm.model.dmn.instance.TypeRef;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,59 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(0, validationResults.size());
+    }
+
+    @Test
+    void shouldAllowWelltypedItemComponents() {
+        final TypeRef typeRefInteger = modelInstance.newInstance(TypeRef.class);
+        typeRefInteger.setTextContent("integer");
+
+        final AllowedValues allowedValuesInteger = modelInstance.newInstance(AllowedValues.class);
+        allowedValuesInteger.setTextContent("1, 2, 3");
+
+        final ItemComponent itemComponentInteger = modelInstance.newInstance(ItemComponent.class);
+        itemComponentInteger.setTypeRef(typeRefInteger);
+        itemComponentInteger.setAllowedValues(allowedValuesInteger);
+
+        itemDefinition.addChildElement(itemComponentInteger);
+
+        final TypeRef typeRefBoolean = modelInstance.newInstance(TypeRef.class);
+        typeRefBoolean.setTextContent("boolean");
+
+        final AllowedValues allowedValuesBoolean = modelInstance.newInstance(AllowedValues.class);
+        allowedValuesBoolean.setTextContent("true");
+
+        final ItemComponent itemComponentBoolean = modelInstance.newInstance(ItemComponent.class);
+        itemComponentBoolean.setTypeRef(typeRefBoolean);
+        itemComponentBoolean.setAllowedValues(allowedValuesBoolean);
+
+        itemDefinition.addChildElement(itemComponentBoolean);
+
+        final ItemComponent itemComponentWithoutAllowedValues = modelInstance.newInstance(ItemComponent.class);
+        itemDefinition.addChildElement(itemComponentWithoutAllowedValues);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
+    }
+
+    @Test
+    void shouldWarnAboutMissingTypeDeclaration() {
+        final AllowedValues allowedValues = modelInstance.newInstance(AllowedValues.class);
+        allowedValues.setTextContent("1, 2, 3");
+
+        itemDefinition.setAllowedValues(allowedValues);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+            () -> assertEquals("ItemDefintion uses AllowedValues without a type declaration",
+                               validationResult.getMessage()),
+            () -> assertEquals(itemDefinition, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 
     @Test

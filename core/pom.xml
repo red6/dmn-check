@@ -16,13 +16,13 @@
         <dependency>
             <groupId>org.camunda.bpm.model</groupId>
             <artifactId>camunda-dmn-model</artifactId>
-            <version>7.12.0</version>
+            <version>7.14.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.1</version>
         </dependency>
 
         <dependency>

@@ -107,6 +107,11 @@ class PluginBaseTest {
     }
 
     @Test
+    void shouldAcceptDishDecisionDmnStandard13Example() {
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision-1-3.dmn"))));
+    }
+
+    @Test
     void shouldHandleInvalidDMNFiles() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("empty.dmn")));
         Assertions.assertTrue(containsErrors);

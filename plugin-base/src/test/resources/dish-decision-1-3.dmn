@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="decision" name="Dish">
+    <decisionTable id="decisionTable">
+      <input id="input1" label="Season">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text>season</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0hmkumv" label="How many guests">
+        <inputExpression id="LiteralExpression_0m7s53h" typeRef="integer">
+          <text>guestCount</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Dish" name="desiredDish" typeRef="string" />
+      <rule id="row-950612891-1">
+        <inputEntry id="UnaryTests_0c1o054">
+          <text>"Fall"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lod0sz">
+          <text>&lt;= 8</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_065u3ym">
+          <text>"Spareribs"</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-2">
+        <inputEntry id="UnaryTests_0u1z4ho">
+          <text>"Winter"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1euytqf">
+          <text>&lt;= 8</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_198frve">
+          <text>"Roastbeef"</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-3">
+        <inputEntry id="UnaryTests_1vn9t5c">
+          <text>"Spring"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bbbmvu">
+          <text>&lt;= 7</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bewepn">
+          <text>"Dry Aged Gourmet Steak"</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-4">
+        <description>Save money</description>
+        <inputEntry id="UnaryTests_0ogofox">
+          <text>"Spring"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c60gjz">
+          <text>[5..8]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1lahvj7">
+          <text>"Steak"</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-5">
+        <description>Less effort</description>
+        <inputEntry id="UnaryTests_1774yme">
+          <text>"Fall", "Winter", "Spring"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01rn17i">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0jpd7hr">
+          <text>"Stew"</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-6">
+        <description>Hey, why not!?</description>
+        <inputEntry id="UnaryTests_0ifdx8k">
+          <text>"Summer"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0c8ym7l">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08d4mb6">
+          <text>"Light Salad and a nice Steak"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/red6/dmn-check.svg?branch=master)](https://travis-ci.org/red6/dmn-check)
-[![Coverage Status](https://coveralls.io/repos/github/red6/dmn-check/badge.svg)](https://coveralls.io/github/red6/dmn-check)
+![Build Status](https://github.com/red6/dmn-check/actions/workflows/maven.yml/badge.svg)
+[![codecov](https://codecov.io/gh/red6/dmn-check/branch/master/graph/badge.svg?token=47U89YZJZ0)](https://codecov.io/gh/red6/dmn-check)
 [![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/red6/dmn-check.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/red6/dmn-check/alerts/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/de1a1aa377520c44c3a7/maintainability)](https://codeclimate.com/github/red6/dmn-check/maintainability)
@@ -29,7 +29,7 @@ In section [Validations](#validations) you find a complete list with detailed de
 
 ### Prerequisites
 
-This plugin requires Java 8 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
+This plugin requires Java 11 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
 
 ### Usage
 
