@@ -1,4 +1,17 @@
-## 1.1.5
+## 1.1.6 (2021-03-06)
+
+Features:
+
+  - Support DMN-1.3
+
+Bugfixes:
+
+  - Support for ItemComponents in ItemDefintionAllowedValuesTypeValidator
+    An ItemDefintion can consist of multiple ItemComponent with their own
+    AllowedValues. Now the AllowedValues in ItemComponents are typechecked 
+    as well.
+
+## 1.1.5 (2020-11-27)
 
 Bugfixes:
 
@@ -6,14 +19,14 @@ Bugfixes:
   - Enforce that negations are not nested in FEEL expressions
   - Refine subsumption for variables
 
-## 1.1.4
+## 1.1.4 (2020-06-06)
 
 Bugfixes:
 
   - Support null as an expression (issue #7)
   - Ensure that a dash is not parsed as Empty within expressions
 
-## 1.1.3
+## 1.1.3 (2020-05-31)
 
 Bugfixes:
 
@@ -23,7 +36,7 @@ Features:
 
   - Add support for range expression - literal subsumptions
 
-## 1.1.2
+## 1.1.2 (2020-03-09)
 
 Bugfixes:
 
