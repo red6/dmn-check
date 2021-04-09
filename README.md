@@ -14,10 +14,11 @@ You can use dmn-check in three ways.
 
 * As a Maven plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your
   artifacts.
-* Integrated into the development of your decision models by using the [Camunda Modeler](https://camunda.com/products/modeler/) plugin.
-* Integrated into your custom tools by using the provided Maven modules (dmn-check-core and dmn-check-validators).
+* Integrated into the [Camunda Modeler](https://camunda.com/products/modeler/) via the dmn-check plugin.
+* Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
+  [dmn-check-validators](https://search.maven.org/search?q=a:dmn-check-validators).
 
-Currently dmn-check checks among others for the following:
+Currently, dmn-check checks among others for the following:
 
 * Duplicate rules
 * Conflicting rules
@@ -49,7 +50,7 @@ The following example shows the basic configuration of the plugin:
                 <version>...</version>
                 <executions>
                     <execution>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check-dmn</goal>
                         </goals>
@@ -76,7 +77,7 @@ the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify va
                     </validatorClasses>
                 </configuration>
 
-#### Standalone usage
+#### Standalone Usage
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
 
@@ -85,89 +86,121 @@ To use `dmn-check` without or outside of a Maven project you can invoke it in th
 ## Validations
 
 The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an
-example on [camunda.org](https://camunda.org/). Inputs are marked with `(I)` and outputs with `(O)` in the table headers.
+example on [camunda.org](https://camunda.org/).
 
-### Duplicate rules
+### Duplicate Rules
 
 Consider the following DMN decision table with hit policy `UNIQUE`:
 
-| Season (I)    | How many guests (I) | Dish (O)    |
-| ------------- | ------------------- | ----------- |
-| "Fall"        | <= 8                | "Spareribs" |
-| "Winter"      | <= 8                | "Roastbeef" |
-| "Spring"      | [5..8]              | "Steak"     |
-| "Winter"      | <= 8                | "Roastbeef" |
+|     | Season ᴵᴺᴾᵁᵀ  | How many guests ᴵᴺᴾᵁᵀ | Dish ᴼᵁᵀᴾᵁᵀ |
+| --- | ------------- | --------------------- | ----------- |
+|  1  | "Fall"        | <= 8                  | "Spareribs" |
+|  2  | "Winter"      | <= 8                  | "Roastbeef" |
+|  3  | "Spring"      | [5..8]                | "Steak"     |
+|  4  | "Winter"      | <= 8                  | "Roastbeef" |
 
-It is pretty obvious that rule number two is a duplicate of rule number four and vice versa. This is not allowed by the `UNIQUE` hit policy
+It is pretty obvious that rule number two is a duplicate of rule number four. This is not allowed by the `UNIQUE` hit policy
 and thus an error.
 
-**Definition**:We say a rule is a duplicate of an other rule if and only if all inputs and outputs of those rules are identical.
+**Definition**: A rule is a duplicate of another rule if and only if all inputs and outputs of those rules are identical.
 
 `dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT`.
 
-### Conflicting rules
+### Conflicting Rules
 
 Conflicting rules are somewhat similar to duplicate rules. Consider the following example with hit policy `UNIQUE`:
 
-| Season (I)    | How many guests (I) | Dish (O)    |
-| ------------- | ------------------- | ----------- |
-| "Fall"        | <= 8                | "Spareribs" |
-| "Winter"      | <= 8                | "Roastbeef" |
-| "Spring"      | [5..8]              | "Steak"     |
-| "Winter"      | <= 8                | "Stew"      |
+|     | Season ᴵᴺᴾᵁᵀ  | How many guests ᴵᴺᴾᵁᵀ | Dish ᴼᵁᵀᴾᵁᵀ |
+| --- | ------------- | --------------------- | ----------- |
+|  1  | "Fall"        | <= 8                  | "Spareribs" |
+|  2  | "Winter"      | <= 8                  | "Roastbeef" |
+|  3  | "Spring"      | [5..8]                | "Steak"     |
+|  4  | "Winter"      | <= 8                  | "Stew"      |
 
 We look again a rule two and four. This time all their inputs are identical, but they differ in the output. This is arguably worse than a
 duplicate rule since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
 does not detect those inconsistencies.
 
-**Definition**: We say rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ
+**Definition**: Rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ
 in at lease one output.
 
 `dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
-### Shadowed rules
+### Shadowed Rules
 
-Shadowing can also lead to strange behaviours that can be easy to stop but sometimes also very subtle. Have a look at the following example
-with hit policy `FIRST`:
+Some rules prevent others from even being considered. Have a look at the following example with hit policy `FIRST`:
 
-| Season (I)    | How many guests (I) | Dish (O)    |
-| ------------- | ------------------- | ----------- |
-| "Fall"        | <= 8                | "Spareribs" |
-| "Winter"      | <= 8                | "Roastbeef" |
-| -             | -                   | "Stew"      |
-| "Spring"      | [5..8]              | "Steak"     |
+|     | Season ᴵᴺᴾᵁᵀ  | How many guests ᴵᴺᴾᵁᵀ | Dish ᴼᵁᵀᴾᵁᵀ |
+| --- | ------------- | --------------------- | ------------|
+|  1  | "Fall"        | <= 8                  | "Spareribs" |
+|  2  | "Winter"      | <= 8                  | "Roastbeef" |
+|  3  | –             | –                     | "Stew"      |
+|  4  | "Spring"      | [5..8]                | "Steak"     |
 
-This example contains no duplicate rules and no conflicting rules. However all inputs of rule three are empty (represented with a dash in
+This example contains no duplicate rules and no conflicting rules. However, all inputs of rule three are empty (represented with a dash in
 this example). As empty inputs match everything and since we assume hit policy `FIRST` rule four will never match as rule three matches for
-all possible inputs. Therefore stew is served to guests of 5 to 8 in Spring. Assuming that each rule serves a purpose shadowed rules are
-always a bug as they will never be matched.
+all possible inputs. Therefore, stew is served to guests of 5 to 8 in Spring. Assuming that each rule serves a purpose, shadowed rules are
+always an error as they will never be matched.
 
 **Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` matches at least for all values for which the inputs of
 rule `s` match.
 
 `dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
-### Types of expressions
+### Types of Expressions
 
 DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most
-expression languages, not all syntactically possible expressions are valid. `dmn-check` integrates a type checker for the FEEL expression
-language that ensures that a decision table contains only well-typed expressions. An example of an ill-typed expression is `[1..true]` which
-would describe the range between `1` and `true` which is (at lease in FEEL) not a valid expression. In contrast `[1..9]` is well-typed and
-describes the numbers from 1 to 9.
+expression languages, not all syntactically possible expressions are valid (have semantic). `dmn-check` integrates a type checker for the
+FEEL expression language that ensures that a decision table contains only well-typed expressions.
 
-### Correct use of enumerations
+An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a
+valid expression. In contrast `[1..9]` is well-typed and describes the numbers from 1 to 9. 
 
-Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN
+| FEEL-Expression  |  Type   |
+| ---------------- | -----   |
+| true             | boolean |
+| [1..3]           | integer |
+| [1.."string"]    | ✘       |
+| 1, 2, true       | ✘       |
+| > 5              | integer |
+| > true           | ✘       |
+
+### Correct use of Enumerations
+
+Decision-making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN
 decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an
 enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
-### Correctly connected requirement graphs
+### Correctly Connected Requirement Graphs
 
-Besides decision tables DMN provides a way to connect decisions tables with each other. The resulting graphs are called Decision Requirement
-Graphs (DRG). You can visualize inputs and authorities for decision tables, too.
+The DMN standard also provides a way to connect decisions tables with each other and to model inputs and knowledge sources. The resulting
+graphs are called [Decision Requirement Graphs (DRG)](https://docs.camunda.org/manual/latest/reference/dmn/drg/).
 
-`dmn-check` verifies that a DRG is a [connected graph](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) and that the in- and
-ouputs of connected decision tables are compatible.
+`dmn-check` verifies that a Decision Requirement Graph
+- is [connected](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) 
+- is [acylic and directed](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  
+- ensures compatibility of in- and outputs
+- has only one leaf node (i.e. exactly one node determines the output)
+- has no (self-) loops
+
+In the following example decision table `Dish` has `Season` and `How many guests` as inputs, but instead of the input `Season` there is an
+input `Lunar phase` connected to the decision table.
+
+                           ┌──────────┐
+                  ┌───────►│Beverages │
+                  │        └──────────┘
+                  │               ▲
+                  │               │
+                  │          ╭────┴───────╮
+                  │          │Guests with │
+              ┌───┴───┐      │children    │
+          ┌──►│ Dish  │      ╰────────────╯
+          │   └───────┘
+          │          ▲
+          │          │
+    ╭─────┴─────╮   ╭┴───────────────╮
+    │Lunar phase│   │How many guests │
+    ╰───────────╯   ╰────────────────╯
 
 ## Releated work
 
