@@ -74,7 +74,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
 
             return doInAndOutputsMatch.match(elementStep -> Collections.singletonList(elementStep.element(targetDecision).build()), matching -> {
                 if (matching) {
-                    return Collections.<ValidationResult>emptyList();
+                    return Collections.emptyList();
                 } else {
                     return Collections.singletonList(
                             ValidationResult.init
