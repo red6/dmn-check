@@ -105,9 +105,9 @@ public final class FeelTypecheck {
                 .asList(ExpressionTypes.INTEGER(), ExpressionTypes.DOUBLE(), ExpressionTypes.LONG(), ExpressionTypes.DATE());
         return typecheck(context, lowerBound).bind(lowerBoundType ->
                 typecheck(context, upperBound).bind(upperBoundType ->
-                        check(lowerBoundType.equals(upperBoundType), "Types of lower and upper bound do not match.").map(Optional::of)
-                        .orElseGet(() -> check(allowedTypes.contains(lowerBoundType), "Type is unsupported for RangeExpressions."))
-                        .orElse(right(lowerBoundType))
+                        check(lowerBoundType.equals(upperBoundType), "Types of lower and upper bound do not match.")
+                            .or(() -> check(allowedTypes.contains(lowerBoundType), "Type is unsupported for RangeExpressions."))
+                            .orElse(right(lowerBoundType))
                 ));
     }
 
