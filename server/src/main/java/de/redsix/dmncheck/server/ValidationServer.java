@@ -11,7 +11,6 @@ import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;

@@ -6,8 +6,6 @@ import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-import org.checkerframework.checker.nullness.qual.PolyNull;
-import org.checkerframework.framework.qual.HasQualifierParameter;
 
 import java.io.File;
 import java.util.Comparator;
