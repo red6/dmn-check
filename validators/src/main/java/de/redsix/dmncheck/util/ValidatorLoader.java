@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,11 +31,11 @@ public class ValidatorLoader {
     }
 
     public static List<Validator> getValidators(final String @Nullable [] packages, final String @Nullable [] classes) {
-        if (inputParameterHash == Objects.hash(packages, classes) && validators != null) {
+        if (inputParameterHash == Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes)) && validators != null) {
             return validators;
         }
 
-        inputParameterHash = Objects.hash(packages, classes);
+        inputParameterHash = Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes));
 
         final ScanResult scanResult = new ClassGraph()
                 .acceptClasses(Validator.class.getName())
