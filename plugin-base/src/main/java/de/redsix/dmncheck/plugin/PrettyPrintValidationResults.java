@@ -21,9 +21,9 @@ public final class PrettyPrintValidationResults {
     }
 
     public static class PluginLogger {
-        protected Consumer<CharSequence> info;
-        protected Consumer<CharSequence> warn;
-        protected Consumer<CharSequence> error;
+        protected final Consumer<CharSequence> info;
+        protected final Consumer<CharSequence> warn;
+        protected final Consumer<CharSequence> error;
 
         public PluginLogger(final Consumer<CharSequence> info, final Consumer<CharSequence> warn, final Consumer<CharSequence> error) {
             this.info = info;

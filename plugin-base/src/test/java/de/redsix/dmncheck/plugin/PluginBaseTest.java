@@ -28,9 +28,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PluginBaseTest {
 
-    private PluginBase testee = Mockito.spy(PluginBase.class);
+    private final PluginBase testee = Mockito.spy(PluginBase.class);
 
-    private PrettyPrintValidationResults.PluginLogger emptyLogger = new PrettyPrintValidationResults.PluginLogger(
+    private final PrettyPrintValidationResults.PluginLogger emptyLogger = new PrettyPrintValidationResults.PluginLogger(
             __ -> { }, __ -> { }, __ -> { });
 
     @BeforeEach
