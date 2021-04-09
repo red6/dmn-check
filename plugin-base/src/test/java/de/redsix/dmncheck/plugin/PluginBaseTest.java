@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,8 +61,10 @@ class PluginBaseTest {
 
         for (String fileName : allFileNames) {
             File file = new File(fileName);
-            file.getParentFile().mkdirs();
-            Assertions.assertTrue(file.createNewFile());
+            if (!file.getParentFile().exists()) {
+                assertTrue(file.getParentFile().mkdirs());
+            }
+            assertTrue(file.createNewFile());
         }
 
         // additional empty directory
@@ -80,7 +83,7 @@ class PluginBaseTest {
     @Test
     void shouldDetectSimpleDuplicateInFile() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
-        Assertions.assertTrue(containsErrors);
+        assertTrue(containsErrors);
     }
 
 
@@ -92,7 +95,7 @@ class PluginBaseTest {
     @Test
     void shouldDetectCyclesInRequirementGraphs() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("cyclic-diagram.dmn")));
-        Assertions.assertTrue(containsErrors);
+        assertTrue(containsErrors);
     }
 
 
@@ -114,14 +117,14 @@ class PluginBaseTest {
     @Test
     void shouldHandleInvalidDMNFiles() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("empty.dmn")));
-        Assertions.assertTrue(containsErrors);
+        assertTrue(containsErrors);
     }
 
     @Test
     void shouldLoadNoValidatorFromConfig() {
         when(testee.getValidatorClasses()).thenReturn(new String[] { });
 
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
+        assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
     }
 
     @Test
@@ -130,7 +133,7 @@ class PluginBaseTest {
         when(testee.getValidatorPackages()).thenReturn(new String[] {InputEntryTypeValidator.class.getPackage().getName()});
 
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
-        Assertions.assertTrue(containsErrors);
+        assertTrue(containsErrors);
     }
 
 
