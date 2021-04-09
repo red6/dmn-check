@@ -29,7 +29,8 @@ public final class Util {
 
         final Iterator<A> aIterator = Spliterators.iterator(aSpliterator);
         final Iterator<B> bIterator = Spliterators.iterator(bSpliterator);
-        final Iterator<C> cIterator = new Iterator<C>() {
+        final Iterator<C> cIterator = new Iterator<>() {
+
             @Override
             public boolean hasNext() {
                 return aIterator.hasNext() && bIterator.hasNext();
@@ -64,7 +65,8 @@ public final class Util {
         final Iterator<B> bIterator = Spliterators.iterator(bSpliterator);
         final Iterator<C> cIterator = Spliterators.iterator(cSpliterator);
 
-        final Iterator<D> dIterator = new Iterator<D>() {
+        final Iterator<D> dIterator = new Iterator<>() {
+
             @Override
             public boolean hasNext() {
                 return aIterator.hasNext() && bIterator.hasNext() && cIterator.hasNext();
