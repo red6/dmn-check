@@ -7,15 +7,18 @@
 
 # dmn-check
 
-This is a tool for the validation of [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files. It performs various static analyses to detect inconsistencies and bugs in your decision models.
+This is a tool for the validation of [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files. It
+performs various static analyses to detect inconsistencies and bugs in your decision models.
 
 You can use dmn-check in three ways.
 
-* As a Maven plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your artifacts.
+* As a Maven plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your
+  artifacts.
 * Integrated into the development of your decision models by using the [Camunda Modeler](https://camunda.com/products/modeler/) plugin.
 * Integrated into your custom tools by using the provided Maven modules (dmn-check-core and dmn-check-validators).
 
 Currently dmn-check checks among others for the following:
+
 * Duplicate rules
 * Conflicting rules
 * Shadowed rules
@@ -29,7 +32,8 @@ In section [Validations](#validations) you find a complete list with detailed de
 
 ### Prerequisites
 
-This plugin requires Java 11 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and might not work for different DMN implementations.
+This plugin requires Java 11 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and
+might not work for different DMN implementations.
 
 ### Usage
 
@@ -38,7 +42,7 @@ This plugin requires Java 11 or later and Apache Maven 3 or later. Some analyses
 #### Configuration in POM
 
 The following example shows the basic configuration of the plugin:
-		
+
 	        <plugin>
                 <groupId>de.redsix</groupId>
                 <artifactId>dmn-check-maven-plugin</artifactId>
@@ -53,7 +57,11 @@ The following example shows the basic configuration of the plugin:
                 </executions>
             </plugin>
 
-Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators that should be executed. The following example shows how you can make use of these options by restricting the search path to the folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators you have to use the fully-qualified name.
+Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all
+available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators
+that should be executed. The following example shows how you can make use of these options by restricting the search path to the
+folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only
+the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators you have to use the fully-qualified name.
 
                 <configuration>
                     <searchPaths>
@@ -67,7 +75,7 @@ Using this configuration the plugin will search all folders of the current proje
                         <validatorClass>de.redsix.dmncheck.validators.ShadowedRuleValidator</validatorClass>
                     </validatorClasses>
                 </configuration>
-                
+
 #### Standalone usage
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
@@ -76,7 +84,8 @@ To use `dmn-check` without or outside of a Maven project you can invoke it in th
 
 ## Validations
 
-The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an example on [camunda.org](https://camunda.org/). Inputs are marked with `(I)` and outputs with `(O)` in the table headers.
+The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an
+example on [camunda.org](https://camunda.org/). Inputs are marked with `(I)` and outputs with `(O)` in the table headers.
 
 ### Duplicate rules
 
@@ -89,12 +98,13 @@ Consider the following DMN decision table with hit policy `UNIQUE`:
 | "Spring"      | [5..8]              | "Steak"     |
 | "Winter"      | <= 8                | "Roastbeef" |
 
-It is pretty obvious that rule number two is a duplicate of rule number four and vice versa. This is not allowed by the `UNIQUE` hit policy and thus an error.
+It is pretty obvious that rule number two is a duplicate of rule number four and vice versa. This is not allowed by the `UNIQUE` hit policy
+and thus an error.
 
 **Definition**:We say a rule is a duplicate of an other rule if and only if all inputs and outputs of those rules are identical.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT`. 
- 
+`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT`.
+
 ### Conflicting rules
 
 Conflicting rules are somewhat similar to duplicate rules. Consider the following example with hit policy `UNIQUE`:
@@ -106,15 +116,19 @@ Conflicting rules are somewhat similar to duplicate rules. Consider the followin
 | "Spring"      | [5..8]              | "Steak"     |
 | "Winter"      | <= 8                | "Stew"      |
 
-We look again a rule two and four. This time all their inputs are identical, but they differ in the output. This is arguably worse than a duplicate rule since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime does not detect those inconsistencies.
+We look again a rule two and four. This time all their inputs are identical, but they differ in the output. This is arguably worse than a
+duplicate rule since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
+does not detect those inconsistencies.
 
-**Definition**: We say rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ in at lease one output. 
+**Definition**: We say rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ
+in at lease one output.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`. 
+`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
 ### Shadowed rules
 
-Shadowing can also lead to strange behaviours that can be easy to stop but sometimes also very subtle. Have a look at the following example with hit policy `FIRST`:
+Shadowing can also lead to strange behaviours that can be easy to stop but sometimes also very subtle. Have a look at the following example
+with hit policy `FIRST`:
 
 | Season (I)    | How many guests (I) | Dish (O)    |
 | ------------- | ------------------- | ----------- |
@@ -123,46 +137,66 @@ Shadowing can also lead to strange behaviours that can be easy to stop but somet
 | -             | -                   | "Stew"      |
 | "Spring"      | [5..8]              | "Steak"     |
 
-This example contains no duplicate rules and no conflicting rules. However all inputs of rule three are empty (represented with a dash in this example). As empty inputs match everything and since we assume hit policy `FIRST` rule four will never match as rule three matches for all possible inputs. Therefore stew is served to guests of 5 to 8 in Spring. Assuming that each rule serves a purpose shadowed rules are always a bug as they will never be matched.
+This example contains no duplicate rules and no conflicting rules. However all inputs of rule three are empty (represented with a dash in
+this example). As empty inputs match everything and since we assume hit policy `FIRST` rule four will never match as rule three matches for
+all possible inputs. Therefore stew is served to guests of 5 to 8 in Spring. Assuming that each rule serves a purpose shadowed rules are
+always a bug as they will never be matched.
 
-**Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` matches at least for all values for which the inputs of rule `s` match.
+**Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` matches at least for all values for which the inputs of
+rule `s` match.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`. 
+`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
 ### Types of expressions
 
-DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most expression languages, not all syntactically possible expressions are valid. `dmn-check` integrates a type checker for the FEEL expression language that ensures that a decision table contains only well-typed expressions. An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a valid expression. In contrast `[1..9]` is well-typed and describes the numbers from 1 to 9.
+DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most
+expression languages, not all syntactically possible expressions are valid. `dmn-check` integrates a type checker for the FEEL expression
+language that ensures that a decision table contains only well-typed expressions. An example of an ill-typed expression is `[1..true]` which
+would describe the range between `1` and `true` which is (at lease in FEEL) not a valid expression. In contrast `[1..9]` is well-typed and
+describes the numbers from 1 to 9.
 
 ### Correct use of enumerations
 
-Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
+Decision making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN
+decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an
+enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
 ### Correctly connected requirement graphs
 
-Besides decision tables DMN provides a way to connect decisions tables with each other. The resulting graphs are called Decision Requirement Graphs (DRG). You can visualize inputs and authorities for decision tables, too.
+Besides decision tables DMN provides a way to connect decisions tables with each other. The resulting graphs are called Decision Requirement
+Graphs (DRG). You can visualize inputs and authorities for decision tables, too.
 
-`dmn-check` verifies that a DRG is a [connected graph](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) and that the in- and ouputs of connected decision tables are compatible.
+`dmn-check` verifies that a DRG is a [connected graph](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) and that the in- and
+ouputs of connected decision tables are compatible.
 
 ## Releated work
 
-Although there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the related work when starting the work on `dmn-check`.
+Although there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the related
+work when starting the work on `dmn-check`.
 
 ### A Tool for the Analysis of DMN Decision Tables
 
-Ülari Laurson and Fabrizio Maria Maggi extended the `dmn-js` editing toolkit of Camunda with analysis capabilities and published it at [github.com/ulaurson/dmn-js](https://github.com/ulaurson/dmn-js). The tool is able to detect syntax and type errors and to identify overlapping and missing rules. It also is able to simplify decision tables by merging rules. In the demo paper [LM16](#LM16) they describe the tool. Further details about the analyses performed by the tool are published in [CDL+16](#CDL+16). 
+Ülari Laurson and Fabrizio Maria Maggi extended the `dmn-js` editing toolkit of Camunda with analysis capabilities and published it
+at [github.com/ulaurson/dmn-js](https://github.com/ulaurson/dmn-js). The tool is able to detect syntax and type errors and to identify
+overlapping and missing rules. It also is able to simplify decision tables by merging rules. In the demo paper [LM16](#LM16) they describe
+the tool. Further details about the analyses performed by the tool are published in [CDL+16](#CDL+16).
 
 ## References
 
-<b id="CDL+16">CDL+16</b> Calvanese, D., Dumas, M., Laurson, Ü., Maggi, F.M., Montali, M., Teinemaa, I.: Semantics and analysis of DMN decision tables. In Proceedings of the 14th International Conference on Business Process Management (BPM) 2016
+<b id="CDL+16">CDL+16</b> Calvanese, D., Dumas, M., Laurson, Ü., Maggi, F.M., Montali, M., Teinemaa, I.: Semantics and analysis of DMN
+decision tables. In Proceedings of the 14th International Conference on Business Process Management (BPM) 2016
 
-<b id="LM16">LM16</b> Laurson, Ü. and Maggi, F.M., 2016, September. A Tool for the Analysis of DMN Decision Tables. In BPM (Demos) (pp. 56-60).
+<b id="LM16">LM16</b> Laurson, Ü. and Maggi, F.M., 2016, September. A Tool for the Analysis of DMN Decision Tables. In BPM (Demos) (pp.
+56-60).
 
 <b id="BW-a">BW-a</b> Batoulis, K. and Weske, M., A Tool for Checking Soundness of Decision-Aware Business Processes.
 
 <b id="BW-b">BW-b</b> Batoulis, K. and Weske, M., Disambiguation of DMN Decision Tables.
 
-<b id="FMTV18">FMTV18</b> Figl, K., Mendling, J., Tokdemir, G. and Vanthienen, J., 2018. What we know and what we do not know about DMN. Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
+<b id="FMTV18">FMTV18</b> Figl, K., Mendling, J., Tokdemir, G. and Vanthienen, J., 2018. What we know and what we do not know about DMN.
+Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
 
 <b id="Silver16">Silver16</b> Silver, B., 2016. Decision Table Analysis in DMN.
 
-<b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
+<b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision
+model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
