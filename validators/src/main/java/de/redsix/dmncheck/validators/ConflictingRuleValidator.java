@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
@@ -24,7 +25,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
-        return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
+        return true;
     }
 
     @Override
@@ -36,6 +37,8 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                             .filter(rules -> rules.size() > 1)
                             .map(rules -> ValidationResult.init
                         .message("Rule is conflicting with rules " + rules.stream().skip(1).map(Rule::getId).collect(Collectors.toList()))
+                        .severity(Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy())
+                                  ? Severity.WARNING : Severity.ERROR)
                         .element(rules.first())
                         .build())
                             .collect(Collectors.toList());
