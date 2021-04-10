@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class InputDataValidatorTest extends WithDecisionTable {
+class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
-    private final InputDataValidator testee = new InputDataValidator();
+    private final InputDataIdAndNameValidator testee = new InputDataIdAndNameValidator();
 
     @Test
     void shouldErrorIfInputDataHasNoId() {

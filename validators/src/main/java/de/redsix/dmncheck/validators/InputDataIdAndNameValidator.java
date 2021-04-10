@@ -2,7 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.InputData;
 
-public class InputDataValidator extends IdAndNameValidator<InputData> {
+public class InputDataIdAndNameValidator extends IdAndNameValidator<InputData> {
 
     @Override
     public String getName() {
