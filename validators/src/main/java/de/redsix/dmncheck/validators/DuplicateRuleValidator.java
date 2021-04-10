@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.validators;
 
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
@@ -23,7 +24,7 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
-        return !HitPolicy.COLLECT.equals(decisionTable.getHitPolicy());
+        return true;
     }
 
     @Override
@@ -40,6 +41,7 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
             } else {
                 result.add(ValidationResult.init
                     .message("Rule is defined more than once")
+                    .severity(HitPolicy.COLLECT.equals(decisionTable.getHitPolicy()) ? Severity.WARNING : Severity.ERROR)
                     .element(rule)
                     .build());
             }
