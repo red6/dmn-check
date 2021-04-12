@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_1rrrtk2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <decision id="Decision_0yjra19">
+    <informationRequirement id="InformationRequirement_0aare5h">
+      <requiredDecision href="#Decision_0yjra19" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_196o3s4">
+      <input id="InputClause_0d9rlde">
+        <inputExpression id="LiteralExpression_0tvxxic" typeRef="string" />
+      </input>
+      <output id="OutputClause_1bbl0oo" typeRef="string" />
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="DMNShape_1mbqrol" dmnElementRef="Decision_0yjra19">
+        <dc:Bounds height="80" width="180" x="190" y="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_198pcj7" dmnElementRef="InformationRequirement_0aare5h">
+        <di:waypoint x="600" y="150" />
+        <di:waypoint x="390" y="120" />
+        <di:waypoint x="370" y="120" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

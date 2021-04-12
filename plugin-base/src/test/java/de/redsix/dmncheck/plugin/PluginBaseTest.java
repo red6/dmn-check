@@ -62,9 +62,9 @@ class PluginBaseTest {
         for (String fileName : allFileNames) {
             File file = new File(fileName);
             if (!file.getParentFile().exists()) {
-                assertTrue(file.getParentFile().mkdirs());
+                Assertions.assertTrue(file.getParentFile().mkdirs());
             }
-            assertTrue(file.createNewFile());
+            Assertions.assertTrue(file.createNewFile());
         }
 
         // additional empty directory
@@ -83,7 +83,7 @@ class PluginBaseTest {
     @Test
     void shouldDetectSimpleDuplicateInFile() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
-        assertTrue(containsErrors);
+        Assertions.assertTrue(containsErrors);
     }
 
 
@@ -95,7 +95,7 @@ class PluginBaseTest {
     @Test
     void shouldDetectCyclesInRequirementGraphs() {
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("cyclic-diagram.dmn")));
-        assertTrue(containsErrors);
+        Assertions.assertTrue(containsErrors);
     }
 
 
@@ -116,15 +116,14 @@ class PluginBaseTest {
 
     @Test
     void shouldHandleInvalidDMNFiles() {
-        final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("empty.dmn")));
-        assertTrue(containsErrors);
+        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("empty.dmn"))));
     }
 
     @Test
     void shouldLoadNoValidatorFromConfig() {
         when(testee.getValidatorClasses()).thenReturn(new String[] { });
 
-        assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
+        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
     }
 
     @Test
@@ -133,7 +132,12 @@ class PluginBaseTest {
         when(testee.getValidatorPackages()).thenReturn(new String[] {InputEntryTypeValidator.class.getPackage().getName()});
 
         final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
-        assertTrue(containsErrors);
+        Assertions.assertTrue(containsErrors);
+    }
+
+    @Test
+    void shouldDetectLoopsInDiagrams() {
+        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("diagram-with-a-loop.dmn"))));
     }
 
 
