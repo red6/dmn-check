@@ -1,0 +1,54 @@
+plugins {
+    id 'maven-publish'
+    id 'java'
+    id 'java-gradle-plugin'
+}
+
+group 'de.redsix'
+version '1.2.0-SNAPSHOT'
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'de.redsix.dmncheck'
+            implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'de.redsix'
+            artifactId = 'dmn-check-gradle-plugin'
+            version = '1.2.0-SNAPSHOT'
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile group: 'de.redsix', name: 'dmn-check-plugin-base', version: '1.2.0-SNAPSHOT'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

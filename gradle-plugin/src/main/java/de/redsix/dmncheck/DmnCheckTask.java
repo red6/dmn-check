@@ -1,0 +1,116 @@
+package de.redsix.dmncheck;
+
+import de.redsix.dmncheck.plugin.PluginBase;
+import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
+import de.redsix.dmncheck.util.ProjectClassLoader;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.VerificationTask;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+public class DmnCheckTask extends DefaultTask implements PluginBase, VerificationTask {
+
+    public static final String MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER = "Failed to construct project class loader.";
+    public static final String MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS = "Some files are not valid, see previous logs.";
+
+    private boolean ignoreFailures = false;
+
+    @TaskAction
+    public void validateFiles() {
+        loadProjectclasspath();
+
+        if (validate()) {
+            if (ignoreFailures) {
+                getLogger().error(MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS);
+            } else {
+                throw new GradleException(MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS);
+            }
+        }
+    }
+
+    @Override
+    public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
+        return new PrettyPrintValidationResults.PluginLogger(c -> getLogger().info((String) c), c -> getLogger().warn((String) c),
+                                                             c -> getLogger().error((String) c));
+    }
+
+    @Override
+    public List<String> getExcludeList() {
+        if (getDmnCheckExtension().excludeList != null) {
+            return getDmnCheckExtension().excludeList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<String> getSearchPathList() {
+        if (getDmnCheckExtension().searchPathList != null) {
+            return getDmnCheckExtension().searchPathList;
+        } else {
+            return Collections.singletonList("");
+        }
+    }
+
+    @Override
+    public String[] getValidatorPackages() {
+        if (getDmnCheckExtension().validatorPackages != null) {
+            return getDmnCheckExtension().validatorPackages.toArray(new String[] {});
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String[] getValidatorClasses() {
+        if (getDmnCheckExtension().validatorClasses != null) {
+            return getDmnCheckExtension().validatorClasses.toArray(new String[] {});
+        } else {
+            return null;
+        }
+    }
+
+    public void loadProjectclasspath() {
+        final Set<File> files = getProject().getConfigurations().getByName("compileClasspath").getFiles();
+
+        final URL[] classpathURLs = files.stream()
+                                         .map(File::toURI)
+                                         .map(uri -> {
+            try {
+                return uri.toURL();
+            }
+            catch (MalformedURLException e) {
+                if (ignoreFailures) {
+                    getLogger().error(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
+                    return null;
+                } else {
+                    throw new GradleException(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
+                }
+            }
+        }).filter(Objects::nonNull).toArray(URL[]::new);
+        ProjectClassLoader.instance.classLoader = new URLClassLoader(classpathURLs);
+    }
+
+    private DmnCheckExtension getDmnCheckExtension() {
+        return (DmnCheckExtension) getExtensions().getByName(DmnCheckGradlePlugin.DMN_CHECK_EXTENSION);
+    }
+
+    @Override
+    public void setIgnoreFailures(boolean ignoreFailures) {
+        this.ignoreFailures = ignoreFailures;
+    }
+
+    @Override
+    public boolean getIgnoreFailures() {
+        return ignoreFailures;
+    }
+}
