@@ -1,5 +1,7 @@
 package de.redsix.dmncheck.server;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ValidatorLoader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,10 +27,19 @@ public class ValidationServer {
 
     public static final String UNKNOWN_ERROR = "Unknown Error";
 
+    @Parameter(names = "-port", description = "Port the service should bind do.")
+    public Integer portNumber = 42000;
+
     public static void main(String[] args) {
         ValidationServer validationServer = new ValidationServer();
 
-        port(42000);
+        JCommander
+            .newBuilder()
+            .addObject(validationServer)
+            .build()
+            .parse(args);
+
+        port(validationServer.portNumber);
         post("/validate", (request, response) -> {
 
             final ByteArrayInputStream dmnXmlStream = new ByteArrayInputStream(request.body().getBytes(StandardCharsets.UTF_8));
