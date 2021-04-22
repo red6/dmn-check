@@ -12,7 +12,10 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -25,13 +28,13 @@ import static spark.Spark.post;
 
 public class ValidationServer {
 
-    public static final String UNKNOWN_ERROR = "Unknown Error";
-
     @Parameter(names = "-port", description = "Port the service should bind do.")
     public Integer portNumber = 42000;
 
     public static void main(String[] args) {
-        ValidationServer validationServer = new ValidationServer();
+        final ValidationServer validationServer = new ValidationServer();
+
+        final Logger logger = LoggerFactory.getLogger(ValidationServer.class);
 
         JCommander
             .newBuilder()
@@ -52,13 +55,13 @@ public class ValidationServer {
                 final List<ValidationResult> validationResults = validationServer.runValidators(modelInstance);
                 return validationServer.validationResultsToJson(validationResults).toString();
             } catch (DmnModelException e) {
-                e.printStackTrace();
-                return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", Optional
-                        .ofNullable(ExceptionUtils.getRootCause(e).getMessage()).orElse(UNKNOWN_ERROR))));
+                logger.error(nullsafeError(e.getMessage()));
+                return new JSONObject()
+                    .put("items", Collections.singleton(new JSONObject().put("message", nullsafeError(ExceptionUtils.getRootCause(e).getMessage()))));
             } catch (Exception e) {
-                e.printStackTrace();
-                return new JSONObject().put("items", Collections
-                        .singleton(new JSONObject().put("message", Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR))));
+                logger.error(nullsafeError(e.getMessage()));
+                return new JSONObject()
+                    .put("items", Collections.singleton(new JSONObject().put("message", nullsafeError(e.getMessage()))));
             }
         });
     }
@@ -87,5 +90,9 @@ public class ValidationServer {
         } else {
             return this.getDrgElementParent(elementInstance.getParentElement());
         }
+    }
+
+    private static String nullsafeError(@Nullable String message) {
+        return Optional.ofNullable(message).orElse("Unknown Error");
     }
 }
