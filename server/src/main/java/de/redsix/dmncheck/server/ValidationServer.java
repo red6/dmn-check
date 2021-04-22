@@ -12,6 +12,8 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +33,9 @@ public class ValidationServer {
     public Integer portNumber = 42000;
 
     public static void main(String[] args) {
-        ValidationServer validationServer = new ValidationServer();
+        final ValidationServer validationServer = new ValidationServer();
+
+        final Logger logger = LoggerFactory.getLogger(ValidationServer.class);
 
         JCommander
             .newBuilder()
@@ -52,11 +56,11 @@ public class ValidationServer {
                 final List<ValidationResult> validationResults = validationServer.runValidators(modelInstance);
                 return validationServer.validationResultsToJson(validationResults).toString();
             } catch (DmnModelException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
                 return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", Optional
                         .ofNullable(ExceptionUtils.getRootCause(e).getMessage()).orElse(UNKNOWN_ERROR))));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
                 return new JSONObject().put("items", Collections
                         .singleton(new JSONObject().put("message", Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR))));
             }
