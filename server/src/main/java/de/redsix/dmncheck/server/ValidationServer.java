@@ -55,8 +55,7 @@ public class ValidationServer {
                 e.printStackTrace();
                 return new JSONObject().put("items", Collections.singleton(new JSONObject().put("message", Optional
                         .ofNullable(ExceptionUtils.getRootCause(e).getMessage()).orElse(UNKNOWN_ERROR))));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new JSONObject().put("items", Collections
                         .singleton(new JSONObject().put("message", Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR))));
@@ -71,13 +70,14 @@ public class ValidationServer {
     }
 
     private JSONObject validationResultsToJson(final List<ValidationResult> validationResults) {
-        return new JSONObject().put("items", validationResults.stream().map(vr -> new JSONObject().put("id", vr.getElement()
-                                                                                                               .getAttributeValue("id"))
-                                                                                                  .put("drgElementId", getDrgElementParent(vr.getElement()).getAttributeValue("id"))
-                                                                                                  .put("message", vr.getMessage())
-                                                                                                  .put("severity",
-                                                                                                       vr.getSeverity().toString()))
-                                                              .collect(Collectors.toList()));
+        return new JSONObject().put("items", validationResults
+            .stream()
+            .map(vr -> new JSONObject()
+                .put("id", vr.getElement().getAttributeValue("id"))
+                .put("drgElementId", getDrgElementParent(vr.getElement()).getAttributeValue("id"))
+                .put("message", vr.getMessage())
+                .put("severity", vr.getSeverity().toString()))
+            .collect(Collectors.toList()));
     }
 
     private DrgElement getDrgElementParent(final ModelElementInstance elementInstance) {
