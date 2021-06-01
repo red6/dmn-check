@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators.core;
 
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collection;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ValidationContext {
 
         private final Map<Class<T>, U> cache = new ConcurrentHashMap<>();
 
-        private Function<Class<T>, U> doMemoize(final Function<Class<T>, U> function) {
+        private Function<Class<T>, U> doMemoize(final Function<Class<T>, @NonNull U> function) {
             return input -> cache.computeIfAbsent(input, function);
         }
 
