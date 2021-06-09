@@ -77,6 +77,12 @@ the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify va
                     </validatorClasses>
                 </configuration>
 
+Additionally `failOnWarning` (default false) parameter can be set to fail mvn execution if there are validation errors with Warning severity.
+
+                <configuration>
+                    <failOnWarning>true</failOnWarning>
+                </configuration>
+
 #### Standalone Usage
 
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
