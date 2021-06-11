@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,8 +56,16 @@ public interface PluginBase {
 
             if (!validationResults.isEmpty()) {
                 PrettyPrintValidationResults.logPrettified(file, validationResults, getPluginLogger());
+
+                List<Severity> errors = new ArrayList<>();
+                errors.add(Severity.ERROR);
+
+                if (failOnWarning()) {
+                    errors.add(Severity.WARNING);
+                }
+
                 encounteredError = validationResults.stream()
-                                                    .anyMatch(result -> Severity.ERROR.equals(result.getSeverity()));
+                            .anyMatch(result -> errors.contains(result.getSeverity()));
             }
         }
         catch (Exception e) {
@@ -102,5 +111,9 @@ public interface PluginBase {
 
     default List<Validator> getValidators() {
         return ValidatorLoader.getValidators(getValidatorPackages(), getValidatorClasses());
+    }
+
+    default boolean failOnWarning() {
+        return false;
     }
 }

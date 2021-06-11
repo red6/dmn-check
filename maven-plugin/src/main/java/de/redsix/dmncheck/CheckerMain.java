@@ -43,6 +43,10 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     @SuppressWarnings("nullness")
     private MavenProject project;
 
+    @Parameter( defaultValue = "false", readonly = true )
+    @SuppressWarnings("nullness")
+    private Boolean failOnWarning;
+
     @Override
     public void execute() throws MojoExecutionException {
         loadProjectclasspath();
@@ -120,5 +124,10 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
 
     void setProject(MavenProject project) {
         this.project = project;
+    }
+
+    @Override
+    public boolean failOnWarning() {
+        return failOnWarning;
     }
 }
