@@ -1,3 +1,20 @@
+## 1.2.0 (2021-09-03)
+
+Features:
+
+  - Validation Server
+    With this release dmn-check includes a validation server module. This server is supposed to run standalone and
+    accepts validation requests via HTTP. It is currently used for an experimental integration into the Camunda
+    Modeler. A demo version is live at https://dmn-check.pascal-wittmann.de/demo/.
+  - A Gradle plugin that allows you to use dmn-check in your Gradle projects.
+  - A maven module plugin-base that provides common functionality for build system plugins.
+  - Adds failOnWarning flag to support failing validation on Warning severity (#18), thank you Krzysztof Barczynski.
+
+Bugfixes:
+
+  - Warn about conflicting rules for hit-policy collect and rule-order instead of reporting an error
+  - Warn about duplicate rules for hit-policy collect instead of reporting an error
+
 ## 1.1.6 (2021-03-06)
 
 Features:
