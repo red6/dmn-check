@@ -1,10 +1,10 @@
-name: Publish package to the Maven Central Repository
+name: Publish packages to the Maven Central Repository
 on:
   push:
     tags:
       - '*'
 jobs:
-  publish:
+  publish-dmn-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,6 +29,22 @@ jobs:
             --update-snapshots \
             --activate-profiles release \
             -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+
+  publish-gradle-plugin:
+    runs-on: ubuntu-latest
+    needs: publish-dmn-check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Publish package
+        run: cd gradle-plugin && ./gradlew publish
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
