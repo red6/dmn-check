@@ -32,6 +32,12 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Previous succeeded job
+        id: success
+        uses: actions/cache@v2
+        with:
+          path: success-job-${{ github.sha }}-${{ matrix.name }}
+          key: success-job-job-${{ github.sha }}-${{ matrix.name }}
 
 
   publish-gradle-plugin:
@@ -39,6 +45,13 @@ jobs:
     needs: publish-dmn-check
     steps:
       - uses: actions/checkout@v2
+      - name: Composer cache
+        if: steps.success.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+         path: vendor
+         key: composer-${{ hashFiles('composer.lock') }}
+      - run: echo "done" > success-job-${{ github.sha }}-${{ matrix.name }}
       - name: Set up Java
         uses: actions/setup-java@v1
         with:
