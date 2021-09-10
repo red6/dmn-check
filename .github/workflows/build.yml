@@ -41,4 +41,4 @@ jobs:
         with:
           java-version: 1.11
       - name: Build with Gradle
-        run: gradle-plugin/gradlew build
+        run: cd gradle-plugin && ./gradlew build
