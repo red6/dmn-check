@@ -1,7 +1,12 @@
+
+
 plugins {
-    id 'maven-publish'
     id 'java'
+    id 'java-library'
     id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 group 'de.redsix'
@@ -9,44 +14,6 @@ version '1.3.0-SNAPSHOT'
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
-
-gradlePlugin {
-    plugins {
-        simplePlugin {
-            id = 'de.redsix.dmncheck'
-            implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
-        }
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            artifactId = 'dmn-check-gradle-plugin'
-            version = project.version
-
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            name = "OSSRH"
-
-            if(project.version.endsWith('-SNAPSHOT')) {
-                url "https://oss.sonatype.org/content/repositories/snapshots"
-            } else {
-                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            }
-
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
-        }
-    }
-}
 
 repositories {
     maven {
@@ -60,4 +27,93 @@ dependencies {
     compile group: 'de.redsix', name: 'dmn-check-plugin-base', version: project.version
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'de.redsix.dmncheck'
+            implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
+        }
+    }
+}
+
+java {
+    //package JavaDoc as part of publication
+    withJavadocJar()
+    //package Sources as part of publication
+    withSourcesJar()
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
+publishing {
+    publications {
+        //define publication identity, e.g. maven, which will be used
+        //by the signing plugin, e.g. sign publishing.publications.maven
+        maven(MavenPublication) {
+            //select component to publish, e.g. java including JavaDoc
+            //and sources (see above)
+            from components.java
+            //set elements in generated pom.xml according to requirements
+            //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
+            pom {
+                name = project['name']
+                description = project['description']
+                url = 'https://github.com/red6/dmn-check'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Pascal Wittmann'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com/red6/dmn-check'
+                    developerConnection = 'scm:git:github.com/red6/dmn-check'
+                    url = 'https://github.com/red6/dmn-check'
+                }
+            }
+        }
+    }
+}
+
+//for plugin signing
+//see https://docs.gradle.org/current/userguide/signing_plugin.html
+signing {
+    //make signing required unless for SNAPSHOT releases or if signing is explicitly skipped
+    required { !project.version.endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
+
+    //look for property 'signingKey'
+    if (project.findProperty("signingKey")) {
+        //If required, read a sub-key specified by its ID in property signingKeyId
+        //def signingKeyId = findProperty("signingKeyId")
+        //read property 'signingKey'
+        def signingKey = findProperty("signingKey")
+        //read property 'signingPassword'
+        def signingPassword = findProperty("signingPassword")
+        //Select to use in-memory ascii-armored keys
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        //Only if also using signingKeyId
+        //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+
+        //Apply signing to publication identity 'publishing.publications.maven'
+        sign publishing.publications.maven
+    }else {
+        println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+    }
 }
