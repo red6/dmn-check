@@ -3,10 +3,14 @@ package de.redsix.dmncheck;
 import de.redsix.dmncheck.plugin.PluginBase;
 import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
 import de.redsix.dmncheck.util.ProjectClassLoader;
+import de.redsix.dmncheck.validators.core.Validator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.VerificationTask;
+import org.gradle.internal.impldep.org.junit.Ignore;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -38,11 +42,13 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Override
+    @Internal
     public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
         return new PrettyPrintValidationResults.PluginLogger(c -> getLogger().info((String) c), c -> getLogger().warn((String) c),
                                                              c -> getLogger().error((String) c));
     }
 
+    @Input
     @Override
     public List<String> getExcludeList() {
         if (getDmnCheckExtension().excludeList != null) {
@@ -52,6 +58,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
         }
     }
 
+    @Input
     @Override
     public List<String> getSearchPathList() {
         if (getDmnCheckExtension().searchPathList != null) {
@@ -61,6 +68,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
         }
     }
 
+    @Input
     @Override
     public String[] getValidatorPackages() {
         if (getDmnCheckExtension().validatorPackages != null) {
@@ -70,6 +78,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
         }
     }
 
+    @Input
     @Override
     public String[] getValidatorClasses() {
         if (getDmnCheckExtension().validatorClasses != null) {
@@ -109,8 +118,15 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
         this.ignoreFailures = ignoreFailures;
     }
 
+    @Input
     @Override
     public boolean getIgnoreFailures() {
         return ignoreFailures;
+    }
+
+    @Internal
+    @Override
+    public List<Validator> getValidators()  {
+        return PluginBase.super.getValidators();
     }
 }
