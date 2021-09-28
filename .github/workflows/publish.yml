@@ -65,5 +65,8 @@ jobs:
                   java-version: '11'
                   distribution: 'adopt'
                   cache: maven
+                  server-id: ossrh
+                  server-username: MAVEN_USERNAME
+                  server-password: MAVEN_PASSWORD
               - name: Release package from Nexus staging
                 run: mvn --activate-profiles release nexus-staging:release
