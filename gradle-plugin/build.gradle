@@ -1,7 +1,4 @@
-
-
 plugins {
-    id 'java'
     id 'java-library'
     id 'java-gradle-plugin'
     id 'maven-publish'
@@ -61,10 +58,7 @@ publishing {
     publications {
         //define publication identity, e.g. maven, which will be used
         //by the signing plugin, e.g. sign publishing.publications.maven
-        maven(MavenPublication) {
-            //select component to publish, e.g. java including JavaDoc
-            //and sources (see above)
-            from components.java
+        pluginMaven(MavenPublication) {
             //set elements in generated pom.xml according to requirements
             //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
             pom {
@@ -112,7 +106,7 @@ signing {
         //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
         //Apply signing to publication identity 'publishing.publications.maven'
-        sign publishing.publications.maven
+        sign publishing.publications.pluginMaven
     }else {
         println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
     }
