@@ -6,10 +6,7 @@ import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.VerificationTask;
+import org.gradle.api.tasks.*;
 import org.gradle.internal.impldep.org.junit.Ignore;
 
 import java.io.File;
@@ -49,6 +46,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
+    @Optional
     @Override
     public List<String> getExcludeList() {
         if (getDmnCheckExtension().excludeList != null) {
@@ -59,6 +57,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
+    @Optional
     @Override
     public List<String> getSearchPathList() {
         if (getDmnCheckExtension().searchPathList != null) {
@@ -69,6 +68,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
+    @Optional
     @Override
     public String[] getValidatorPackages() {
         if (getDmnCheckExtension().validatorPackages != null) {
@@ -79,6 +79,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
+    @Optional
     @Override
     public String[] getValidatorClasses() {
         if (getDmnCheckExtension().validatorClasses != null) {
@@ -119,6 +120,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
+    @Optional
     @Override
     public boolean getIgnoreFailures() {
         return ignoreFailures;
