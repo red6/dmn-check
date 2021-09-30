@@ -47,7 +47,9 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Publish package
-        run: cd gradle-plugin && ./gradlew publishToSonatype
+        # Note that until #19 is done, the publishToSonatype closeAndReleaseSonatypeStagingRepository tasks have to be executed in the same Gradle invocation because closeAndRelease relies on information that is not persisted between calls to Gradle.
+        # https://github.com/gradle-nexus/publish-plugin
+        run: cd gradle-plugin && ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_TOKEN }}
