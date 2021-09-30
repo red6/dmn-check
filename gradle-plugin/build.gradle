@@ -8,6 +8,7 @@ plugins {
 
 group 'de.redsix'
 version '1.2.0'
+description 'Gradle Plugin for the DMN analysis tool dmn-check'
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
@@ -29,7 +30,7 @@ dependencies {
 gradlePlugin {
     plugins {
         simplePlugin {
-            id = 'de.redsix.dmncheck'
+            id = 'de.redsix.dmn-check.gradle-plugin'
             implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
         }
     }
@@ -55,31 +56,33 @@ nexusPublishing {
 }
 
 publishing {
-    publications {
-        //define publication identity, e.g. maven, which will be used
-        //by the signing plugin, e.g. sign publishing.publications.maven
-        pluginMaven(MavenPublication) {
-            //set elements in generated pom.xml according to requirements
-            //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
-            pom {
-                name = project['name']
-                description = project['description']
-                url = 'https://github.com/red6/dmn-check'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        name = 'Pascal Wittmann'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:github.com/red6/dmn-check'
-                    developerConnection = 'scm:git:github.com/red6/dmn-check'
+    afterEvaluate {
+        publications {
+            //define publication identity, e.g. maven, which will be used
+            //by the signing plugin, e.g. sign publishing.publications.maven
+            withType(MavenPublication) {
+                //set elements in generated pom.xml according to requirements
+                //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
+                pom {
+                    name = project['name']
+                    description = project['description']
                     url = 'https://github.com/red6/dmn-check'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            name = 'Pascal Wittmann'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/red6/dmn-check'
+                        developerConnection = 'scm:git:github.com/red6/dmn-check'
+                        url = 'https://github.com/red6/dmn-check'
+                    }
                 }
             }
         }
@@ -92,22 +95,25 @@ signing {
     //make signing required unless for SNAPSHOT releases or if signing is explicitly skipped
     required { !project.version.endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
 
-    //look for property 'signingKey'
-    if (project.findProperty("signingKey")) {
-        //If required, read a sub-key specified by its ID in property signingKeyId
-        //def signingKeyId = findProperty("signingKeyId")
-        //read property 'signingKey'
-        def signingKey = findProperty("signingKey")
-        //read property 'signingPassword'
-        def signingPassword = findProperty("signingPassword")
-        //Select to use in-memory ascii-armored keys
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        //Only if also using signingKeyId
-        //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    afterEvaluate {
+        //look for property 'signingKey'
+        if (project.findProperty("signingKey")) {
+            //If required, read a sub-key specified by its ID in property signingKeyId
+            //def signingKeyId = findProperty("signingKeyId")
+            //read property 'signingKey'
+            def signingKey = findProperty("signingKey")
+            //read property 'signingPassword'
+            def signingPassword = findProperty("signingPassword")
+            //Select to use in-memory ascii-armored keys
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            //Only if also using signingKeyId
+            //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
-        //Apply signing to publication identity 'publishing.publications.maven'
-        sign publishing.publications.pluginMaven
-    }else {
-        println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+            //Apply signing to publication identity 'publishing.publications.maven'
+            sign publishing.publications.pluginMaven
+            sign publishing.publications.simplePluginPluginMarkerMaven
+        } else {
+            println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+        }
     }
 }
