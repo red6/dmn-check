@@ -120,7 +120,6 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     @Input
-    @Optional
     @Override
     public boolean getIgnoreFailures() {
         return ignoreFailures;
