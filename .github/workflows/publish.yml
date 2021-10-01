@@ -72,3 +72,6 @@ jobs:
                   server-password: MAVEN_PASSWORD
               - name: Release package from Nexus staging
                 run: mvn --activate-profiles release nexus-staging:release
+                env:
+                  MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+                  MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
