@@ -1,4 +1,4 @@
-![Build Status](https://github.com/red6/dmn-check/actions/workflows/maven.yml/badge.svg)
+![Build Status](https://github.com/red6/dmn-check/actions/workflows/build.yml/badge.svg)
 [![codecov](https://codecov.io/gh/red6/dmn-check/branch/master/graph/badge.svg?token=47U89YZJZ0)](https://codecov.io/gh/red6/dmn-check)
 [![Known Vulnerabilities](https://snyk.io/test/github/red6/dmn-check/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/red6/dmn-check?targetFile=pom.xml)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/red6/dmn-check.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/red6/dmn-check/alerts/)
