@@ -90,8 +90,8 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> loadEnum(final String className) {
         try {
-            if (ProjectClassLoader.instance.classLoader != null) {
-                return right(ProjectClassLoader.instance.classLoader.loadClass(className));
+            if (ProjectClassLoader.INSTANCE.classLoader != null) {
+                return right(ProjectClassLoader.INSTANCE.classLoader.loadClass(className));
             } else {
                 return left(ValidationResult.init.message("Classloader of project under validation not found"));
             }

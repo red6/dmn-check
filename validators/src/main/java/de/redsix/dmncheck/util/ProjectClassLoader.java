@@ -4,7 +4,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public enum ProjectClassLoader {
 
-    instance;
+    INSTANCE;
 
     public @Nullable ClassLoader classLoader;
 }
