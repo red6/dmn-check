@@ -32,9 +32,9 @@ class CheckerMainTest {
     }
 
     @Test
-    void shouldSkipFileIfIsNotOnSearchPath() throws Exception {
-        testee.setSearchPaths(new String[] {"src/main/java"});
-        testee.execute();
+    void shouldSkipFileIfIsNotOnSearchPath() {
+        final List<File> filesToTest = testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("src/main/java")));
+        Assertions.assertTrue(filesToTest.isEmpty());
     }
 
     @Test
