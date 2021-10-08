@@ -102,29 +102,12 @@ class FeelParserTest {
         assertEquals(expectedExpression, expression);
     }
 
-    @Test
-    void shouldParseEmptyStringLiteral() {
-        final FeelExpression expression = FeelParser.PARSER.parse("\"\"");
+    @ParameterizedTest
+    @CsvSource({"\"\", ''", "\"Steak\", Steak", "\"x.y.z=false\", x.y.z=false"})
+    void shouldParseStringLiterals(final String input, final String expected) {
+        final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = FeelExpressions.StringLiteral("");
-
-        assertEquals(expectedExpression, expression);
-    }
-
-    @Test
-    void shouldParseStringLiteral() {
-        final FeelExpression expression = FeelParser.PARSER.parse("\"Steak\"");
-
-        final FeelExpression expectedExpression = FeelExpressions.StringLiteral("Steak");
-
-        assertEquals(expectedExpression, expression);
-    }
-
-    @Test
-    void shouldParseStringLiteralContainingSpecialCharacters() {
-        final FeelExpression expression = FeelParser.PARSER.parse("\"x.y.z=false\"");
-
-        final FeelExpression expectedExpression = FeelExpressions.StringLiteral("x.y.z=false");
+        final FeelExpression expectedExpression = FeelExpressions.StringLiteral(expected);
 
         assertEquals(expectedExpression, expression);
     }
