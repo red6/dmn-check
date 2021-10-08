@@ -95,7 +95,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        ProjectClassLoader.instance.classLoader = Thread.currentThread().getContextClassLoader();
+        ProjectClassLoader.INSTANCE.classLoader = Thread.currentThread().getContextClassLoader();
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
@@ -116,7 +116,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        ProjectClassLoader.instance.classLoader = Thread.currentThread().getContextClassLoader();
+        ProjectClassLoader.INSTANCE.classLoader = Thread.currentThread().getContextClassLoader();
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
@@ -142,7 +142,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
-        ProjectClassLoader.instance.classLoader = null;
+        ProjectClassLoader.INSTANCE.classLoader = null;
 
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 

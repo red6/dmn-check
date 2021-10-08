@@ -103,7 +103,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
             }
         }
 
-        ProjectClassLoader.instance.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
+        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
     }
 
     void setExcludes(final String[] excludes) {
