@@ -23,9 +23,10 @@ class FeelTypecheckTest {
         assertEquals(right(ExpressionTypes.TOP()), type);
     }
 
-    @Test
-    void integerHasTypeInteger() {
-        final FeelExpression expression = FeelParser.PARSER.parse("42");
+    @ParameterizedTest
+    @CsvSource({"42", "3+4", "<3,>8", "[3..42]"})
+    void hasTypeInteger(final String input) {
+        final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(right(ExpressionTypes.INTEGER()), type);
@@ -108,14 +109,6 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void additionOfIntegersIsTypeable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("3+4");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(right(ExpressionTypes.INTEGER()), type);
-    }
-
-    @Test
     void additionOfIntegerAndStringIsNotTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("2+\"foo\"");
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
@@ -126,14 +119,6 @@ class FeelTypecheckTest {
     }
 
     @Test
-    void disjunctionOfComparisonsIsTypeable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("<3,>8");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(right(ExpressionTypes.INTEGER()), type);
-    }
-
-    @Test
     void disjunctionOfComparisonAndStringIsNotTypeable() {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,\"foo\"");
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
@@ -141,14 +126,6 @@ class FeelTypecheckTest {
         assertEquals(Optional.empty(), Eithers.getRight(type));
         assertEquals("Types of head and tail do not match.",
                 Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
-    }
-
-    @Test
-    void rangeOfIntegersIsWellTyped() {
-        final FeelExpression expression = FeelParser.PARSER.parse("[3..42]");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(right(ExpressionTypes.INTEGER()), type);
     }
 
     @Test
