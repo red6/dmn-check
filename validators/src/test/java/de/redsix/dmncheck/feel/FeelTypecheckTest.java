@@ -98,54 +98,20 @@ class FeelTypecheckTest {
         assertEquals(ExpressionTypeParser.parse(expectedType, Collections.emptyList()), type);
     }
 
-    @Test
-    void lessThanExpressionIsNotTypeableForStrings() {
-        final FeelExpression expression = FeelParser.PARSER.parse("<\"Steak\"");
+    @ParameterizedTest
+    @CsvSource({
+            "<\"Steak\", Operator < expects numeric type but got STRING()",
+            "2+\"foo\", Types of left and right operand do not match.",
+            "'<3,\"foo\"', Types of head and tail do not match.",
+            "[1..1.5], Types of lower and upper bound do not match.",
+            "[\"A\"..\"Z\"], Type is unsupported for RangeExpressions."
+    })
+    void isNotTypeable(final String input, final String errorMessage) {
+        final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Operator < expects numeric type but got " + ExpressionTypes.STRING(),
-                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
-    }
-
-    @Test
-    void additionOfIntegerAndStringIsNotTypeable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("2+\"foo\"");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Types of left and right operand do not match.",
-                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
-    }
-
-    @Test
-    void disjunctionOfComparisonAndStringIsNotTypeable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("<3,\"foo\"");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Types of head and tail do not match.",
-                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
-    }
-
-    @Test
-    void rangeFromIntegerToDoubleIsNotTypeable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("[1..1.5]");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Types of lower and upper bound do not match.",
-                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
-    }
-
-    @Test
-    void rangeExpressionContainingStringsIsIlltyped() {
-        final FeelExpression expression = FeelParser.PARSER.parse("[\"A\"..\"Z\"]");
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
-
-        assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Type is unsupported for RangeExpressions.",
-                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals(errorMessage, Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test
