@@ -10,6 +10,8 @@ import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -21,17 +23,18 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     
     private final InputEntryTypeValidator testee = new InputEntryTypeValidator();
 
-    @Test
-    void shouldAcceptWellTypedInputExpression() {
+    @ParameterizedTest
+    @CsvSource({"integer, 42", "long, 42", "double, 42", "integer, "})
+    void shouldAcceptWellTypedInputExpression(final String typeRef, final String textContent) {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);
-        inputExpression.setTypeRef("integer");
+        inputExpression.setTypeRef(typeRef);
         decisionTable.getInputs().add(input);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-        inputEntry.setTextContent("42");
+        inputEntry.setTextContent(textContent);
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
@@ -45,63 +48,6 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
         input.setInputExpression(inputExpression);
-        decisionTable.getInputs().add(input);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-        inputEntry.setTextContent("42");
-        rule.getInputEntries().add(inputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptEmptyExpression() {
-        final Input input = modelInstance.newInstance(Input.class);
-        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-        input.setInputExpression(inputExpression);
-        inputExpression.setTypeRef("integer");
-        decisionTable.getInputs().add(input);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-        inputEntry.setTextContent(null);
-        rule.getInputEntries().add(inputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptIntegersAsLongs() {
-        final Input input = modelInstance.newInstance(Input.class);
-        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-        input.setInputExpression(inputExpression);
-        inputExpression.setTypeRef("long");
-        decisionTable.getInputs().add(input);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-        inputEntry.setTextContent("42");
-        rule.getInputEntries().add(inputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptIntegersAsDoubles() {
-        final Input input = modelInstance.newInstance(Input.class);
-        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-        input.setInputExpression(inputExpression);
-        inputExpression.setTypeRef("double");
         decisionTable.getInputs().add(input);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
