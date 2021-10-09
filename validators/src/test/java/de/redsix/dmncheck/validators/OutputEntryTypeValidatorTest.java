@@ -7,6 +7,8 @@ import org.camunda.bpm.model.dmn.instance.Output;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -18,49 +20,16 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
 
     private final OutputEntryTypeValidator testee = new OutputEntryTypeValidator();
 
-    @Test
-    void shouldAcceptWellTypedOutputExpression() {
+    @ParameterizedTest
+    @CsvSource({"integer, 42", "long, 42", "double, 42", "integer, "})
+    void shouldAcceptWellTypedOutputExpression(final String typeref, final String textContent) {
         final Output output = modelInstance.newInstance(Output.class);
-        output.setTypeRef("integer");
+        output.setTypeRef(typeref);
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
         final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
-        outputEntry.setTextContent("42");
-        rule.getOutputEntries().add(outputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptIntegersAsLong() {
-        final Output output = modelInstance.newInstance(Output.class);
-        output.setTypeRef("long");
-        decisionTable.getOutputs().add(output);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
-        outputEntry.setTextContent("42");
-        rule.getOutputEntries().add(outputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptIntegersAsDouble() {
-        final Output output = modelInstance.newInstance(Output.class);
-        output.setTypeRef("double");
-        decisionTable.getOutputs().add(output);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
-        outputEntry.setTextContent("42");
+        outputEntry.setTextContent(textContent);
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
@@ -77,23 +46,6 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         final Rule rule = modelInstance.newInstance(Rule.class);
         final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
         outputEntry.setTextContent("42");
-        rule.getOutputEntries().add(outputEntry);
-        decisionTable.getRules().add(rule);
-
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
-
-        assertTrue(validationResults.isEmpty());
-    }
-
-    @Test
-    void shouldAcceptEmptyExpression() {
-        final Output output = modelInstance.newInstance(Output.class);
-        output.setTypeRef("integer");
-        decisionTable.getOutputs().add(output);
-
-        final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
-        outputEntry.setTextContent(null);
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
