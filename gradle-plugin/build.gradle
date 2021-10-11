@@ -14,11 +14,11 @@ sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
 repositories {
+    mavenLocal()
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {

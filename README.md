@@ -11,7 +11,7 @@ performs various static analyses to detect inconsistencies and bugs in your deci
 
 You can use dmn-check in three ways.
 
-* As a Maven plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your
+* As a Maven or Gralde plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your
   artifacts.
 * Integrated into the [Camunda Modeler](https://camunda.com/products/modeler/) via the dmn-check plugin.
 * Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
@@ -87,6 +87,13 @@ Additionally `failOnWarning` (default false) parameter can be set to fail mvn ex
 To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
 
         mvn de.redsix:dmn-check-maven-plugin:check-dmn
+
+## Gradle Plugin
+
+### Prerequisites
+
+This plugin requires Java 11 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
+might not work for different DMN implementations.
 
 ## Validations
 
