@@ -10,4 +10,5 @@ public class DmnCheckExtension {
     public List<String> validatorPackages;
     public List<String> validatorClasses;
 
+    public boolean failOnWarning;
 }

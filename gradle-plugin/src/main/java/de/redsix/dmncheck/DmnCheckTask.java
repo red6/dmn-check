@@ -81,6 +81,10 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
         }
     }
 
+    public boolean failOnWarning() {
+        return false;
+    }
+
     public void loadProjectclasspath() {
         final Set<File> files = getProject().getConfigurations().getByName("compileClasspath").getFiles();
 
@@ -99,7 +103,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
                 }
             }
         }).filter(Objects::nonNull).toArray(URL[]::new);
-        ProjectClassLoader.instance.classLoader = new URLClassLoader(classpathURLs);
+        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(classpathURLs);
     }
 
     private DmnCheckExtension getDmnCheckExtension() {
