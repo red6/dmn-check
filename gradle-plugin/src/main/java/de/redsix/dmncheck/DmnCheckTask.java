@@ -107,7 +107,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
                 }
             }
         }).filter(Objects::nonNull).toArray(URL[]::new);
-        ProjectClassLoader.instance.classLoader = new URLClassLoader(classpathURLs);
+        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(classpathURLs);
     }
 
     private DmnCheckExtension getDmnCheckExtension() {
