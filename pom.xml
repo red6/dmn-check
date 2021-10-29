@@ -73,7 +73,6 @@
 
         <checker.framework.version>3.18.1</checker.framework.version>
 
-        <junit-minor.version>7.0</junit-minor.version>
         <junit.version>5.8.1</junit.version>
         <mockito.version>4.0.0</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
@@ -343,7 +342,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.${junit-minor.version}</version>
+            <version>1.7.0</version>
             <scope>test</scope>
         </dependency>
 
