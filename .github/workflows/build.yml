@@ -6,7 +6,10 @@ on:
       - master
       - 'release/*'
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
+
+  pull_request_target:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build-dmn-check:
@@ -29,8 +32,26 @@ jobs:
         with:
           file: ./**/target/site/jacoco/jacoco.xml
           name: codecov
-      - name: Build and analyze
-        env:
+
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    # If the PR is coming from a fork (pull_request_target), ensure it's opened by "dependabot[bot]".
+      # Otherwise, clone it normally.
+    if: |
+        (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+        (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
+    steps:
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request_target' }}
+       uses: actions/checkout@v2
+
+      - name: Checkout PR
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=red6_dmn-check
