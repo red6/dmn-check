@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class RequirementGraph extends DirectedAcyclicGraph<DrgElement, DefaultEdge> {
 
-    private final Definitions definitions;
+    private final transient Definitions definitions;
 
     public RequirementGraph(Class<? extends DefaultEdge> edgeClass, Definitions definitions) {
         super(edgeClass);
