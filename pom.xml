@@ -71,13 +71,13 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>3.21.0</checker.framework.version>
+        <checker.framework.version>3.21.1</checker.framework.version>
 
         <junit.version>5.8.2</junit.version>
-        <mockito.version>4.2.0</mockito.version>
+        <mockito.version>4.3.1</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
 
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <compiler-plugin.version>3.9.0</compiler-plugin.version>
 
         <sonar.organization>red6</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -171,7 +171,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>test</id>
