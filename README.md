@@ -28,6 +28,10 @@ Currently, dmn-check checks among others for the following:
 
 In section [validations](#validations), you find a complete list with detailed descriptions of what they do.
 
+Most properties and invariants that are validated by `dmn-check` are described informally in
+the [DMN specification](https://www.omg.org/spec/DMN). In case you have questions about a validations it might be worth
+to skim the specification.
+
 ## Maven Plugin
 
 ### Prerequisites
