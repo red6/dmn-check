@@ -9,10 +9,10 @@
 This is a tool for the validation of [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files. It
 performs various static analyses to detect inconsistencies and bugs in your decision models.
 
-You can use dmn-check in three ways.
+You can use `dmn-check` in three ways.
 
-* As a Maven or Gralde plugin that can be integrated into your build process and continues integration to prevent bugs from slipping into your
-  artifacts.
+* As a [Maven](https://maven.apache.org/) or [Gradle](https://gradle.org/) plugin that can be integrated into your build
+  process and continues integration to prevent bugs from slipping into your artifacts.
 * Integrated into the [Camunda Modeler](https://camunda.com/products/modeler/) via the dmn-check plugin.
 * Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
   [dmn-check-validators](https://search.maven.org/search?q=a:dmn-check-validators).
@@ -26,7 +26,7 @@ Currently, dmn-check checks among others for the following:
 * Correct use of enumerations
 * Correctly connected requirement graphs
 
-In section [Validations](#validations) you find a complete list with detailed descriptions of what they do.
+In section [validations](#validations) you find a complete list with detailed descriptions of what they do.
 
 ## Maven Plugin
 
@@ -84,7 +84,7 @@ Additionally `failOnWarning` (default false) parameter can be set to fail mvn ex
 
 #### Standalone Usage
 
-To use `dmn-check` without or outside of a Maven project you can invoke it in the following way
+To use `dmn-check` without or outside a Maven project you can invoke it in the following way
 
         mvn de.redsix:dmn-check-maven-plugin:check-dmn
 
@@ -151,7 +151,7 @@ Some rules prevent others from even being considered. Have a look at the followi
 
 This example contains no duplicate rules and no conflicting rules. However, all inputs of rule three are empty (represented with a dash in
 this example). As empty inputs match everything and since we assume hit policy `FIRST` rule four will never match as rule three matches for
-all possible inputs. Therefore, stew is served to guests of 5 to 8 in Spring. Assuming that each rule serves a purpose, shadowed rules are
+all possible inputs. Therefore, stew is served to the guests of 5 to 8 in Spring. Assuming that each rule serves a purpose, shadowed rules are
 always an error as they will never be matched.
 
 **Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` matches at least for all values for which the inputs of
@@ -179,7 +179,7 @@ valid expression. In contrast `[1..9]` is well-typed and describes the numbers f
 
 ### Correct use of Enumerations
 
-Decision-making often involves a fixed set of values (eg. a list of supported currencies) and therefore those values are used in DMN
+Decision-making often involves a fixed set of values (e.g. a list of supported currencies) and therefore those values are used in DMN
 decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an
 enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
@@ -190,7 +190,7 @@ graphs are called [Decision Requirement Graphs (DRG)](https://docs.camunda.org/m
 
 `dmn-check` verifies that a Decision Requirement Graph
 - is [connected](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) 
-- is [acylic and directed](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  
+- is [acyclic and directed](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  
 - ensures compatibility of in- and outputs
 - has only one leaf node (i.e. exactly one node determines the output)
 - has no (self-) loops
@@ -214,7 +214,7 @@ input `Lunar phase` connected to the decision table.
     │Lunar phase│   │How many guests │
     ╰───────────╯   ╰────────────────╯
 
-## Releated work
+## Related work
 
 Although there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the related
 work when starting the work on `dmn-check`.
