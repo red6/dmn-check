@@ -178,6 +178,8 @@ valid expression. In contrast, `[1..9]` is well-typed and describes the numbers 
 | > 5              | integer |
 | > true           | ✘       |
 
+Of course the type declaration is validated as well.
+
 ### Correct use of Enumerations
 
 Decision-making often involves a fixed set of values (e.g. a list of supported currencies) and therefore those values are used in DMN
@@ -214,6 +216,32 @@ input `Lunar phase` connected to the decision table.
     ╭─────┴─────╮   ╭┴───────────────╮
     │Lunar phase│   │How many guests │
     ╰───────────╯   ╰────────────────╯
+
+### Correct use of Aggregations
+
+The DMN standard allows the aggregation of values for hit policy collect. For example, you can compute the sum of all
+matching rows in a decision table. You could use this feature to calculate a credit score.
+
+We ensure that those aggregations are only applied to columns with a numeric type. In addition, we validate that
+aggregations are only used when hit policy collect is used.
+
+### Missing Ids and Names
+
+Usually you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring it
+might happen that an id or a name is lost. Those errors usually stay unnoticed for a long time. Depending on the scenario
+missing ids or names might break your decision model or make error analysis tricky.
+
+`dmn-check` validates that the following DMN elements always have an id and a name:
+- Decision
+- Definition
+- InputData
+- ItemDefinition
+- KnowledgeSource
+
+### Allowed Values from `ItemDefinition`s 
+
+`ItemDefinition`s are DMNs way to express enumeration. In the definition of an `ItemDefinition` you declare which
+values are allowed. Currently, we only validate if the expressions from an `ItemDefintion` is well-typed.
 
 ## Related work
 
