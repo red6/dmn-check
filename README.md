@@ -26,7 +26,7 @@ Currently, dmn-check checks among others for the following:
 * Correct use of enumerations
 * Correctly connected requirement graphs
 
-In section [validations](#validations) you find a complete list with detailed descriptions of what they do.
+In section [validations](#validations), you find a complete list with detailed descriptions of what they do.
 
 ## Maven Plugin
 
@@ -57,11 +57,11 @@ The following example shows the basic configuration of the plugin:
                 </executions>
             </plugin>
 
-Using this configuration the plugin will search all folders of the current project for files with the extension `.dmn` and apply all
+Using this configuration, the plugin will search all folders of the current project for files with the extension `.dmn` and apply all
 available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators
 that should be executed. The following example shows how you can make use of these options by restricting the search path to the
 folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only
-the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators you have to use the fully-qualified name.
+the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators, you have to use the fully-qualified name.
 
                 <configuration>
                     <searchPaths>
@@ -76,7 +76,8 @@ the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify va
                     </validatorClasses>
                 </configuration>
 
-Additionally `failOnWarning` (default false) parameter can be set to fail mvn execution if there are validation errors with Warning severity.
+Additionally, the `failOnWarning` (default is false) parameter can be set to fail a Maven execution if there are
+validation errors with Warning severity.
 
                 <configuration>
                     <failOnWarning>true</failOnWarning>
@@ -84,7 +85,7 @@ Additionally `failOnWarning` (default false) parameter can be set to fail mvn ex
 
 #### Standalone Usage
 
-To use `dmn-check` without or outside a Maven project you can invoke it in the following way
+To use `dmn-check` without or outside a Maven project, you can invoke it in the following way
 
         mvn de.redsix:dmn-check-maven-plugin:check-dmn
 
@@ -129,14 +130,14 @@ Conflicting rules are somewhat similar to duplicate rules. Consider the followin
 |  3  | "Spring"      | [5..8]                | "Steak"     |
 |  4  | "Winter"      | <= 8                  | "Stew"      |
 
-We look again a rule two and four. This time all their inputs are identical, but they differ in the output. This is arguably worse than a
-duplicate rule since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
+We look again a rule two and four. This time, all their inputs are identical, but they differ in the output. This is arguably worse than a
+duplicate rule, since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
 does not detect those inconsistencies.
 
 **Definition**: Rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ
 in at lease one output.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
+`dmn-check` will report duplicate rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
 ### Shadowed Rules
 
@@ -166,7 +167,7 @@ expression languages, not all syntactically possible expressions are valid (have
 FEEL expression language that ensures that a decision table contains only well-typed expressions.
 
 An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a
-valid expression. In contrast `[1..9]` is well-typed and describes the numbers from 1 to 9. 
+valid expression. In contrast, `[1..9]` is well-typed and describes the numbers from 1 to 9. 
 
 | FEEL-Expression  |  Type   |
 | ---------------- | -----   |
@@ -195,7 +196,7 @@ graphs are called [Decision Requirement Graphs (DRG)](https://docs.camunda.org/m
 - has only one leaf node (i.e. exactly one node determines the output)
 - has no (self-) loops
 
-In the following example decision table `Dish` has `Season` and `How many guests` as inputs, but instead of the input `Season` there is an
+In the following example, decision table `Dish` has `Season` and `How many guests` as inputs, but instead of the input `Season` there is an
 input `Lunar phase` connected to the decision table.
 
                            ┌──────────┐
@@ -216,7 +217,7 @@ input `Lunar phase` connected to the decision table.
 
 ## Related work
 
-Although there are not many tools for analysis of DMN files there exists some related work. Yet we were not aware of most of the related
+Although there are not many tools for analysis of DMN files, there exists some related work. Yet, we were not aware of most of the related
 work when starting the work on `dmn-check`.
 
 ### A Tool for the Analysis of DMN Decision Tables
