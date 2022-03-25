@@ -40,4 +40,14 @@ class AggregationValidatorTest extends WithDecisionTable {
 
         assertTrue(validationResults.isEmpty());
     }
+
+    @Test
+    void shouldSkipDecisionTablesWithoutAggregators() {
+        decisionTable.setHitPolicy(HitPolicy.UNIQUE);
+        assertNull(decisionTable.getAggregation());
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertTrue(validationResults.isEmpty());
+    }
 }
