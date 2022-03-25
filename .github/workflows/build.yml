@@ -32,6 +32,8 @@ jobs:
         with:
           directory: .
           name: codecov
+          fail_ci_if_error: true
+
 
 
   sonarcloud:
