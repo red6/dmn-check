@@ -30,7 +30,7 @@ jobs:
         run: mvn clean install jacoco:report -P checkerframework
       - uses: codecov/codecov-action@v2.1.0
         with:
-          file: ./**/target/site/jacoco/jacoco.xml
+          directory: .
           name: codecov
 
 
