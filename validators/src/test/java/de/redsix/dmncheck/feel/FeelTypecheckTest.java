@@ -90,7 +90,7 @@ class FeelTypecheckTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"<5, INTEGER", "<5.2, DOUBLE"})
+    @CsvSource({"<5, INTEGER", "<5.2, DOUBLE", "-1, INTEGER"})
     void lessThanExpressionHasNumericType(String input, String expectedType) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);

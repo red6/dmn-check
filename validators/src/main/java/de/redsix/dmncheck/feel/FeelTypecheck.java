@@ -68,7 +68,7 @@ public final class FeelTypecheck {
     }
 
     private static Either<ValidationResult.Builder.ElementStep, ExpressionType> typecheckUnaryExpression(final Context context, final Operator operator, final FeelExpression operand) {
-        final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE, Operator.NOT);
+        final Stream<Operator> allowedOperators = Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE, Operator.NOT, Operator.SUB);
         return typecheck(context, operand).bind(type ->
                     check(allowedOperators.anyMatch(operator::equals), "Operator is not supported in UnaryExpression.")
                     .orElse(checkOperatorCompatibility(type, operator))
