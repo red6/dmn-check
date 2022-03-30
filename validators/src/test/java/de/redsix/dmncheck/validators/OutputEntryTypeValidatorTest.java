@@ -21,7 +21,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
     private final OutputEntryTypeValidator testee = new OutputEntryTypeValidator();
 
     @ParameterizedTest
-    @CsvSource({"integer, 42", "long, 42", "double, 42", "integer, "})
+    @CsvSource({"integer, 42", "long, 42", "double, 42", "integer, -1", "integer, "})
     void shouldAcceptWellTypedOutputExpression(final String typeref, final String textContent) {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef(typeref);
