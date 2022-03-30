@@ -1,3 +1,9 @@
+## 1.2.1 (2022-03-30)
+
+Bugfixes:
+
+ - Allow negative numbers in the typechecker (#87), thank you @kishorehs123.
+
 ## 1.2.0 (2021-09-03)
 
 Features:
