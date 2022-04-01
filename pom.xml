@@ -74,7 +74,7 @@
         <checker.framework.version>3.21.2</checker.framework.version>
 
         <junit.version>5.8.2</junit.version>
-        <mockito.version>4.3.1</mockito.version>
+        <mockito.version>4.4.0</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
 
         <compiler-plugin.version>3.10.0</compiler-plugin.version>
