@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Expression;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.Input;
 
@@ -25,8 +26,9 @@ public class InputValuesTypeValidator extends TypeValidator<Input> {
 
         return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
                 .match(validationResult -> Collections.singletonList(validationResult.element(input).build()),
-                        inputType -> typecheck(input, Stream.of(input.getInputValues()), Stream.of(inputType))
-                                .collect(Collectors.toList()));
+                        inputType -> typecheck(input,
+                                Stream.of(input.getInputValues()).map(toplevelExpressionLanguage::toExpression),
+                                Stream.of(inputType)).collect(Collectors.toList()));
     }
 
     @Override

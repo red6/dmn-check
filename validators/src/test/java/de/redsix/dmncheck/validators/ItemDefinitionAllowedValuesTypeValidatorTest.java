@@ -109,4 +109,28 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         );
     }
 
+    @Test
+    void warnsIfAnOtherExpressionLanguageThanFeelIsUsed() {
+        final TypeRef typeRef = modelInstance.newInstance(TypeRef.class);
+        typeRef.setTextContent("string");
+
+        final AllowedValues allowedValues = modelInstance.newInstance(AllowedValues.class);
+        allowedValues.setTextContent("'foo'.repeat(6)");
+        allowedValues.setExpressionLanguage("javascript");
+
+        itemDefinition.setTypeRef(typeRef);
+        itemDefinition.setAllowedValues(allowedValues);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Expression language 'javascript' not supported",
+                        validationResult.getMessage()),
+                () -> assertEquals(itemDefinition, validationResult.getElement()),
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
+    }
+
 }

@@ -3,6 +3,7 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Expression;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
@@ -44,8 +45,9 @@ public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<Item
                    return ExpressionTypeParser
                        .parse(expressionType, validationContext.getItemDefinitions())
                        .match(validationResult -> Stream.of(validationResult.element(itemDefinitionOrComponent).build()),
-                              inputType -> typecheck(itemDefinitionOrComponent, Stream.of(itemDefinitionOrComponent.getAllowedValues()),
-                                                     Stream.of(inputType)));
+                              inputType -> typecheck(itemDefinitionOrComponent,
+                                      Stream.of(itemDefinitionOrComponent.getAllowedValues()).map(toplevelExpressionLanguage::toExpression),
+                                      Stream.of(inputType)));
                }})
             .collect(Collectors.toList());
     }

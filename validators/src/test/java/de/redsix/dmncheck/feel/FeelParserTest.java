@@ -3,10 +3,16 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
+import de.redsix.dmncheck.util.Expression;
+import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
+import org.camunda.bpm.model.dmn.impl.instance.LiteralExpressionImpl;
+import org.camunda.bpm.model.dmn.instance.LiteralExpression;
+import org.camunda.bpm.model.dmn.instance.UnaryTests;
 import org.jparsec.error.ParserException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -26,6 +32,7 @@ import static de.redsix.dmncheck.feel.FeelExpressions.VariableLiteral;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 class FeelParserTest {
 
@@ -357,5 +364,32 @@ class FeelParserTest {
 
         assertTrue(Eithers.getLeft(result).isPresent());
         assertEquals(expectedErrorMessage, Eithers.getLeft(result).get().getMessage());
+    }
+
+    @Test
+    void shouldWarnIfExpressionLanguageIsNotFeel() {
+        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
+        when(literalExpression.getExpressionLanguage()).thenReturn("javascript");
+        final Expression expression = new Expression(literalExpression, null);
+
+        final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse(expression);
+        final String expectedErrorMessage = "Expression language 'javascript' not supported";
+
+        assertTrue(Eithers.getLeft(result).isPresent());
+        assertEquals(expectedErrorMessage, Eithers.getLeft(result).get().getMessage());
+    }
+
+    @Test
+    void shouldParseEmptyFromExpression() {
+        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
+        when(literalExpression.getExpressionLanguage()).thenReturn(DmnModelConstants.FEEL_NS);
+        when(literalExpression.getTextContent()).thenReturn("");
+
+        final Expression expression = new Expression(literalExpression, null);
+
+        final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse(expression);
+
+        assertTrue(Eithers.getRight(result).isPresent());
+        assertEquals(FeelExpressions.Empty(), Eithers.getRight(result).get());
     }
 }

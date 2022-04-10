@@ -229,4 +229,30 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
         );
     }
+
+    @Test
+    void warnsIfAnOtherExpressionLanguageThanFeelIsUsed() {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        input.setInputExpression(inputExpression);
+        decisionTable.getInputs().add(input);
+
+        final Rule rule = modelInstance.newInstance(Rule.class);
+        final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
+        inputEntry.setTextContent("'foo'.repeat(6)");
+        inputEntry.setExpressionLanguage("javascript");
+        rule.getInputEntries().add(inputEntry);
+        decisionTable.getRules().add(rule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertEquals("Expression language 'javascript' not supported",
+                        validationResult.getMessage()),
+                () -> assertEquals(rule, validationResult.getElement()),
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
+    }
 }
