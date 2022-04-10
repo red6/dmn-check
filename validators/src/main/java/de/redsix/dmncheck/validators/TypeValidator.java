@@ -6,12 +6,12 @@ import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.ProjectClassLoader;
-import de.redsix.dmncheck.util.Util;
+import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +25,18 @@ import static de.redsix.dmncheck.util.Eithers.right;
 
 public abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
 
+    TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+
     abstract String errorMessage();
 
-    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<? extends DmnElement> expressions, final Stream<String> variables,
-            final Stream<ExpressionType> types) {
+    @Override
+    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+        return super.apply(dmnModelInstance);
+    }
+
+    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<Expression> expressions, final Stream<String> variables,
+                                       final Stream<ExpressionType> types) {
         final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
                 .zip(expressions, variables, types, (expression, variable, type) -> {
                     final FeelTypecheck.Context context = new FeelTypecheck.Context();
@@ -41,24 +49,24 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         return buildValidationResults(intermediateResults, dmnElement);
     }
 
-    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<? extends DmnElement> expressions,
+    Stream<ValidationResult> typecheck(final DmnElement dmnElement, final Stream<Expression> expressionStream,
             final Stream<ExpressionType> types) {
         final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults = Util
-                .zip(expressions, types, (expression, type) -> {
+                .zip(expressionStream, types, (unaryTest, type) -> {
                     final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
 
-                    return typecheckExpression(expression, emptyContext, type);
+                    return typecheckExpression(unaryTest, emptyContext, type);
                 });
 
         return buildValidationResults(intermediateResults, dmnElement);
     }
 
-    private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(DmnElement dmnElement, FeelTypecheck.Context context,
-            ExpressionType expectedType) {
-        return FeelParser.parse(dmnElement.getTextContent()).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
+    private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(Expression expression, FeelTypecheck.Context context,
+                                                                               ExpressionType expectedType) {
+        return FeelParser.parse(expression).bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
                 .map(type -> {
                     if (type.isSubtypeOf(ExpressionTypes.STRING()) && ExpressionTypes.getClassName(expectedType).isPresent()) {
-                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), dmnElement.getTextContent());
+                        return checkEnumValue(ExpressionTypes.getClassName(expectedType).get(), expression.textContent);
                     } else if (type.isSubtypeOf(expectedType) || ExpressionTypes.TOP().equals(type)) {
                         return Optional.<ValidationResult.Builder.ElementStep>empty();
                     } else {

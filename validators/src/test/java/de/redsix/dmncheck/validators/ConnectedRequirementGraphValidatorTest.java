@@ -5,16 +5,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.AuthorityRequirement;
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Definitions;
-import org.camunda.bpm.model.dmn.instance.InformationRequirement;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputData;
-import org.camunda.bpm.model.dmn.instance.InputExpression;
-import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
-import org.camunda.bpm.model.dmn.instance.Output;
+import org.camunda.bpm.model.dmn.instance.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

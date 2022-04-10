@@ -5,7 +5,10 @@ import de.redsix.dmncheck.feel.FeelExpression;
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Expression;
+import de.redsix.dmncheck.util.TopLevelExpressionLanguage;
 import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.Decision;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
@@ -23,6 +26,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ConnectedRequirementGraphValidator extends RequirementGraphValidator {
+
+    private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+
+    @Override
+    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+        return super.apply(dmnModelInstance);
+    }
 
     @Override
     public List<ValidationResult> validate(RequirementGraph drg) {
@@ -59,7 +70,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
 
             final Either<ValidationResult.Builder.ElementStep, List<FeelExpression>> eitherInputExpressions = targetDecisionTable.getInputs().stream()
                     .map(Input::getInputExpression)
-                    .map(InputExpression::getTextContent)
+                    .map(toplevelExpressionLanguage::toExpression)
                     .map(FeelParser::parse)
                     .collect(Either.reduce());
 

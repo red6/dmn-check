@@ -4,6 +4,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.HitPolicy;
+import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
@@ -113,6 +114,40 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
                 () -> assertTrue(validationResult.getMessage().contains("Could not parse")),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
+    }
+
+    @Test
+    void warnsIfAnOtherExpressionLanguageThanFeelIsUsed() {
+        final String text = "'foo'.repeat(6)";
+
+        decisionTable.setHitPolicy(HitPolicy.UNIQUE);
+
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        catchAllInputEntry.setTextContent(text);
+        catchAllInputEntry.setExpressionLanguage("javascript");
+
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        shadowedInputEntry.setTextContent(text);
+        shadowedInputEntry.setExpressionLanguage("javascript");
+
+        final Rule catchAllRule = modelInstance.newInstance(Rule.class);
+        final Rule shadowedRule = modelInstance.newInstance(Rule.class);
+
+        catchAllRule.getInputEntries().add(catchAllInputEntry);
+        shadowedRule.getInputEntries().add(shadowedInputEntry);
+
+        decisionTable.getRules().add(catchAllRule);
+        decisionTable.getRules().add(shadowedRule);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.get(0);
+        assertAll(
+                () -> assertTrue(validationResult.getMessage().contains("Expression language 'javascript' not supported")),
+                () -> assertEquals(shadowedRule, validationResult.getElement()),
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
         );
     }
 

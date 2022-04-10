@@ -1,8 +1,13 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
+import de.redsix.dmncheck.util.Expression;
+import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
+import org.camunda.bpm.model.dmn.instance.LiteralExpression;
+import org.camunda.bpm.model.dmn.instance.UnaryTests;
 import org.jparsec.OperatorTable;
 import org.jparsec.Parser;
 import org.jparsec.Parsers;
@@ -13,6 +18,7 @@ import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public final class FeelParser {
 
@@ -140,6 +146,11 @@ public final class FeelParser {
         return Parsers.or(parseEmpty(), feelExpressionParser);
     }
 
+    private static boolean expressionLanguageIsFeel(final String expressionLanguage) {
+        return Arrays.asList(DmnModelConstants.FEEL_NS, DmnModelConstants.FEEL12_NS, DmnModelConstants.FEEL13_NS).contains(expressionLanguage)
+                || expressionLanguage.equalsIgnoreCase("feel");
+    }
+
     static final Parser<FeelExpression> PARSER = feelExpressionParser().from(TOKENIZER, IGNORED);
 
     public static Either<ValidationResult.Builder.ElementStep, FeelExpression> parse(final CharSequence charSequence) {
@@ -147,6 +158,15 @@ public final class FeelParser {
             return Eithers.right(PARSER.parse(charSequence));
         } catch (final ParserException e) {
             return Eithers.left(ValidationResult.init.message("Could not parse '" + charSequence + "': " + e.getMessage()));
+        }
+    }
+
+    public static Either<ValidationResult.Builder.ElementStep, FeelExpression> parse(final Expression expression) {
+        if (expressionLanguageIsFeel(expression.expressionLanguage)) {
+            return parse(expression.textContent);
+        } else {
+            return Eithers.left(ValidationResult.init.message("Expression language '" +
+                    expression.expressionLanguage + "' not supported").severity(Severity.WARNING));
         }
     }
 }
