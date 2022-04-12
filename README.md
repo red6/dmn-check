@@ -205,21 +205,13 @@ graphs are called [Decision Requirement Graphs (DRG)](https://docs.camunda.org/m
 In the following example, decision table `Dish` has `Season` and `How many guests` as inputs, but instead of the input `Season` there is an
 input `Lunar phase` connected to the decision table.
 
-                           ┌──────────┐
-                  ┌───────►│Beverages │
-                  │        └──────────┘
-                  │               ▲
-                  │               │
-                  │          ╭────┴───────╮
-                  │          │Guests with │
-              ┌───┴───┐      │children    │
-          ┌──►│ Dish  │      ╰────────────╯
-          │   └───────┘
-          │          ▲
-          │          │
-    ╭─────┴─────╮   ╭┴───────────────╮
-    │Lunar phase│   │How many guests │
-    ╰───────────╯   ╰────────────────╯
+```mermaid
+  graph TD;
+      x(Lunar phase)-->Dish;
+      y(How many guests)-->Dish;
+      Dish-->Beverages;
+      z(Guests with children)-->Beverages;
+```
 
 ### Correct use of Aggregations
 
