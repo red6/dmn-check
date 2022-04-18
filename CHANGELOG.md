@@ -1,3 +1,9 @@
+## 1.2.3 (2022-04-18)
+
+Bugfixes:
+
+ - Only attempt to verify FEEL expressions and warn that other expression languages are currently unsupported (#83, #88, #98), thank you @nairagit.
+
 ## 1.2.2 (2022-03-30)
 
 Bugfixes:
