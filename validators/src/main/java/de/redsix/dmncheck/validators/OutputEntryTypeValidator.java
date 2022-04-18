@@ -4,6 +4,7 @@ import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Expression;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.OutputClause;
@@ -32,8 +33,9 @@ public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
         return decisionTable.getRules().stream().flatMap(rule ->
                 eitherOutputTypes.match(
                         validationResult -> Stream.of(validationResult.element(rule).build()),
-                        outputTypes -> typecheck(rule, rule.getOutputEntries().stream(), outputTypes.stream())))
-                .collect(Collectors.toList());
+                        outputTypes -> typecheck(rule,
+                                rule.getOutputEntries().stream().map(toplevelExpressionLanguage::toExpression),
+                                outputTypes.stream()))).collect(Collectors.toList());
     }
 
     @Override

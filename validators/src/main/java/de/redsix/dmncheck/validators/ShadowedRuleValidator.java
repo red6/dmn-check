@@ -2,11 +2,10 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.Eithers;
-import de.redsix.dmncheck.util.Util;
+import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
@@ -23,6 +22,14 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
+
+    private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+
+    @Override
+    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+        return super.apply(dmnModelInstance);
+    }
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {
@@ -63,8 +70,8 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
     private Either<ValidationResult.Builder.ElementStep, Optional<Boolean>> checkInputsForSubsumption(final InputEntry input,
             final InputEntry potentiallySubsumingInput) {
-        return FeelParser.parse(input.getTextContent()).bind(inputExpression ->
-                FeelParser.parse(potentiallySubsumingInput.getTextContent()).bind(potentiallySubsumingInputExpression ->
+        return FeelParser.parse(toplevelExpressionLanguage.toExpression(input)).bind(inputExpression ->
+                FeelParser.parse(toplevelExpressionLanguage.toExpression(potentiallySubsumingInput)).bind(potentiallySubsumingInputExpression ->
                         Eithers.right(potentiallySubsumingInputExpression.subsumes(inputExpression))));
     }
 
