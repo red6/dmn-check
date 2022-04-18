@@ -166,7 +166,7 @@ rule `s` match.
 
 ### Types of Expressions
 
-DMN offers a rich expression language called FEEL that can be used to describe the conditions for the input entries. However, as with most
+DMN offers a rich expression language called [Friendly Enough Expression Language](https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/) (FEEL) that can be used to describe the conditions for the input entries. However, as with most
 expression languages, not all syntactically possible expressions are valid (have semantic). `dmn-check` integrates a type checker for the
 FEEL expression language that ensures that a decision table contains only well-typed expressions.
 
