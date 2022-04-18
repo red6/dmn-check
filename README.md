@@ -100,14 +100,14 @@ To use `dmn-check` without or outside a Maven project, you can invoke it in the 
 This plugin requires Java 11 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
 might not work for different DMN implementations.
 
+## Integrated in dmnmgr
+
+dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+
 ## Validations
 
 The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an
 example on [camunda.org](https://camunda.org/).
-
-## Integrated in dmnmgr
-
-dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
 
 ### Duplicate Rules
 
