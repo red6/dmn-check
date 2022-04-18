@@ -105,6 +105,10 @@ might not work for different DMN implementations.
 The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an
 example on [camunda.org](https://camunda.org/).
 
+## Integrated in dmnmgr
+
+dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+
 ### Duplicate Rules
 
 Consider the following DMN decision table with hit policy `UNIQUE`:
