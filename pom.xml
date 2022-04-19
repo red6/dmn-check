@@ -281,6 +281,7 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <stagingRepositoryId>dmn-check-staging-repo</stagingRepositoryId>
                         </configuration>
                     </plugin>
                     <plugin>
