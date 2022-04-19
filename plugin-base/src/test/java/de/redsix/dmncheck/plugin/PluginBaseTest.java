@@ -130,8 +130,7 @@ class PluginBaseTest {
         when(testee.getValidatorClasses()).thenReturn(new String[] {InputEntryTypeValidator.class.getCanonicalName()});
         when(testee.getValidatorPackages()).thenReturn(new String[] {InputEntryTypeValidator.class.getPackage().getName()});
 
-        final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
-        Assertions.assertTrue(containsErrors);
+        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
     }
 
     @Test
@@ -139,6 +138,19 @@ class PluginBaseTest {
         Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("diagram-with-a-loop.dmn"))));
     }
 
+    @Test
+    void shouldFailOnWarningIfFailOnWarningIsTrue() {
+        when(testee.failOnWarning()).thenReturn(true);
+
+        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("no-decision.dmn"))));
+    }
+
+    @Test
+    void shouldSucceedOnWarningIfFailOnWarningIsFalse() {
+        when(testee.failOnWarning()).thenReturn(false);
+
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("no-decision.dmn"))));
+    }
 
     private File getFile(final String filename) {
         ClassLoader classLoader = getClass().getClassLoader();
