@@ -16,6 +16,13 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
     private final RequirementGraphLeafValidator testee = new RequirementGraphLeafValidator();
 
     @Test
+    void shouldAcceptEmptyGraph() {
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
+    }
+
+    @Test
     void shouldAcceptGraphWithSingleDecision() {
         final Decision decision = modelInstance.newInstance(Decision.class);
         definitions.addChildElement(decision);
