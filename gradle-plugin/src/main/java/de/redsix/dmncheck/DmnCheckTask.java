@@ -49,22 +49,14 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     @Optional
     @Override
     public List<String> getExcludeList() {
-        if (getDmnCheckExtension().excludeList != null) {
-            return getDmnCheckExtension().excludeList;
-        } else {
-            return Collections.emptyList();
-        }
+        return Objects.requireNonNullElse(getDmnCheckExtension().excludeList, Collections.emptyList());
     }
 
     @Input
     @Optional
     @Override
     public List<String> getSearchPathList() {
-        if (getDmnCheckExtension().searchPathList != null) {
-            return getDmnCheckExtension().searchPathList;
-        } else {
-            return Collections.singletonList("");
-        }
+        return Objects.requireNonNullElseGet(getDmnCheckExtension().searchPathList, () -> Collections.singletonList(""));
     }
 
     @Input
