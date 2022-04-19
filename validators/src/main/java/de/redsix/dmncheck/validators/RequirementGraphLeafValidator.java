@@ -25,7 +25,7 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
             }
         }
 
-        if (numberLeafNodes == 1) {
+        if (numberLeafNodes < 2) {
             return Collections.emptyList();
         } else {
             return Collections.singletonList(ValidationResult.init
