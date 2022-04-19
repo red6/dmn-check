@@ -88,6 +88,11 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         return validatorClasses;
     }
 
+    @Override
+    public boolean failOnWarning() {
+        return this.failOnWarning;
+    }
+
     void loadProjectclasspath() throws MojoExecutionException {
         final List<URL> listUrl = new ArrayList<>();
 
@@ -104,10 +109,5 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         }
 
         ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
-    }
-
-    @Override
-    public boolean failOnWarning() {
-        return this.failOnWarning;
     }
 }

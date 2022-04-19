@@ -31,6 +31,8 @@ public interface PluginBase {
 
     String[] getValidatorClasses();
 
+    boolean failOnWarning();
+
     default boolean validate() {
         final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
@@ -113,7 +115,4 @@ public interface PluginBase {
         return ValidatorLoader.getValidators(getValidatorPackages(), getValidatorClasses());
     }
 
-    default boolean failOnWarning() {
-        return false;
-    }
 }
