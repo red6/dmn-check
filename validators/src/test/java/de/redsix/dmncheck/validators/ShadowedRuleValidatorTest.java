@@ -4,7 +4,6 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
