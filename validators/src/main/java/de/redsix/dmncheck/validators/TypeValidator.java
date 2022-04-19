@@ -11,7 +11,6 @@ import de.redsix.dmncheck.validators.core.SimpleValidator;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Arrays;
 import java.util.List;

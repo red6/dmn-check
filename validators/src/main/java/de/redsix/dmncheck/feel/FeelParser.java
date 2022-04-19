@@ -6,8 +6,6 @@ import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
 import de.redsix.dmncheck.util.Expression;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
-import org.camunda.bpm.model.dmn.instance.LiteralExpression;
-import org.camunda.bpm.model.dmn.instance.UnaryTests;
 import org.jparsec.OperatorTable;
 import org.jparsec.Parser;
 import org.jparsec.Parsers;
