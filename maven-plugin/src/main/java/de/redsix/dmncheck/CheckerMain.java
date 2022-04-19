@@ -25,27 +25,27 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
 
     @Parameter
     @SuppressWarnings("nullness")
-    private String[] excludes;
+    String[] excludes;
 
     @Parameter
     @SuppressWarnings("nullness")
-    private String[] searchPaths;
+    String[] searchPaths;
 
     @Parameter
     @SuppressWarnings("nullness")
-    private String[] validatorPackages;
+    String[] validatorPackages;
 
     @Parameter
     @SuppressWarnings("nullness")
-    private String[] validatorClasses;
+    String[] validatorClasses;
 
     @Parameter( defaultValue = "${project}", readonly = true )
     @SuppressWarnings("nullness")
-    private MavenProject project;
+    MavenProject project;
 
     @Parameter( defaultValue = "false", readonly = true )
     @SuppressWarnings("nullness")
-    private Boolean failOnWarning;
+    Boolean failOnWarning;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -88,7 +88,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         return validatorClasses;
     }
 
-    public void loadProjectclasspath() throws MojoExecutionException {
+    void loadProjectclasspath() throws MojoExecutionException {
         final List<URL> listUrl = new ArrayList<>();
 
         Set<Artifact> deps = project.getArtifacts();
@@ -106,28 +106,8 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
     }
 
-    void setExcludes(final String[] excludes) {
-        this.excludes = excludes;
-    }
-
-    void setSearchPaths(final String[] searchPaths) {
-        this.searchPaths = searchPaths;
-    }
-
-    void setValidatorPackages(String[] validatorPackages) {
-        this.validatorPackages = validatorPackages;
-    }
-
-    void setValidatorClasses(String[] validatorClasses) {
-        this.validatorClasses = validatorClasses;
-    }
-
-    void setProject(MavenProject project) {
-        this.project = project;
-    }
-
     @Override
     public boolean failOnWarning() {
-        return failOnWarning;
+        return this.failOnWarning;
     }
 }
