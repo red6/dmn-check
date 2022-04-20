@@ -177,6 +177,11 @@ Decision-making often involves a fixed set of values (eg. a list of supported cu
 decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an
 enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
+By default `dmn-check` uses the project dependencies to resolve the enums. As this is not possible in the Maven 
+standalone mode, you can specify the classpath that is used to resolve the enums
+
+    mvn de.redsix:dmn-check-maven-plugin:check-dmn -Dclasspath=foo.jar,bar.jar
+
 ### Correctly Connected Requirement Graphs
 
 The DMN standard also provides a way to connect decisions tables with each other and to model inputs and knowledge sources. The resulting

@@ -11,14 +11,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 public class CheckerMain extends AbstractMojo implements PluginBase {
@@ -47,9 +44,13 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     @SuppressWarnings("nullness")
     Boolean failOnWarning;
 
+    @Parameter(defaultValue = "${classpaths}")
+    @SuppressWarnings("nullness")
+    String[] classpath;
+
     @Override
     public void execute() throws MojoExecutionException {
-        loadProjectclasspath();
+        loadClasspath();
         if(validate()) {
             throw new MojoExecutionException("Some files are not valid, see previous logs.");
         }
@@ -91,6 +92,29 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     @Override
     public boolean failOnWarning() {
         return this.failOnWarning;
+    }
+
+    void loadClasspath() throws MojoExecutionException {
+        if (classpath != null && classpath.length != 0) {
+            loadExternalclasspath();
+        } else {
+            loadProjectclasspath();
+        }
+    }
+
+    void loadExternalclasspath() throws MojoExecutionException {
+        List<URL> list = new ArrayList<>();
+
+        for (String cp : classpath) {
+            try {
+                URL url = new File(cp).toURI().toURL();
+                list.add(url);
+            } catch (MalformedURLException e) {
+                throw new MojoExecutionException("Failed to construct project class loader.");
+            }
+        }
+
+        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(list.toArray(new URL[0]));
     }
 
     void loadProjectclasspath() throws MojoExecutionException {
