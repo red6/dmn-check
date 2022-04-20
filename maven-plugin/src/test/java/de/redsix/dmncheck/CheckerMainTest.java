@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,8 +87,8 @@ class CheckerMainTest {
 
         Assertions.assertDoesNotThrow(testee::loadProjectclasspath);
 
-        Assertions.assertEquals(((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0],
-                artifactFile.toUri().toURL());
+        Assertions.assertEquals(artifactFile.toUri().toURL(),
+                ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
     }
 
     @Test
@@ -105,5 +106,16 @@ class CheckerMainTest {
         testee.project = mavenProject;
 
         Assertions.assertThrows(MojoExecutionException.class, testee::loadProjectclasspath);
+    }
+
+    @Test
+    void shouldAddExternalArtifactsFromProjectToProjectClassloader() throws IOException {
+        String filename = "/foo.jar";
+        testee.classpath = new String[]{filename};
+
+        Assertions.assertDoesNotThrow(testee::loadExternalclasspath);
+
+        Assertions.assertEquals(new URL("file:/foo.jar"),
+                ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
     }
 }
