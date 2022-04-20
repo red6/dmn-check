@@ -4,8 +4,25 @@ on:
     tags:
       - '*'
 jobs:
+  create_staging_repository:
+    runs-on: ubuntu-latest
+    name: Create staging repository
+    outputs:
+      repository_id: ${{ steps.create.outputs.repository_id }}
+    steps:
+      - id: create
+        uses: nexus-actions/create-nexus-staging-repo@v1.1
+        with:
+          # The username you use to connect to Sonatype's Jira
+          username: ${{ secrets.OSSRH_USERNAME }}
+          password: ${{ secrets.OSSRH_TOKEN }}
+          # Your staging profile ID. You can get it at https://oss.sonatype.org/#stagingProfiles;$staginProfileId
+          staging_profile_id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+          description: Created by Github Action
+
   publish-dmn-check:
     runs-on: ubuntu-latest
+    needs: create_staging_repository
     steps:
       - uses: actions/checkout@v3
       - name: Set up Maven Central Repository
@@ -30,6 +47,7 @@ jobs:
             --batch-mode \
             --update-snapshots \
             --activate-profiles release \
+            -DstagingRepositoryId=${{ needs.create_staging_repository.outputs.repository_id }} \
             -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -55,30 +73,23 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_TOKEN }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY_NEW }}
-      - name: Drop staging repo of Maven build
-        if: ${{ failure() }}
+
+  finalize:
+    runs-on: ubuntu-latest
+    needs: [create_staging_repository, publish-dmn-check, publish-gradle-plugin]
+    if: ${{ always() && needs.create_staging_repository.result == 'success' }}
+    steps:
+      - name: Discard
+        if: ${{ needs.publish-dmn-check.result != 'success' || needs.publish-gradle-plugin.result != 'success' }}
         uses: nexus-actions/drop-nexus-staging-repo@v1
         with:
           username: ${{ secrets.OSSRH_USERNAME }}
           password: ${{ secrets.OSSRH_TOKEN }}
-          staging_repository_id: dmn-check-staging-repo
-
-  nexus-staging-release:
-            runs-on: ubuntu-latest
-            needs: publish-gradle-plugin
-            steps:
-              - uses: actions/checkout@v3
-              - name: Set up Java
-                uses: actions/setup-java@v2
-                with:
-                  java-version: '11'
-                  distribution: 'adopt'
-                  cache: maven
-                  server-id: ossrh
-                  server-username: MAVEN_USERNAME
-                  server-password: MAVEN_PASSWORD
-              - name: Release package from Nexus staging
-                run: mvn --activate-profiles release nexus-staging:release
-                env:
-                  MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-                  MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
+      - name: Release
+        if: ${{ needs.publish-dmn-check.result == 'success' && needs.publish-gradle-plugin.result == 'success' }}
+        uses: nexus-actions/release-nexus-staging-repo@v1.2
+        with:
+          username: ${{ secrets.OSSRH_USERNAME }}
+          password: ${{ secrets.OSSRH_TOKEN }}
+          staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
