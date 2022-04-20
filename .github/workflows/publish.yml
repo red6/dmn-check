@@ -55,6 +55,13 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_TOKEN }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY_NEW }}
+      - name: Drop staging repo of Maven build
+        if: ${{ failure() }}
+        uses: nexus-actions/drop-nexus-staging-repo@v1
+        with:
+          username: ${{ secrets.OSSRH_USERNAME }}
+          password: ${{ secrets.OSSRH_TOKEN }}
+          staging_repository_id: dmn-check-staging-repo
 
   nexus-staging-release:
             runs-on: ubuntu-latest
