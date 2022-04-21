@@ -1,3 +1,9 @@
+## 1.2.4 (2022-04-21)
+
+Features:
+
+ - Allow to specify the classpath for enum resolution explicitly.
+
 ## 1.2.3 (2022-04-18)
 
 Bugfixes:
