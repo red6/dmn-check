@@ -4,6 +4,7 @@ import de.redsix.dmncheck.plugin.PluginBase;
 import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.Validator;
+import org.checkerframework.checker.initialization.qual.Initialized;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.*;
@@ -24,6 +25,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     public static final String MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS = "Some files are not valid, see previous logs.";
 
     private boolean ignoreFailures = false;
+    private boolean failOnWarning = false;
 
     @TaskAction
     public void validateFiles() {
@@ -121,5 +123,15 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     @Override
     public List<Validator> getValidators()  {
         return PluginBase.super.getValidators();
+    }
+
+    @Input
+    public boolean getFailOnWarning() {
+        return failOnWarning;
+    }
+
+    @Override
+    public boolean failOnWarning() {
+        return this.failOnWarning;
     }
 }
