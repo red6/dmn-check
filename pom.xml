@@ -71,7 +71,7 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>3.21.3</checker.framework.version>
+        <checker.framework.version>3.21.4</checker.framework.version>
 
         <junit.version>5.8.2</junit.version>
         <mockito.version>4.4.0</mockito.version>
