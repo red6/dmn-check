@@ -15,6 +15,7 @@
         <module>server</module>
         <module>maven-plugin</module>
         <module>plugin-base</module>
+        <module>cli</module>
     </modules>
 
     <name>dmn-check</name>
