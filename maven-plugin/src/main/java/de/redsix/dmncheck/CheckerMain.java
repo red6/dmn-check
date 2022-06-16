@@ -2,7 +2,6 @@ package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.plugin.PluginBase;
 import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
-import de.redsix.dmncheck.util.ProjectClassLoader;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -12,9 +11,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,25 +95,16 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         if (classpath != null && classpath.length != 0) {
             loadProjectClasspath(Arrays.asList(classpath));
         } else {
-            loadProjectclasspath();
+            loadProjectClasspath();
         }
     }
 
-    void loadProjectclasspath() throws MojoExecutionException {
-        final List<URL> listUrl = new ArrayList<>();
+    void loadProjectClasspath() throws MojoExecutionException {
+        List<String> classpath = project.getArtifacts().stream()
+                .map(Artifact::getFile)
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toList());
 
-        Set<Artifact> deps = project.getArtifacts();
-        for (Artifact artifact : deps) {
-            final URL url;
-            try {
-                url = artifact.getFile().toURI().toURL();
-                listUrl.add(url);
-            }
-            catch (MalformedURLException e) {
-                throw new MojoExecutionException("Failed to construct project class loader.");
-            }
-        }
-
-        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(listUrl.toArray(new URL[0]));
+        loadProjectClasspath(classpath);
     }
 }

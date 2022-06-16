@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
@@ -84,27 +85,10 @@ class CheckerMainTest {
         mavenProject.setArtifacts(Collections.singleton(artifact));
         testee.project = mavenProject;
 
-        Assertions.assertDoesNotThrow(testee::loadProjectclasspath);
+        Assertions.assertDoesNotThrow((Executable) testee::loadProjectClasspath);
 
         Assertions.assertEquals(artifactFile.toUri().toURL(),
                 ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
-    }
-
-    @Test
-    void shouldFailIfArtifactURIIsInvalid() {
-        final MavenProject mavenProject = new MavenProject();
-
-        final Artifact artifact = Mockito.mock(Artifact.class);
-
-        final File artifactFile = Mockito.mock(File.class);
-        final URI uri = URI.create("htt://foo");
-        when(artifactFile.toURI()).thenReturn(uri);
-        when(artifact.getFile()).thenReturn(artifactFile);
-
-        mavenProject.setArtifacts(Collections.singleton(artifact));
-        testee.project = mavenProject;
-
-        Assertions.assertThrows(MojoExecutionException.class, testee::loadProjectclasspath);
     }
 
 }
