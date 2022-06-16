@@ -1,6 +1,7 @@
 annotations.de.redsix.dmncheck.feel
 annotations.de.redsix.dmncheck.util
 de.redsix.dmncheck
+de.redsix.dmncheck.cli
 de.redsix.dmncheck.drg
 de.redsix.dmncheck.feel
 de.redsix.dmncheck.plugin
