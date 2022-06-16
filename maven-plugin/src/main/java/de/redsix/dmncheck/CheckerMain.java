@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 public class CheckerMain extends AbstractMojo implements PluginBase {
@@ -96,25 +97,10 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
 
     void loadClasspath() throws MojoExecutionException {
         if (classpath != null && classpath.length != 0) {
-            loadExternalclasspath();
+            loadProjectClasspath(Arrays.asList(classpath));
         } else {
             loadProjectclasspath();
         }
-    }
-
-    void loadExternalclasspath() throws MojoExecutionException {
-        List<URL> list = new ArrayList<>();
-
-        for (String cp : classpath) {
-            try {
-                URL url = new File(cp).toURI().toURL();
-                list.add(url);
-            } catch (MalformedURLException e) {
-                throw new MojoExecutionException("Failed to construct project class loader.");
-            }
-        }
-
-        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(list.toArray(new URL[0]));
     }
 
     void loadProjectclasspath() throws MojoExecutionException {

@@ -8,6 +8,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -17,25 +18,29 @@ import java.util.concurrent.Callable;
 public class Main implements PluginBase, Callable<Integer> {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    @Option(names = { "--excludeList" })
+    @Option(names = {"--excludeList"})
     @SuppressWarnings("nullness")
     private List<String> excludeList;
 
-    @Option(names = { "--searchPath" })
+    @Option(names = {"--searchPath"})
     @SuppressWarnings("nullness")
     private List<String> searchPath;
 
-    @Option(names = { "--validatorPackages" })
+    @Option(names = {"--validatorPackages"})
     @SuppressWarnings("nullness")
     private String[] validatorPackages;
 
-    @Option(names = { "--validatorClasses" })
+    @Option(names = {"--validatorClasses"})
     @SuppressWarnings("nullness")
     private String[] validatorClasses;
 
-    @Option(names = { "--failOnWarning" })
+    @Option(names = {"--failOnWarning"})
     @SuppressWarnings("nullness")
     private boolean failOnWarning;
+
+    @Option(names = {"--projectClasspath"})
+    @SuppressWarnings("nullness")
+    private String projectClasspath;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Main()).execute(args);
@@ -83,6 +88,11 @@ public class Main implements PluginBase, Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (Objects.nonNull(projectClasspath)) {
+            loadProjectClasspath(Arrays.asList(projectClasspath.split(":")));
+        }
+
         return validate() ? 1 : 0;
     }
+
 }

@@ -2,6 +2,7 @@ package de.redsix.dmncheck.plugin;
 
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.ValidatorLoader;
 import de.redsix.dmncheck.validators.core.Validator;
 import org.camunda.bpm.model.dmn.Dmn;
@@ -9,12 +10,16 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -113,6 +118,19 @@ public interface PluginBase {
 
     default List<Validator> getValidators() {
         return ValidatorLoader.getValidators(getValidatorPackages(), getValidatorClasses());
+    }
+
+    default void loadProjectClasspath(List<String> projectClasspath) {
+        final URL[] urlProjectClasspath = projectClasspath.stream()
+                .map(element -> {
+                    try {
+                        return new File(element).toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException("Invalid classpath element in project classpath", e);
+                    }
+                })
+                .toArray(URL[]::new);
+        ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(urlProjectClasspath);
     }
 
 }

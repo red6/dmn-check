@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.plugin;
 
+import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.InputEntryTypeValidator;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -13,7 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -150,6 +153,16 @@ class PluginBaseTest {
         when(testee.failOnWarning()).thenReturn(false);
 
         Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("no-decision.dmn"))));
+    }
+
+    @Test
+    void shouldAddExternalArtifactsFromProjectToProjectClassloader() throws IOException {
+        String filename = "/foo.jar";
+
+        Assertions.assertDoesNotThrow(() -> testee.loadProjectClasspath(Collections.singletonList(filename)));
+
+        Assertions.assertEquals(new URL("file:/foo.jar"),
+                ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
     }
 
     private File getFile(final String filename) {
