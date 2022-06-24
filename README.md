@@ -9,13 +9,16 @@
 This is a tool for the validation of [Decision Model Notation (DMN)](https://en.wikipedia.org/wiki/Decision_Model_and_Notation) files. It
 performs various static analyses to detect inconsistencies and bugs in your decision models.
 
-You can use `dmn-check` in three ways.
+You can use `dmn-check` in six ways.
 
 * As a [Maven](https://maven.apache.org/) or [Gradle](https://gradle.org/) plugin that can be integrated into your build
   process and continues integration to prevent bugs from slipping into your artifacts.
 * Integrated into the [Camunda Modeler](https://camunda.com/products/modeler/) via the dmn-check plugin.
 * Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
   [dmn-check-validators](https://search.maven.org/search?q=a:dmn-check-validators).
+* As a standalone CLI tool.
+* As a [Docker image](https://github.com/red6/dmn-check/pkgs/container/dmn-check) (e.g. in you CI pipeline).
+* Integrated in [dmnmgr](https://github.com/davidibl/dmnmgr-client).
 
 Currently, dmn-check checks among others for the following:
 
@@ -103,6 +106,49 @@ might not work for different DMN implementations.
 ## Integrated in dmnmgr
 
 dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+
+## As a Docker container
+
+A Docker image containing `dmn-check` is available from the Github Container Registry and you can pull the latest version by executing
+
+    docker pull ghcr.io/red6/dmn-check:latest
+
+If you want to use `docker run` to execute `dmn-check` you have to mount the directory containing the DMN files into
+the container and set the search path appropriately, e.g.
+
+    docker run -v ~/dmn-files:/dmn-files ghcr.io/red6/dmn-check:latest --searchPath=/dmn-files
+
+If you want to use the Docker image in a Gitlab pipeline you have to overwrite the entrypoint and call `dmn-check` directly.
+In the following example of a Gitlab Pipeline, we specify the project classpath as well, to make the enum validation possible.
+
+    variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+    
+    default:
+      artifacts:
+        paths:
+          - ./cp.txt
+          - .m2/repository
+    
+    stages:
+      - analysis
+    
+    image:
+    name: ghcr.io/red6/dmn-check:latest
+    entrypoint: [ "" ]
+    
+    create-classpath-for-dmn-check:
+      image: adoptopenjdk/maven-openjdk11
+      stage: analysis
+      script: mvn dependency:build-classpath --settings .m2/settings.xml --batch-mode -Dmdep.outputFile=cp.txt
+    
+    dmn-check:
+      stage: analysis
+      needs:
+        - create-classpath-for-dmn-check
+      script: |
+        /opt/java/openjdk/bin/java -cp /app/resources:/app/classes:/app/libs/* de.redsix.dmncheck.cli.Main --projectClasspath=$(< cp.txt)
+
 
 ## Validations
 
