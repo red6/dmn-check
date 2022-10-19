@@ -28,7 +28,7 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn clean install jacoco:report -P checkerframework
-      - uses: codecov/codecov-action@v3.1.0
+      - uses: codecov/codecov-action@v3.1.1
         with:
           directory: .
           name: codecov
