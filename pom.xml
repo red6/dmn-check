@@ -72,9 +72,9 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <checker.framework.version>3.28.0</checker.framework.version>
+        <checker.framework.version>3.29.0</checker.framework.version>
 
-        <junit.version>5.9.1</junit.version>
+        <junit.version>5.9.2</junit.version>
         <mockito.version>5.1.1</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
 
@@ -111,7 +111,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -343,7 +343,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.9.1</version>
+            <version>1.9.2</version>
             <scope>test</scope>
         </dependency>
 
