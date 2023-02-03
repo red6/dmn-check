@@ -1,4 +1,5 @@
 .idea/**
 *.iml
+target/**
 */target/**
 gradle-plugin/.idea
