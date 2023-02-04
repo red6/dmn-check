@@ -1,6 +1,5 @@
 ![Build Status](https://github.com/red6/dmn-check/actions/workflows/build.yml/badge.svg)
 [![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://red6.github.io/dmn-check/javadoc/)
-[![codecov](https://codecov.io/gh/red6/dmn-check/branch/master/graph/badge.svg?token=47U89YZJZ0)](https://codecov.io/gh/red6/dmn-check)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=red6_dmn-check&metric=alert_status)](https://sonarcloud.io/dashboard?id=red6_dmn-check)
 [![Maven Central Version](https://img.shields.io/maven-central/v/de.redsix/dmn-check.svg)](http://search.maven.org/#search|gav|1|g:"de.redsix"%20AND%20a:"dmn-check")
 
