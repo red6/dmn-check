@@ -1,3 +1,16 @@
+## 1.3.0 (2023-02-04)
+
+Features:
+
+ - Make EnumValidator available in standalone mode (#86)
+ - Provide a Docker image (ghcr.io/red6/dmn-check:latest)
+ - Provide a picoli based cli
+
+Misc:
+
+ - A lot of dependency updates
+ - Changes in the CI infrastructure
+
 ## 1.2.4 (2022-04-21)
 
 Features:
