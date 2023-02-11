@@ -110,6 +110,7 @@ signing {
 
             //Apply signing to publication identity 'publishing.publications.maven'
             sign publishing.publications.pluginMaven
+            sign publishing.publications.simplePluginPluginMarkerMaven
         } else {
             println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
         }
