@@ -94,22 +94,24 @@ signing {
     //make signing required unless for SNAPSHOT releases or if signing is explicitly skipped
     required { !project.version.endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
 
-    //look for property 'signingKey'
-    if (project.findProperty("signingKey")) {
-        //If required, read a sub-key specified by its ID in property signingKeyId
-        //def signingKeyId = findProperty("signingKeyId")
-        //read property 'signingKey'
-        def signingKey = findProperty("signingKey")
-        //read property 'signingPassword'
-        def signingPassword = findProperty("signingPassword")
-        //Select to use in-memory ascii-armored keys
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        //Only if also using signingKeyId
-        //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    afterEvaluate {
+        //look for property 'signingKey'
+        if (project.findProperty("signingKey")) {
+            //If required, read a sub-key specified by its ID in property signingKeyId
+            //def signingKeyId = findProperty("signingKeyId")
+            //read property 'signingKey'
+            def signingKey = findProperty("signingKey")
+            //read property 'signingPassword'
+            def signingPassword = findProperty("signingPassword")
+            //Select to use in-memory ascii-armored keys
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            //Only if also using signingKeyId
+            //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
-        //Apply signing to publication identity 'publishing.publications.maven'
-        sign publishing.publications.pluginMaven
-    } else {
-        println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+            //Apply signing to publication identity 'publishing.publications.maven'
+            sign publishing.publications.pluginMaven
+        } else {
+            println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
+        }
     }
 }
