@@ -41,7 +41,7 @@ java {
 }
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }
@@ -53,31 +53,35 @@ nexusPublishing {
 }
 
 publishing {
-    publications {
-        //define publication identity, e.g. maven, which will be used
-        //by the signing plugin, e.g. sign publishing.publications.maven
-        pluginMaven(MavenPublication) {
-            //set elements in generated pom.xml according to requirements
-            //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
-            pom {
-                name = project['name']
-                description = project['description']
-                url = 'https://github.com/red6/dmn-check'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        name = 'Pascal Wittmann'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:github.com/red6/dmn-check'
-                    developerConnection = 'scm:git:github.com/red6/dmn-check'
+    // afterEvaluate is necessary because java-gradle-plugin
+    // creates its publications in an afterEvaluate callback
+    afterEvaluate {
+        publications {
+            //define publication identity, e.g. maven, which will be used
+            //by the signing plugin, e.g. sign publishing.publications.maven
+            withType(MavenPublication) {
+                //set elements in generated pom.xml according to requirements
+                //by Sonatype (see https://central.sonatype.org/pages/requirements.html)
+                pom {
+                    name = project['name']
+                    description = project['description']
                     url = 'https://github.com/red6/dmn-check'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            name = 'Pascal Wittmann'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/red6/dmn-check'
+                        developerConnection = 'scm:git:github.com/red6/dmn-check'
+                        url = 'https://github.com/red6/dmn-check'
+                    }
                 }
             }
         }
@@ -105,7 +109,7 @@ signing {
 
         //Apply signing to publication identity 'publishing.publications.maven'
         sign publishing.publications.pluginMaven
-    }else {
+    } else {
         println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
     }
 }
