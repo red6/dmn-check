@@ -27,7 +27,7 @@ dependencies {
 gradlePlugin {
     plugins {
         simplePlugin {
-            id = 'de.redsix.dmncheck'
+            id = 'de.redsix.dmn-check.gradle-plugin'
             implementationClass = 'de.redsix.dmncheck.DmnCheckGradlePlugin'
         }
     }
