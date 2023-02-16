@@ -295,8 +295,9 @@ values are allowed. Currently, we only validate if the expressions from an `Item
 
 ## Related work
 
-Although there are not many tools for analysis of DMN files, there exists some related work. Yet, we were not aware of most of the related
-work when starting the work on `dmn-check`.
+When we started to work on `dmn-check` we were not are of analysis tools for DMN files that suited our needs and worked in our Camunda flavored
+environment. Since then DMN became more popular and other tools started provide some analysis capabilities as well. If you want to know how
+`dmn-check` compares to other tools, you can read a comparision in [GCD](#GCD).
 
 ### A Tool for the Analysis of DMN Decision Tables
 
@@ -324,3 +325,5 @@ Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
 
 <b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision
 model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
+
+<b id="GCD">GCD</b> Grohé, C., Corea, C. and Delfmann P, 2021. [DMN 1.0 Verification Capabilities: An Analysis of Current Tool Support](https://www.researchgate.net/publication/353906682_DMN_10_Verification_Capabilities_An_Analysis_of_Current_Tool_Support). Business Process Management Forum, BPM Forum 2021, Rome, Italy.
