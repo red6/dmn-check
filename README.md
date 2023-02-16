@@ -327,3 +327,5 @@ Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
 model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
 
 <b id="GCD">GCD</b> Grohé, C., Corea, C. and Delfmann P, 2021. [DMN 1.0 Verification Capabilities: An Analysis of Current Tool Support](https://www.researchgate.net/publication/353906682_DMN_10_Verification_Capabilities_An_Analysis_of_Current_Tool_Support). Business Process Management Forum, BPM Forum 2021, Rome, Italy.
+
+<b id="VPVCG"></b> Valencia-Parra, A., Parody, L., Varela-Vaca, A., Caballero, I., and Gómez-López M., 2020. DMN4DQ: When data quality meets DMN. Journal 'Decision Support Systems'.
