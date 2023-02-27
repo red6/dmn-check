@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: JIB container build and publish
-        uses: pSub/jib-container-publish.yml@main
+        uses: MathieuSoysal/jib-container-publish.yml@main
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           java-version: 11
