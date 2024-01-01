@@ -79,7 +79,7 @@
         <mockito.version>5.3.1</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
 
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <compiler-plugin.version>3.12.1</compiler-plugin.version>
 
         <sonar.organization>red6</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
