@@ -10,8 +10,8 @@ group 'de.redsix'
 description 'Gradle Plugin for the DMN analysis tool dmn-check'
 version '1.4.0-SNAPSHOT'
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 repositories {
     mavenLocal()
