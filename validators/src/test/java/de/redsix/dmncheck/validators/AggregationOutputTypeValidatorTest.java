@@ -1,16 +1,15 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AggregationOutputTypeValidatorTest extends WithDecisionTable {
 
@@ -29,10 +28,11 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Aggregations MAX, MIN, SUM are only valid with numeric output types", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Aggregations MAX, MIN, SUM are only valid with numeric output types",
+                        validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -47,10 +47,10 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("An aggregation is used but no output type is defined", validationResult.getMessage()),
+                () -> assertEquals(
+                        "An aggregation is used but no output type is defined", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -66,10 +66,10 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test

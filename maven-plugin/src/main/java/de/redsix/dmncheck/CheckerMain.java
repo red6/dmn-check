@@ -2,6 +2,9 @@ package de.redsix.dmncheck;
 
 import de.redsix.dmncheck.plugin.PluginBase;
 import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -9,10 +12,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
 public class CheckerMain extends AbstractMojo implements PluginBase {
@@ -33,11 +32,11 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     @SuppressWarnings("nullness")
     String[] validatorClasses;
 
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     @SuppressWarnings("nullness")
     MavenProject project;
 
-    @Parameter( defaultValue = "false", readonly = true )
+    @Parameter(defaultValue = "false", readonly = true)
     @SuppressWarnings("nullness")
     Boolean failOnWarning;
 
@@ -48,7 +47,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     @Override
     public void execute() throws MojoExecutionException {
         loadClasspath();
-        if(validate()) {
+        if (validate()) {
             throw new MojoExecutionException("Some files are not valid, see previous logs.");
         }
     }

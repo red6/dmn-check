@@ -1,18 +1,17 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.*;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
@@ -30,15 +29,13 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
                 () -> assertEquals(decision, validationResult1.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity()));
 
         final ValidationResult validationResult2 = validationResults.get(1);
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
                 () -> assertEquals(inputData, validationResult2.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity()));
     }
 
     @Test
@@ -46,9 +43,12 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
 
-        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of InputDataReferenceImpl. If we
-        // do not do this and call InformationRequirement.setRequiredInput the id of our InputData node is associated with an
-        // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when
+        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
+        // InputDataReferenceImpl. If we
+        // do not do this and call InformationRequirement.setRequiredInput the id of our InputData node is associated
+        // with an
+        // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However this issue
+        // only occurs when
         // creating a DMN model programmatically using the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
@@ -61,6 +61,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         assertEquals(0, validationResults.size());
     }
+
     @Test
     void shouldDetectUnconnectedKnowledgeSourceElement() {
         final KnowledgeSource knowledgeSource = modelInstance.newInstance(KnowledgeSource.class);
@@ -73,15 +74,13 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
                 () -> assertEquals(decision, validationResult1.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity()));
 
         final ValidationResult validationResult2 = validationResults.get(1);
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
                 () -> assertEquals(knowledgeSource, validationResult2.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity()));
     }
 
     @Test
@@ -193,8 +192,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertTrue(validationResult.getMessage().startsWith("Found unconnected requirement graphs:")),
                 () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -212,15 +210,13 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult1.getMessage()),
                 () -> assertEquals(decision, validationResult1.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult1.getSeverity()));
 
         final ValidationResult validationResult2 = validationResults.get(1);
         assertAll(
                 () -> assertEquals("Element is not connected to requirement graph", validationResult2.getMessage()),
                 () -> assertEquals(otherDecision, validationResult2.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult2.getSeverity()));
     }
 
     @Test
@@ -250,10 +246,10 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
                 () -> assertEquals(decision, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -283,10 +279,10 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
                 () -> assertEquals(decision, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -300,5 +296,4 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         assertEquals(0, validationResults.size());
     }
-
 }

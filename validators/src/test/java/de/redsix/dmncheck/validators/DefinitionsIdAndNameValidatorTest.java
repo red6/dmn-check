@@ -1,15 +1,14 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.util.WithDefinitions;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.util.WithDefinitions;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 class DefinitionsIdAndNameValidatorTest extends WithDefinitions {
 
@@ -27,8 +26,7 @@ class DefinitionsIdAndNameValidatorTest extends WithDefinitions {
         assertAll(
                 () -> assertEquals("A definitions has no id.", validationResult.getMessage()),
                 () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -43,8 +41,7 @@ class DefinitionsIdAndNameValidatorTest extends WithDefinitions {
         assertAll(
                 () -> assertEquals("A definitions has no name.", validationResult.getMessage()),
                 () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test

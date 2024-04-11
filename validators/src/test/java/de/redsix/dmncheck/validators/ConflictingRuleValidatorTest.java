@@ -1,8 +1,11 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -11,17 +14,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class ConflictingRuleValidatorTest extends WithDecisionTable {
 
     private final ConflictingRuleValidator testee = new ConflictingRuleValidator();
 
     @ParameterizedTest
-    @CsvSource({"COLLECT, WARNING", "RULE_ORDER, WARNING", "UNIQUE, ERROR", "FIRST, ERROR", "PRIORITY, ERROR", "ANY, ERROR",
-        "OUTPUT_ORDER, ERROR"})
+    @CsvSource({
+        "COLLECT, WARNING",
+        "RULE_ORDER, WARNING",
+        "UNIQUE, ERROR",
+        "FIRST, ERROR",
+        "PRIORITY, ERROR",
+        "ANY, ERROR",
+        "OUTPUT_ORDER, ERROR"
+    })
     void shouldDetectConflictingRulesForGivenHitPolicies(final String hitPolicy, final String severity) {
         decisionTable.setHitPolicy(HitPolicy.valueOf(hitPolicy));
 
@@ -54,10 +60,10 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Rule is conflicting with rules [" + rule2.getId() + "]", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Rule is conflicting with rules [" + rule2.getId() + "]", validationResult.getMessage()),
                 () -> assertEquals(rule1, validationResult.getElement()),
-                () -> assertEquals(Severity.valueOf(severity), validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.valueOf(severity), validationResult.getSeverity()));
     }
 
     @Test
@@ -90,5 +96,4 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
 
         assertTrue(validationResults.isEmpty());
     }
-
 }

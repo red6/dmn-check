@@ -1,13 +1,13 @@
 package de.redsix.dmncheck.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.LiteralExpression;
 import org.camunda.bpm.model.dmn.instance.UnaryTests;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 class ExpressionTest {
 
@@ -58,7 +58,6 @@ class ExpressionTest {
         assertEquals(DmnModelConstants.FEEL_NS, expression.expressionLanguage);
         assertEquals("", expression.textContent);
     }
-
 
     @Test
     void shouldUseTopLevelIfLocalExpressionLanguageIsMissingUnaryTests() {

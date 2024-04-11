@@ -1,20 +1,19 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OutputEntryTypeValidatorTest extends WithDecisionTable {
 
@@ -71,10 +70,10 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of output entry does not match type of output expression", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Type of output entry does not match type of output expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -95,8 +94,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -116,10 +114,8 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Expression language 'javascript' not supported",
-                        validationResult.getMessage()),
+                () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 }

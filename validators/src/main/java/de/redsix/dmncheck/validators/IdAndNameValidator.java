@@ -4,12 +4,11 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import org.camunda.bpm.model.dmn.instance.DmnElement;
-import org.camunda.bpm.model.dmn.instance.NamedElement;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.camunda.bpm.model.dmn.instance.DmnElement;
+import org.camunda.bpm.model.dmn.instance.NamedElement;
 
 public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> extends SimpleValidator<T> {
 
@@ -41,5 +40,4 @@ public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> ex
 
         return validationResults;
     }
-
 }

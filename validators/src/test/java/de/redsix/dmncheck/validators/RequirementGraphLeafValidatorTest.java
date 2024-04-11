@@ -1,15 +1,14 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithRequirementGraph;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.Decision;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
 
@@ -87,7 +86,6 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
         assertAll(
                 () -> assertEquals("Requirement graphs may only contain one leaf node", validationResult.getMessage()),
                 () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 }

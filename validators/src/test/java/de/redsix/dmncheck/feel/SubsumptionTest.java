@@ -1,12 +1,11 @@
 package de.redsix.dmncheck.feel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubsumptionTest {
 
@@ -72,18 +71,32 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1",
-                "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
-                "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")", "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")", "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"})
-    void comparisonExpressionsThatSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
+    @CsvSource({
+        "<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1",
+        "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
+        "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")",
+                "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
+                ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+                ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+                ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+                "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"
+    })
+    void comparisonExpressionsThatSubsumesComparisonExpression(
+            final String subsumingInput, final String subsumedInput) {
         assertLeftIsSubsumedByRight(subsumingInput, subsumedInput);
     }
 
     @ParameterizedTest
-    @CsvSource({"<5, <=5", ">5, >=5", ">5, >1", "<1, <5",
-                "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
-                "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")", ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")", "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"})
-    void comparisonExpressionsThatDoNotSubsumesComparisonExpression(final String subsumingInput, final String subsumedInput) {
+    @CsvSource({
+        "<5, <=5", ">5, >=5", ">5, >1", "<1, <5",
+        "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
+        "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
+                ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+                ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")",
+                "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"
+    })
+    void comparisonExpressionsThatDoNotSubsumesComparisonExpression(
+            final String subsumingInput, final String subsumedInput) {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
@@ -106,7 +119,18 @@ class SubsumptionTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"x, not(x)", "not(x), not(y)", "not(3), x", "3, not(3)", "null, not(null)" , "not(3), 3", "[1..5], not([1..5])", "[1..5], not([1..5])", "not(3), not(4)", "not(\"3\"),\"3\""})
+    @CsvSource({
+        "x, not(x)",
+        "not(x), not(y)",
+        "not(3), x",
+        "3, not(3)",
+        "null, not(null)",
+        "not(3), 3",
+        "[1..5], not([1..5])",
+        "[1..5], not([1..5])",
+        "not(3), not(4)",
+        "not(\"3\"),\"3\""
+    })
     void subsumptionForNotNegativeCases(final String subsumingInput, final String subsumedInput) {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }

@@ -1,17 +1,16 @@
 package de.redsix.dmncheck.feel;
 
+import static de.redsix.dmncheck.util.Eithers.right;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Eithers;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Collections;
-import java.util.Optional;
-
-import static de.redsix.dmncheck.util.Eithers.right;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FeelTypecheckTest {
 
@@ -74,7 +73,8 @@ class FeelTypecheckTest {
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
         context.put("x", ExpressionTypes.INTEGER());
 
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(context, expression);
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+                FeelTypecheck.typecheck(context, expression);
 
         assertEquals(right(ExpressionTypes.INTEGER()), type);
     }
@@ -83,10 +83,13 @@ class FeelTypecheckTest {
     void unboundVariableHasNoType() {
         final FeelExpression expression = FeelParser.PARSER.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
-        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(context, expression);
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+                FeelTypecheck.typecheck(context, expression);
 
         assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals("Variable 'x' has no type.", Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals(
+                "Variable 'x' has no type.",
+                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @ParameterizedTest
@@ -100,18 +103,20 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({
-            "<\"Steak\", Operator < expects numeric type but got STRING()",
-            "2+\"foo\", Types of left and right operand do not match.",
-            "'<3,\"foo\"', Types of head and tail do not match.",
-            "[1..1.5], Types of lower and upper bound do not match.",
-            "[\"A\"..\"Z\"], Type is unsupported for RangeExpressions."
+        "<\"Steak\", Operator < expects numeric type but got STRING()",
+        "2+\"foo\", Types of left and right operand do not match.",
+        "'<3,\"foo\"', Types of head and tail do not match.",
+        "[1..1.5], Types of lower and upper bound do not match.",
+        "[\"A\"..\"Z\"], Type is unsupported for RangeExpressions."
     })
     void isNotTypeable(final String input, final String errorMessage) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
 
         assertEquals(Optional.empty(), Eithers.getRight(type));
-        assertEquals(errorMessage, Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
+        assertEquals(
+                errorMessage,
+                Eithers.getLeft(type).orElseThrow(AssertionError::new).getMessage());
     }
 
     @Test

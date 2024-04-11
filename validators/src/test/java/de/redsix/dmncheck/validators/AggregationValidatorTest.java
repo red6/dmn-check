@@ -1,18 +1,17 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class AggregationValidatorTest extends WithDecisionTable {
-    
+
     private final AggregationValidator testee = new AggregationValidator();
 
     @Test
@@ -27,8 +26,7 @@ class AggregationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Aggregations are only valid with HitPolicy COLLECT", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test

@@ -1,8 +1,13 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.Rule;
@@ -10,18 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class ShadowedRuleValidatorTest extends WithDecisionTable {
 
     private final ShadowedRuleValidator testee = new ShadowedRuleValidator();
 
     @ParameterizedTest
-    @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
+    @EnumSource(
+            value = HitPolicy.class,
+            names = {"UNIQUE", "FIRST", "ANY"})
     void ruleIsShadowedByFirstRule(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
@@ -47,12 +48,13 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is shadowed by rule " + catchAllRule.getId(), validationResult.getMessage()),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @ParameterizedTest
-    @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY"})
+    @EnumSource(
+            value = HitPolicy.class,
+            names = {"UNIQUE", "FIRST", "ANY"})
     void ruleIsNotShadowedByFirstRuleBecauseOfSecondInput(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
@@ -112,8 +114,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertTrue(validationResult.getMessage().contains("Could not parse")),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -144,10 +145,9 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertTrue(validationResult.getMessage().contains("Expression language 'javascript' not supported")),
+                () -> assertTrue(
+                        validationResult.getMessage().contains("Expression language 'javascript' not supported")),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
-
 }
