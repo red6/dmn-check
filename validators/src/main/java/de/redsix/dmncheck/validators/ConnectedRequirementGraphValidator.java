@@ -51,10 +51,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
     }
 
     private List<ValidationResult> checkInAndOuputs(DrgElement sourceElement, DrgElement targetElement) {
-        if (sourceElement instanceof Decision && targetElement instanceof Decision) {
-            final Decision sourceDecision = (Decision) sourceElement;
-            final Decision targetDecision = (Decision) targetElement;
-
+        if (sourceElement instanceof Decision sourceDecision && targetElement instanceof Decision targetDecision) {
             return checkInAndOutputs(sourceDecision, targetDecision);
         } else {
             // We only validate in- and outputs for decisions as they are the only elements

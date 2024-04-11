@@ -130,7 +130,7 @@
                             <include>**/*.java</include>
                         </includes>
                         <excludes>
-                            <exclude>target/**/*.java</exclude>
+                            <exclude>**/target/**/*.java</exclude>
                         </excludes>
                     </java>
                 </configuration>

@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class ValidationContext {
 
-    private class Memoizer<T, U> {
+    private static class Memoizer<T, U> {
 
         private final Map<Class<T>, U> cache = new ConcurrentHashMap<>();
 

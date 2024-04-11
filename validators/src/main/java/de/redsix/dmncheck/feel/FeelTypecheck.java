@@ -27,7 +27,8 @@ public final class FeelTypecheck {
             final Context context, final FeelExpression expression) {
         return FeelExpressions.caseOf(expression)
                 // FIXME: 12/10/17 The explicit type is needed as otherwise the type of 'right' is lost.
-                .<Either<ValidationResult.Builder.ElementStep, ExpressionType>>Empty_(right(ExpressionTypes.TOP()))
+                .<Either<ValidationResult.Builder.ElementStep, ExpressionType>>Empty_(
+                        right(de.redsix.dmncheck.feel.ExpressionTypes.TOP()))
                 .Null_(right(ExpressionTypes.TOP()))
                 .BooleanLiteral(bool -> right(ExpressionTypes.BOOLEAN()))
                 .DateLiteral(dateTime -> right(ExpressionTypes.DATE()))
@@ -75,31 +76,18 @@ public final class FeelTypecheck {
 
     private static Either<ValidationResult.Builder.ElementStep, ExpressionType> checkOperatorCompatibility(
             final ExpressionType type, final Operator operator) {
-        switch (operator) {
-            case GE:
-            case GT:
-            case LE:
-            case LT:
-            case DIV:
-            case EXP:
-            case MUL:
-            case ADD:
-            case SUB:
-                return check(
-                                ExpressionType.isNumeric(type),
-                                "Operator " + operator + " expects numeric type but got " + type)
-                        .orElse(right(type));
-            case OR:
-            case AND:
-                return check(
-                                ExpressionTypes.BOOLEAN().equals(type),
-                                "Operator " + operator + " expects boolean but got " + type)
-                        .orElse(right(type));
-            case NOT:
-                return right(type);
-            default:
-                return left(ValidationResult.init.message("Unexpected operand " + operator));
-        }
+        return switch (operator) {
+            case GE, GT, LE, LT, DIV, EXP, MUL, ADD, SUB -> check(
+                            ExpressionType.isNumeric(type),
+                            "Operator " + operator + " expects numeric type but got " + type)
+                    .orElse(right(type));
+            case OR, AND -> check(
+                            ExpressionTypes.BOOLEAN().equals(type),
+                            "Operator " + operator + " expects boolean but got " + type)
+                    .orElse(right(type));
+            case NOT -> right(type);
+            default -> left(ValidationResult.init.message("Unexpected operand " + operator));
+        };
     }
 
     private static Either<ValidationResult.Builder.ElementStep, ExpressionType> typecheckRangeExpression(

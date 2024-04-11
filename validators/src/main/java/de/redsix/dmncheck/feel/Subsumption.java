@@ -51,19 +51,12 @@ final class Subsumption {
     private static Optional<Boolean> subsumesUnaryExpression(
             Operator operator, FeelExpression operand, FeelExpression otherExpression) {
         return FeelExpressions.caseOf(otherExpression)
-                .RangeExpression((leftInc, lowerBound, upperBound, rightInc) -> {
-                    switch (operator) {
-                        case LT:
-                            return subsumes(upperBound, operand, rightInc ? lt : le);
-                        case GT:
-                            return subsumes(operand, lowerBound, leftInc ? lt : le);
-                        case LE:
-                            return subsumes(upperBound, operand, rightInc ? le : lt);
-                        case GE:
-                            return subsumes(operand, lowerBound, leftInc ? le : lt);
-                        default:
-                            return Optional.of(false);
-                    }
+                .RangeExpression((leftInc, lowerBound, upperBound, rightInc) -> switch (operator) {
+                    case LT -> subsumes(upperBound, operand, rightInc ? lt : le);
+                    case GT -> subsumes(operand, lowerBound, leftInc ? lt : le);
+                    case LE -> subsumes(upperBound, operand, rightInc ? le : lt);
+                    case GE -> subsumes(operand, lowerBound, leftInc ? le : lt);
+                    default -> Optional.of(false);
                 })
                 .UnaryExpression((otherOperator, otherOperand) -> {
                     if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
@@ -122,17 +115,12 @@ final class Subsumption {
     }
 
     private static Comparison fromOperator(final Operator operator) {
-        switch (operator) {
-            case LE:
-                return le;
-            case LT:
-                return lt;
-            case GT:
-                return gt;
-            case GE:
-                return ge;
-            default:
-                return eq;
-        }
+        return switch (operator) {
+            case LE -> le;
+            case LT -> lt;
+            case GT -> gt;
+            case GE -> ge;
+            default -> eq;
+        };
     }
 }
