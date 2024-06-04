@@ -18,7 +18,7 @@ public class ValidationContext {
 
     private static class Memoizer<T, U> {
 
-        private final Map<Class<T>, U> cache = new ConcurrentHashMap<>();
+        private final Map<Class<T>, @NonNull U> cache = new ConcurrentHashMap<>();
 
         private Function<Class<T>, U> doMemoize(final Function<Class<T>, @NonNull U> function) {
             return input -> cache.computeIfAbsent(input, function);
