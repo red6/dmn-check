@@ -137,7 +137,7 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.3.0</version>
 
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -357,7 +357,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.9.3</version>
+            <version>1.10.2</version>
             <scope>test</scope>
         </dependency>
 
