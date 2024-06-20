@@ -1,16 +1,15 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
 import org.camunda.bpm.model.dmn.instance.InputValues;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InputValuesTypeValidatorTest extends WithDecisionTable {
 
@@ -67,11 +66,11 @@ class InputValuesTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of predefined input values does not match type of input expression",
+                () -> assertEquals(
+                        "Type of predefined input values does not match type of input expression",
                         validationResult.getMessage()),
                 () -> assertEquals(input, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -93,11 +92,8 @@ class InputValuesTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Expression language 'javascript' not supported",
-                        validationResult.getMessage()),
+                () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(input, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
-
 }

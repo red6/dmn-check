@@ -4,12 +4,6 @@ import de.redsix.dmncheck.plugin.PluginBase;
 import de.redsix.dmncheck.plugin.PrettyPrintValidationResults;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.core.Validator;
-import org.checkerframework.checker.initialization.qual.Initialized;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
-import org.gradle.api.tasks.*;
-import org.gradle.internal.impldep.org.junit.Ignore;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,11 +12,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
+import org.gradle.api.tasks.*;
 
 public class DmnCheckTask extends DefaultTask implements PluginBase, VerificationTask {
 
-    public static final String MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER = "Failed to construct project class loader.";
-    public static final String MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS = "Some files are not valid, see previous logs.";
+    public static final String MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER =
+            "Failed to construct project class loader.";
+    public static final String MSG_SOME_FILES_ARE_NOT_VALID_SEE_PREVIOUS_LOGS =
+            "Some files are not valid, see previous logs.";
 
     private boolean ignoreFailures = false;
     private boolean failOnWarning = false;
@@ -43,8 +42,9 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     @Override
     @Internal
     public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
-        return new PrettyPrintValidationResults.PluginLogger(c -> getLogger().info((String) c), c -> getLogger().warn((String) c),
-                                                             c -> getLogger().error((String) c));
+        return new PrettyPrintValidationResults.PluginLogger(
+                c -> getLogger().info((String) c), c -> getLogger().warn((String) c), c -> getLogger()
+                        .error((String) c));
     }
 
     @Input
@@ -58,7 +58,8 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     @Optional
     @Override
     public List<String> getSearchPathList() {
-        return Objects.requireNonNullElseGet(getDmnCheckExtension().searchPathList, () -> Collections.singletonList(""));
+        return Objects.requireNonNullElseGet(
+                getDmnCheckExtension().searchPathList, () -> Collections.singletonList(""));
     }
 
     @Input
@@ -84,23 +85,25 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     }
 
     public void loadProjectclasspath() {
-        final Set<File> files = getProject().getConfigurations().getByName("compileClasspath").getFiles();
+        final Set<File> files =
+                getProject().getConfigurations().getByName("compileClasspath").getFiles();
 
         final URL[] classpathURLs = files.stream()
-                                         .map(File::toURI)
-                                         .map(uri -> {
-            try {
-                return uri.toURL();
-            }
-            catch (MalformedURLException e) {
-                if (ignoreFailures) {
-                    getLogger().error(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
-                    return null;
-                } else {
-                    throw new GradleException(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
-                }
-            }
-        }).filter(Objects::nonNull).toArray(URL[]::new);
+                .map(File::toURI)
+                .map(uri -> {
+                    try {
+                        return uri.toURL();
+                    } catch (MalformedURLException e) {
+                        if (ignoreFailures) {
+                            getLogger().error(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
+                            return null;
+                        } else {
+                            throw new GradleException(MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER);
+                        }
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(URL[]::new);
         ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(classpathURLs);
     }
 
@@ -121,7 +124,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
 
     @Internal
     @Override
-    public List<Validator> getValidators()  {
+    public List<Validator> getValidators() {
         return PluginBase.super.getValidators();
     }
 

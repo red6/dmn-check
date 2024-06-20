@@ -1,7 +1,6 @@
 package de.redsix.dmncheck.feel;
 
-
-public enum  Operator {
+public enum Operator {
     ADD("+"),
     SUB("-"),
     MUL("*"),

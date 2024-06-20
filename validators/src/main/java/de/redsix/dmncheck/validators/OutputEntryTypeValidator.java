@@ -5,12 +5,11 @@ import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.OutputClause;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.camunda.bpm.model.dmn.instance.OutputClause;
 
 public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
 
@@ -18,23 +17,28 @@ public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
     public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
-            return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions()).match(parseError -> false, parseResult -> true);
+            return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
+                    .match(parseError -> false, parseResult -> true);
         });
     }
 
     @Override
     public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
-        final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes = decisionTable.getOutputs().stream()
-                .map(OutputClause::getTypeRef)
-                .map(typeRef -> ExpressionTypeParser.parse(typeRef, validationContext.getItemDefinitions()))
-                .collect(Either.reduce());
+        final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes =
+                decisionTable.getOutputs().stream()
+                        .map(OutputClause::getTypeRef)
+                        .map(typeRef -> ExpressionTypeParser.parse(typeRef, validationContext.getItemDefinitions()))
+                        .collect(Either.reduce());
 
-        return decisionTable.getRules().stream().flatMap(rule ->
-                eitherOutputTypes.match(
-                        validationResult -> Stream.of(validationResult.element(rule).build()),
-                        outputTypes -> typecheck(rule,
+        return decisionTable.getRules().stream()
+                .flatMap(rule -> eitherOutputTypes.match(
+                        validationResult ->
+                                Stream.of(validationResult.element(rule).build()),
+                        outputTypes -> typecheck(
+                                rule,
                                 rule.getOutputEntries().stream().map(toplevelExpressionLanguage::toExpression),
-                                outputTypes.stream()))).collect(Collectors.toList());
+                                outputTypes.stream())))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,10 +1,15 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.util.TestEnum;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.InputExpression;
@@ -13,14 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class InputEntryTypeValidatorTest extends WithDecisionTable {
-    
+
     private final InputEntryTypeValidator testee = new InputEntryTypeValidator();
 
     @ParameterizedTest
@@ -123,10 +122,13 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Value \"" + TestEnum.some.name() + "unkown\" does not belong to " + TestEnum.class.getCanonicalName(), validationResult.getMessage()),
+                () -> assertEquals(
+                        "Value \"" + TestEnum.some.name() + "unkown\" does not belong to "
+                                + TestEnum.class.getCanonicalName(),
+                        validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );    }
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+    }
 
     @Test
     void shouldFailIfProjectclassloaderIsAbsent() {
@@ -151,8 +153,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Classloader of project under validation not found", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -177,8 +178,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Variable 'x' has no type.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -200,10 +200,10 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of input entry does not match type of input expression", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Type of input entry does not match type of input expression", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -226,8 +226,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -249,10 +248,8 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Expression language 'javascript' not supported",
-                        validationResult.getMessage()),
+                () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 }

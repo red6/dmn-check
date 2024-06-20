@@ -10,7 +10,8 @@ public class DmnCheckGradlePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        final DmnCheckExtension dmnCheckExtension = project.getExtensions().create(DMN_CHECK_EXTENSION, DmnCheckExtension.class);
+        final DmnCheckExtension dmnCheckExtension =
+                project.getExtensions().create(DMN_CHECK_EXTENSION, DmnCheckExtension.class);
         final DmnCheckTask dmnCheckTask = project.getTasks().create(CHECK_DMN_TASK, DmnCheckTask.class);
 
         dmnCheckTask.getExtensions().add(DMN_CHECK_EXTENSION, dmnCheckExtension);

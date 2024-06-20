@@ -3,12 +3,11 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
+import java.util.Collections;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
-
-import java.util.Collections;
-import java.util.List;
 
 public class RequirementGraphLeafValidator extends RequirementGraphValidator {
 

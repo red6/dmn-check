@@ -1,20 +1,5 @@
 package de.redsix.dmncheck.feel;
 
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.Eithers;
-import de.redsix.dmncheck.util.Expression;
-import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
-import org.camunda.bpm.model.dmn.instance.LiteralExpression;
-import org.jparsec.error.ParserException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mockito;
-
-import java.time.LocalDateTime;
-import java.time.Month;
-
 import static de.redsix.dmncheck.feel.FeelExpressions.BinaryExpression;
 import static de.redsix.dmncheck.feel.FeelExpressions.BooleanLiteral;
 import static de.redsix.dmncheck.feel.FeelExpressions.DateLiteral;
@@ -31,6 +16,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.Eithers;
+import de.redsix.dmncheck.util.Expression;
+import java.time.LocalDateTime;
+import java.time.Month;
+import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
+import org.camunda.bpm.model.dmn.instance.LiteralExpression;
+import org.jparsec.error.ParserException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 
 class FeelParserTest {
 
@@ -135,9 +134,7 @@ class FeelParserTest {
     void shouldHandleWhitespaceCorrectly() {
         final FeelExpression expression = FeelParser.PARSER.parse("2 * 3");
 
-        final FeelExpression expectedExpression = BinaryExpression(
-                IntegerLiteral(2), Operator.MUL, IntegerLiteral(3)
-        );
+        final FeelExpression expectedExpression = BinaryExpression(IntegerLiteral(2), Operator.MUL, IntegerLiteral(3));
 
         assertEquals(expectedExpression, expression);
     }
@@ -147,9 +144,8 @@ class FeelParserTest {
     void shouldParseArithmeticExpressions(String input, Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = BinaryExpression(
-                IntegerLiteral(2), expectedOperator, IntegerLiteral(3)
-        );
+        final FeelExpression expectedExpression =
+                BinaryExpression(IntegerLiteral(2), expectedOperator, IntegerLiteral(3));
 
         assertEquals(expectedExpression, expression);
     }
@@ -159,9 +155,8 @@ class FeelParserTest {
     void shouldParseConjunctionAndDisjunction(String input, Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = BinaryExpression(
-                BooleanLiteral(true), expectedOperator, BooleanLiteral(false)
-        );
+        final FeelExpression expectedExpression =
+                BinaryExpression(BooleanLiteral(true), expectedOperator, BooleanLiteral(false));
 
         assertEquals(expectedExpression, expression);
     }
@@ -170,9 +165,8 @@ class FeelParserTest {
     void shouldParseArithmeticExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("4 + x");
 
-        final FeelExpression expectedExpression = BinaryExpression(
-                IntegerLiteral(4), Operator.ADD, VariableLiteral("x")
-        );
+        final FeelExpression expectedExpression =
+                BinaryExpression(IntegerLiteral(4), Operator.ADD, VariableLiteral("x"));
 
         assertEquals(expectedExpression, expression);
     }
@@ -198,21 +192,22 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({
-            "[1..2], true, 1, 2, true",
-            "(1..2], false, 1, 2, true",
-            "[1..2), true, 1, 2, false",
-            "[1..2[, true, 1, 2, false",
-            "]1..2], false, 1, 2, true",
-            "(1..2), false, 1, 2, false",
-            "]1..2), false, 1, 2, false",
-            "]1..2[, false, 1, 2, false",
-            "(1..2[, false, 1, 2, false"
+        "[1..2], true, 1, 2, true",
+        "(1..2], false, 1, 2, true",
+        "[1..2), true, 1, 2, false",
+        "[1..2[, true, 1, 2, false",
+        "]1..2], false, 1, 2, true",
+        "(1..2), false, 1, 2, false",
+        "]1..2), false, 1, 2, false",
+        "]1..2[, false, 1, 2, false",
+        "(1..2[, false, 1, 2, false"
     })
-    void shouldParseRangeExpression(String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) {
+    void shouldParseRangeExpression(
+            String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = RangeExpression(isLeftInclusive, IntegerLiteral(lowerBound),
-                IntegerLiteral(upperBound), isRightInclusive);
+        final FeelExpression expectedExpression = RangeExpression(
+                isLeftInclusive, IntegerLiteral(lowerBound), IntegerLiteral(upperBound), isRightInclusive);
 
         assertEquals(expectedExpression, expression);
     }
@@ -221,8 +216,7 @@ class FeelParserTest {
     void shouldParseDoublesInRangeExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("[0.5..1.5]");
 
-        final FeelExpression expectedExpression = RangeExpression(true, DoubleLiteral(0.5),
-                DoubleLiteral(1.5), true);
+        final FeelExpression expectedExpression = RangeExpression(true, DoubleLiteral(0.5), DoubleLiteral(1.5), true);
 
         assertEquals(expectedExpression, expression);
     }
@@ -231,8 +225,7 @@ class FeelParserTest {
     void shouldParseRangeExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("[1..x]");
 
-        final FeelExpression expectedExpression = RangeExpression(true, IntegerLiteral(1),
-                VariableLiteral("x"), true);
+        final FeelExpression expectedExpression = RangeExpression(true, IntegerLiteral(1), VariableLiteral("x"), true);
 
         assertEquals(expectedExpression, expression);
     }
@@ -243,8 +236,7 @@ class FeelParserTest {
 
         final FeelExpression expectedExpression = DisjunctionExpression(
                 UnaryExpression(Operator.LT, IntegerLiteral(3)),
-                DisjunctionExpression(UnaryExpression(Operator.GT, IntegerLiteral(100)),
-                        IntegerLiteral(42)));
+                DisjunctionExpression(UnaryExpression(Operator.GT, IntegerLiteral(100)), IntegerLiteral(42)));
 
         assertEquals(expectedExpression, expression);
     }
@@ -254,8 +246,7 @@ class FeelParserTest {
         final FeelExpression expression = FeelParser.PARSER.parse("\"Spareribs\",\"Steak\",\"Stew\"");
 
         final FeelExpression expectedExpression = DisjunctionExpression(
-                StringLiteral("Spareribs"),
-                DisjunctionExpression(StringLiteral("Steak"), StringLiteral("Stew")));
+                StringLiteral("Spareribs"), DisjunctionExpression(StringLiteral("Steak"), StringLiteral("Stew")));
 
         assertEquals(expectedExpression, expression);
     }
@@ -292,9 +283,7 @@ class FeelParserTest {
                 IntegerLiteral(10),
                 DisjunctionExpression(
                         RangeExpression(true, IntegerLiteral(20), IntegerLiteral(30), true),
-                        DisjunctionExpression(
-                                UnaryExpression(Operator.GT, IntegerLiteral(10)),
-                                IntegerLiteral(42))));
+                        DisjunctionExpression(UnaryExpression(Operator.GT, IntegerLiteral(10)), IntegerLiteral(42))));
 
         assertEquals(expectedExpression, expression);
     }
@@ -303,7 +292,8 @@ class FeelParserTest {
     void shouldParseExpressionContainingNot() {
         final FeelExpression expression = FeelParser.PARSER.parse("not([1..4],[6..9])");
 
-        final FeelExpression expectedExpression = UnaryExpression(Operator.NOT,
+        final FeelExpression expectedExpression = UnaryExpression(
+                Operator.NOT,
                 DisjunctionExpression(
                         RangeExpression(true, IntegerLiteral(1), IntegerLiteral(4), true),
                         RangeExpression(true, IntegerLiteral(6), IntegerLiteral(9), true)));
@@ -313,7 +303,8 @@ class FeelParserTest {
 
     @Test
     void shouldNotParseNestedNegations() {
-        final Throwable throwable = assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("not(not(true))"));
+        final Throwable throwable =
+                assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("not(not(true))"));
         assertEquals("Negations cannot be nested in FEEL expressions.\nline 1, column 15", throwable.getMessage());
     }
 
@@ -330,9 +321,11 @@ class FeelParserTest {
         final FeelExpression expression = FeelParser.PARSER.parse(
                 "[date and time(\"2015-11-30T12:00:00\")..date and time(\"2015-12-01T12:00:00\")]");
 
-        final FeelExpression expectedExpression = RangeExpression(true,
+        final FeelExpression expectedExpression = RangeExpression(
+                true,
                 DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)),
-                DateLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)), true);
+                DateLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)),
+                true);
         assertEquals(expectedExpression, expression);
     }
 

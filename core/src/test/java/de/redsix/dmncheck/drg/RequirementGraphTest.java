@@ -1,10 +1,10 @@
 package de.redsix.dmncheck.drg;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequirementGraphTest {
 
@@ -20,5 +20,4 @@ class RequirementGraphTest {
         assertTrue(requirementGraph.vertexSet().isEmpty());
         assertTrue(requirementGraph.edgeSet().isEmpty());
     }
-
 }

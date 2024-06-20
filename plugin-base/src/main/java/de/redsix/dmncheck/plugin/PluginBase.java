@@ -5,9 +5,6 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.ValidatorLoader;
 import de.redsix.dmncheck.validators.core.Validator;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,10 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.camunda.bpm.model.dmn.Dmn;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 
 public interface PluginBase {
 
@@ -39,7 +37,8 @@ public interface PluginBase {
     boolean failOnWarning();
 
     default boolean validate() {
-        final List<Path> searchPathObjects = getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+        final List<Path> searchPathObjects =
+                getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
 
         return testFiles(filesToTest);
@@ -71,11 +70,9 @@ public interface PluginBase {
                     errors.add(Severity.WARNING);
                 }
 
-                encounteredError = validationResults.stream()
-                            .anyMatch(result -> errors.contains(result.getSeverity()));
+                encounteredError = validationResults.stream().anyMatch(result -> errors.contains(result.getSeverity()));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unkown Error"));
             encounteredError = true;
         }
@@ -85,35 +82,37 @@ public interface PluginBase {
 
     default List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return getValidators().stream()
-                              .flatMap(validator -> validator.apply(dmnModelInstance).stream())
-                              .collect(Collectors.toList());
+                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
+                .collect(Collectors.toList());
     }
 
     default List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
         final List<Path> fileNames = getFileNames(searchPaths);
         final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
-        return files.stream().filter(file -> {
-            if (getExcludeList().contains(file.getName())) {
-                getPluginLogger().info.accept("Skipped File: " + file);
-                return false;
-            } else {
-                return true;
-            }
-        }).collect(Collectors.toList());
+        return files.stream()
+                .filter(file -> {
+                    if (getExcludeList().contains(file.getName())) {
+                        getPluginLogger().info.accept("Skipped File: " + file);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     default List<Path> getFileNames(final List<Path> dirs) {
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**.dmn");
 
-        return dirs.stream().flatMap(dir -> {
-            try {
-                return Files.walk(dir)
-                            .filter(Files::isRegularFile)
-                            .filter(matcher::matches);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not determine DMN files.", e);
-            }
-        }).collect(Collectors.toList());
+        return dirs.stream()
+                .flatMap(dir -> {
+                    try {
+                        return Files.walk(dir).filter(Files::isRegularFile).filter(matcher::matches);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Could not determine DMN files.", e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     default List<Validator> getValidators() {
@@ -132,5 +131,4 @@ public interface PluginBase {
                 .toArray(URL[]::new);
         ProjectClassLoader.INSTANCE.classLoader = new URLClassLoader(urlProjectClasspath);
     }
-
 }

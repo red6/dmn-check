@@ -1,19 +1,18 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.instance.Output;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
+import org.camunda.bpm.model.dmn.instance.Output;
+import org.junit.jupiter.api.Test;
+
 class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
-    
+
     private final OutputTypeDeclarationValidator testee = new OutputTypeDeclarationValidator();
 
     @Test
@@ -28,8 +27,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Output has no type", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -43,10 +41,10 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test

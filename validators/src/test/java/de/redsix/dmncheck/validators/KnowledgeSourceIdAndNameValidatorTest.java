@@ -1,18 +1,17 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
-    
+
     private final KnowledgeSourceIdAndNameValidator testee = new KnowledgeSourceIdAndNameValidator();
 
     private KnowledgeSource knowledgeSource;
@@ -35,8 +34,7 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A knowledge source has no id.", validationResult.getMessage()),
                 () -> assertEquals(knowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -51,8 +49,7 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A knowledge source has no name.", validationResult.getMessage()),
                 () -> assertEquals(knowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test

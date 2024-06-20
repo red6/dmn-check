@@ -1,17 +1,16 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputExpression;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
+import org.camunda.bpm.model.dmn.instance.Input;
+import org.camunda.bpm.model.dmn.instance.InputExpression;
+import org.junit.jupiter.api.Test;
 
 class InputTypeDeclarationValidatorTest extends WithDecisionTable {
 
@@ -31,8 +30,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("InputExpression has no type", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -48,10 +46,10 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
+                () -> assertEquals(
+                        "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -67,10 +65,10 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("TOP is an internal type and cannot be used in declarations.", validationResult.getMessage()),
+                () -> assertEquals(
+                        "TOP is an internal type and cannot be used in declarations.", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test

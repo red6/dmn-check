@@ -2,45 +2,47 @@ package de.redsix.dmncheck.plugin;
 
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.OutputEntry;
-import org.camunda.bpm.model.dmn.instance.Rule;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.camunda.bpm.model.dmn.instance.InputEntry;
+import org.camunda.bpm.model.dmn.instance.OutputEntry;
+import org.camunda.bpm.model.dmn.instance.Rule;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public final class PrettyPrintValidationResults {
 
-    private PrettyPrintValidationResults() {
-
-    }
+    private PrettyPrintValidationResults() {}
 
     public static class PluginLogger {
         protected final Consumer<CharSequence> info;
         protected final Consumer<CharSequence> warn;
         protected final Consumer<CharSequence> error;
 
-        public PluginLogger(final Consumer<CharSequence> info, final Consumer<CharSequence> warn, final Consumer<CharSequence> error) {
+        public PluginLogger(
+                final Consumer<CharSequence> info,
+                final Consumer<CharSequence> warn,
+                final Consumer<CharSequence> error) {
             this.info = info;
             this.warn = warn;
             this.error = error;
         }
     }
-    public static void logPrettified(final File file, final List<ValidationResult> validationResults, final PluginLogger log) {
+
+    public static void logPrettified(
+            final File file, final List<ValidationResult> validationResults, final PluginLogger log) {
         log.info.accept("Validation results for file " + file.getAbsolutePath());
 
-        validationResults.sort(Comparator.comparing(ValidationResult::getSeverity).reversed());
+        validationResults.sort(
+                Comparator.comparing(ValidationResult::getSeverity).reversed());
 
         for (ValidationResult validationResult : validationResults) {
-            final String errorMessage =
-                    "Element '" + delegate(validationResult.getElement()) + "'" + " of type '" + validationResult.getElement()
-                                                                                                                 .getElementType().getTypeName() + "'" + " has the following validation result: " + validationResult
-                            .getMessage();
+            final String errorMessage = "Element '" + delegate(validationResult.getElement()) + "'" + " of type '"
+                    + validationResult.getElement().getElementType().getTypeName() + "'"
+                    + " has the following validation result: " + validationResult.getMessage();
             getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
         }
     }
@@ -54,8 +56,10 @@ public final class PrettyPrintValidationResults {
     }
 
     private static String prettify(final Rule rule) {
-        return Stream.concat(rule.getInputEntries().stream().map(InputEntry::getTextContent),
-                             rule.getOutputEntries().stream().map(OutputEntry::getTextContent)).collect(Collectors.joining(","));
+        return Stream.concat(
+                        rule.getInputEntries().stream().map(InputEntry::getTextContent),
+                        rule.getOutputEntries().stream().map(OutputEntry::getTextContent))
+                .collect(Collectors.joining(","));
     }
 
     private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {

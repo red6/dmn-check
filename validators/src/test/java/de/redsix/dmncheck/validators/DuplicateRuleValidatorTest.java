@@ -1,8 +1,13 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.HitPolicy;
 import org.camunda.bpm.model.dmn.instance.InputEntry;
 import org.camunda.bpm.model.dmn.instance.OutputEntry;
@@ -11,19 +16,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class DuplicateRuleValidatorTest extends WithDecisionTable {
 
     private final DuplicateRuleValidator testee = new DuplicateRuleValidator();
 
     @ParameterizedTest
-    @CsvSource({"COLLECT, WARNING", "UNIQUE, ERROR", "FIRST, ERROR", "PRIORITY, ERROR", "ANY, ERROR", "RULE_ORDER, ERROR",
-        "OUTPUT_ORDER, ERROR"})
+    @CsvSource({
+        "COLLECT, WARNING",
+        "UNIQUE, ERROR",
+        "FIRST, ERROR",
+        "PRIORITY, ERROR",
+        "ANY, ERROR",
+        "RULE_ORDER, ERROR",
+        "OUTPUT_ORDER, ERROR"
+    })
     void shouldDetectDuplicateRule(final String hitpolicy, final String severity) {
         decisionTable.setHitPolicy(HitPolicy.valueOf(hitpolicy));
 
@@ -58,8 +64,7 @@ class DuplicateRuleValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Rule is defined more than once", validationResult.getMessage()),
                 () -> assertEquals(rule2, validationResult.getElement()),
-                () -> assertEquals(Severity.valueOf(severity), validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.valueOf(severity), validationResult.getSeverity()));
     }
 
     @Test

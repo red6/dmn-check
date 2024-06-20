@@ -5,14 +5,11 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 /**
  * A validation result consists of the following:
  *
- *  1) A message that describes the validation result
- *  2) A severity indicating how severe the result is
- *  3) A reference to the DMN element that caused result
+ * <p>1) A message that describes the validation result 2) A severity indicating how severe the result is 3) A reference
+ * to the DMN element that caused result
  *
- * In this context a validation result always describes
- * an error or a warning. There is currently no way to
- * express positive validation results, except returning
- * no validation results at all.
+ * <p>In this context a validation result always describes an error or a warning. There is currently no way to express
+ * positive validation results, except returning no validation results at all.
  */
 public class ValidationResult {
 
@@ -99,21 +96,26 @@ public class ValidationResult {
 
         public interface SeverityStep extends ElementStep {
             ElementStep severity(Severity severity);
+
             String getMessage();
         }
 
         public interface ElementStep {
             BuildStep element(ModelElementInstance element);
+
             Severity getSeverity();
+
             String getMessage();
         }
 
         public interface BuildStep {
             ModelElementInstance getElement();
+
             Severity getSeverity();
+
             String getMessage();
+
             ValidationResult build();
         }
-
     }
 }

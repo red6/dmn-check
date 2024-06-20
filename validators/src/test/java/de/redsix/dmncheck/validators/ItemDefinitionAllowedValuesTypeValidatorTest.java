@@ -1,17 +1,16 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithItemDefinition;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.AllowedValues;
 import org.camunda.bpm.model.dmn.instance.ItemComponent;
 import org.camunda.bpm.model.dmn.instance.TypeRef;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
 
@@ -79,11 +78,10 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-            () -> assertEquals("ItemDefintion uses AllowedValues without a type declaration",
-                               validationResult.getMessage()),
-            () -> assertEquals(itemDefinition, validationResult.getElement()),
-            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(
+                        "ItemDefintion uses AllowedValues without a type declaration", validationResult.getMessage()),
+                () -> assertEquals(itemDefinition, validationResult.getElement()),
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -102,11 +100,10 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Type of item definition does not match type of allowed values",
-                        validationResult.getMessage()),
+                () -> assertEquals(
+                        "Type of item definition does not match type of allowed values", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -126,11 +123,8 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.get(0);
         assertAll(
-                () -> assertEquals("Expression language 'javascript' not supported",
-                        validationResult.getMessage()),
+                () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
-
 }

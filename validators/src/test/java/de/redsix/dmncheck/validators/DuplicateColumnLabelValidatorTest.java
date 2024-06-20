@@ -1,18 +1,17 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.ValidationResult;
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
-    
+
     private final DuplicateColumnLabelValidator testee = new DuplicateColumnLabelValidator();
 
     @Test
@@ -47,8 +46,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -83,8 +81,6 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
-
 }
