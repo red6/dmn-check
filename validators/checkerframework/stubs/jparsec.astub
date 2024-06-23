@@ -1,0 +1,5 @@
+import org.checkerframework.checker.regex.qual.Regex;
+package org.jparsec.pattern;
+public final class Patterns {
+  public static Pattern regex(@Regex String s);
+}
