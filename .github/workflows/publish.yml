@@ -16,7 +16,7 @@ jobs:
           egress-policy: audit
 
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@3e5e7209801629febdcf75541a4898710d28df9a # v1.2.0
+        uses: nexus-actions/create-nexus-staging-repo@990063f02160c633c168037b8b3e8585c76469fe # v1.3.0
         with:
           # The username you use to connect to Sonatype's Jira
           username: ${{ secrets.OSSRH_USERNAME }}
