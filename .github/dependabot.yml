@@ -57,3 +57,8 @@ updates:
     open-pull-requests-limit: 0
     target-branch: "release/1.2.x"
 
+
+  - package-ecosystem: npm
+    directory: /camunda-modeler-plugin
+    schedule:
+      interval: daily
