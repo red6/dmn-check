@@ -22,6 +22,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "min-dash": "^3.8.1"
+    "min-dash": "^4.2.1"
   }
 }
