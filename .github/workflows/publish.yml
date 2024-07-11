@@ -108,7 +108,7 @@ jobs:
           staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
       - name: Release
         if: ${{ needs.publish-dmn-check.result == 'success' && needs.publish-gradle-plugin.result == 'success' }}
-        uses: nexus-actions/release-nexus-staging-repo@36161f25ef98cc3821eabb11ab742d2e9d479e52 # v1.2.0
+        uses: nexus-actions/release-nexus-staging-repo@6632a81bfab63557b2717e8423b0a620ae5aa414 # v1.3.0
         with:
           username: ${{ secrets.OSSRH_USERNAME }}
           password: ${{ secrets.OSSRH_TOKEN }}
