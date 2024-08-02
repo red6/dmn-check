@@ -10,8 +10,11 @@ group 'de.redsix'
 description 'Gradle Plugin for the DMN analysis tool dmn-check'
 version '1.3.0'
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenLocal()
@@ -19,9 +22,9 @@ repositories {
 }
 
 dependencies {
-    compile group: 'de.redsix', name: 'dmn-check-plugin-base', version: project.version
+    implementation group: 'de.redsix', name: 'dmn-check-plugin-base', version: project.version
 
-    testCompile group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
 gradlePlugin {
@@ -44,6 +47,11 @@ javadoc {
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 }
 
 nexusPublishing {
@@ -94,25 +102,22 @@ signing {
     //make signing required unless for SNAPSHOT releases or if signing is explicitly skipped
     required { !project.version.endsWith("-SNAPSHOT") && !project.hasProperty("skipSigning") }
 
-    afterEvaluate {
-        //look for property 'signingKey'
-        if (project.findProperty("signingKey")) {
-            //If required, read a sub-key specified by its ID in property signingKeyId
-            //def signingKeyId = findProperty("signingKeyId")
-            //read property 'signingKey'
-            def signingKey = findProperty("signingKey")
-            //read property 'signingPassword'
-            def signingPassword = findProperty("signingPassword")
-            //Select to use in-memory ascii-armored keys
-            useInMemoryPgpKeys(signingKey, signingPassword)
-            //Only if also using signingKeyId
-            //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    //look for property 'signingKey'
+    if (project.findProperty("signingKey")) {
+        //If required, read a sub-key specified by its ID in property signingKeyId
+        //def signingKeyId = findProperty("signingKeyId")
+        //read property 'signingKey'
+        def signingKey = findProperty("signingKey")
+        //read property 'signingPassword'
+        def signingPassword = findProperty("signingPassword")
+        //Select to use in-memory ascii-armored keys
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        //Only if also using signingKeyId
+        //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
-            //Apply signing to publication identity 'publishing.publications.maven'
-            sign publishing.publications.pluginMaven
-            sign publishing.publications.simplePluginPluginMarkerMaven
-        } else {
-            println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
-        }
+        //Apply signing to publication identity 'publishing.publications.maven'
+        sign publishing.publications.pluginMaven
+    }else {
+        println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
     }
 }

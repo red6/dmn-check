@@ -1,14 +1,13 @@
 package de.redsix.dmncheck.cli;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import picocli.CommandLine;
 
 class MainTest {
 
@@ -18,7 +17,6 @@ class MainTest {
     void setupCommand() {
         Main app = new Main();
         cmd = new CommandLine(app);
-
     }
 
     @Test
@@ -69,7 +67,8 @@ class MainTest {
 
         cmd.execute("--validatorClasses=FancyValidator,DreamValidator");
         Main main = cmd.getCommand();
-        assertArrayEquals(List.of("FancyValidator", "DreamValidator").toArray(new String[0]), main.getValidatorClasses());
+        assertArrayEquals(
+                List.of("FancyValidator", "DreamValidator").toArray(new String[0]), main.getValidatorClasses());
     }
 
     @Test
@@ -81,5 +80,4 @@ class MainTest {
         Main main = cmd.getCommand();
         assertTrue(main.failOnWarning());
     }
-
 }

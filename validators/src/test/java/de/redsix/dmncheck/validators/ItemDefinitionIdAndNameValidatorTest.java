@@ -1,13 +1,12 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithItemDefinition;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
 
@@ -25,8 +24,7 @@ class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
         assertAll(
                 () -> assertEquals("A item definition has no id.", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -41,8 +39,7 @@ class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
         assertAll(
                 () -> assertEquals("A item definition has no name.", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -54,5 +51,4 @@ class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
 
         assertTrue(validationResults.isEmpty());
     }
-
 }

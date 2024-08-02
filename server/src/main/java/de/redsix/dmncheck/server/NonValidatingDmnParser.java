@@ -10,5 +10,4 @@ public class NonValidatingDmnParser extends DmnParser {
         // Do not validate against the xml schema for now. Errors from the xml validation are hard to map back
         // into the editor.
     }
-
 }

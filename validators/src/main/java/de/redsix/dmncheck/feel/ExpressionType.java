@@ -1,28 +1,35 @@
 package de.redsix.dmncheck.feel;
 
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.derive4j.Data;
-
-import java.util.Arrays;
-
 import static de.redsix.dmncheck.feel.ExpressionTypes.DOUBLE;
 import static de.redsix.dmncheck.feel.ExpressionTypes.INTEGER;
 import static de.redsix.dmncheck.feel.ExpressionTypes.LONG;
 import static de.redsix.dmncheck.feel.ExpressionTypes.TOP;
+
+import java.util.Arrays;
+import org.camunda.bpm.model.dmn.instance.ItemDefinition;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.derive4j.Data;
 
 @Data
 public abstract class ExpressionType {
 
     public interface Cases<R> {
         R TOP();
+
         R STRING();
+
         R BOOLEAN();
+
         R INTEGER();
+
         R LONG();
+
         R DOUBLE();
+
         R DATE();
+
         R ENUM(String className);
+
         R ITEMDEFINITION(ItemDefinition itemDefinition);
     }
 
@@ -38,11 +45,14 @@ public abstract class ExpressionType {
     public abstract String toString();
 
     public static boolean isNumeric(final ExpressionType givenType) {
-        return !TOP().equals(givenType) && Arrays.asList(INTEGER(), LONG(), DOUBLE()).contains(givenType);
+        return !TOP().equals(givenType)
+                && Arrays.asList(INTEGER(), LONG(), DOUBLE()).contains(givenType);
     }
 
     public boolean isSubtypeOf(final ExpressionType supertype) {
-        return reflexivity(this, supertype) || TOPisTopElement(supertype) || INTEGERsubtypeOfLONG(this, supertype)
+        return reflexivity(this, supertype)
+                || TOPisTopElement(supertype)
+                || INTEGERsubtypeOfLONG(this, supertype)
                 || INTEGERsubtypeOfDOUBLE(this, supertype);
     }
 

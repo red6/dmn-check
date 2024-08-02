@@ -11,10 +11,15 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
+        with:
+          egress-policy: audit
+
       - name: JIB container build and publish
-        uses: pSub/jib-container-publish.yml@main
+        uses: MathieuSoysal/jib-container-publish.yml@8df13913445f036bf93d0450669dbfbac2cac541 # main
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          java-version: 11
+          java-version: 17
           module: cli
           main-class: de.redsix.dmncheck.cli.Main

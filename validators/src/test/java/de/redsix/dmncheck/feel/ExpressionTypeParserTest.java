@@ -1,14 +1,13 @@
 package de.redsix.dmncheck.feel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.redsix.dmncheck.validators.util.TestEnum;
+import java.util.Collections;
+import java.util.List;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExpressionTypeParserTest {
 
@@ -82,7 +81,8 @@ class ExpressionTypeParserTest {
     void shouldParseEnum() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse(TestEnum.class.getCanonicalName());
+        final ExpressionType type =
+                ExpressionTypeParser.PARSER(itemDefinitions).parse(TestEnum.class.getCanonicalName());
 
         final ExpressionType expectedType = ExpressionTypes.ENUM(TestEnum.class.getCanonicalName());
 

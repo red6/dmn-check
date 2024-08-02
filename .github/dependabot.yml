@@ -16,3 +16,49 @@ updates:
     directory: "/gradle-plugin"
     schedule:
       interval: "monthly"
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    # Setting open-pull-requests-limit to 0 means that dependabot will not
+    # update regular dependencies on this target branch, but still provide
+    # security updates for our gomod dependencies
+    open-pull-requests-limit: 0
+    target-branch: "release/1.3.x"
+
+  - package-ecosystem: "gradle"
+    directory: "/gradle-plugin"
+    schedule:
+      interval: "monthly"
+    # Setting open-pull-requests-limit to 0 means that dependabot will not
+    # update regular dependencies on this target branch, but still provide
+    # security updates for our gomod dependencies
+    open-pull-requests-limit: 0
+    target-branch: "release/1.3.x"
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    # Setting open-pull-requests-limit to 0 means that dependabot will not
+    # update regular dependencies on this target branch, but still provide
+    # security updates for our gomod dependencies
+    open-pull-requests-limit: 0
+    target-branch: "release/1.2.x"
+
+  - package-ecosystem: "gradle"
+    directory: "/gradle-plugin"
+    schedule:
+      interval: "monthly"
+    # Setting open-pull-requests-limit to 0 means that dependabot will not
+    # update regular dependencies on this target branch, but still provide
+    # security updates for our gomod dependencies
+    open-pull-requests-limit: 0
+    target-branch: "release/1.2.x"
+
+
+  - package-ecosystem: npm
+    directory: /camunda-modeler-plugin
+    schedule:
+      interval: daily

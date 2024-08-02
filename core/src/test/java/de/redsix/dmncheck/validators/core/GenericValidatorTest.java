@@ -1,7 +1,15 @@
 package de.redsix.dmncheck.validators.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
+import java.util.Collections;
+import java.util.List;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.AllowedAnswers;
@@ -20,15 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class GenericValidatorTest {
@@ -36,14 +35,19 @@ class GenericValidatorTest {
     @Test
     void anEmptyModelShouldProduceNoValidationResults() {
         // Arrange
-        final GenericValidator<ModelElementInstance, ModelElementInstance> genericValidator = createTestee(ModelElementInstance.class);
+        final GenericValidator<ModelElementInstance, ModelElementInstance> genericValidator =
+                createTestee(ModelElementInstance.class);
 
         final DmnModelInstance dmnModelInstance = Dmn.createEmptyModel();
 
         when(genericValidator.isApplicable(any(), any())).thenReturn(true);
 
         final ModelElementInstance modelElementInstance = Mockito.mock(ModelElementInstance.class);
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(modelElementInstance).build();
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(modelElementInstance)
+                .build();
         when(genericValidator.validate(any(), any())).thenReturn(Collections.singletonList(error));
 
         // Act
@@ -52,7 +56,6 @@ class GenericValidatorTest {
         // Assert
         assertTrue(validationResults.isEmpty());
     }
-
 
     @Test
     void allElementsApplicableEverythingIsValid() {
@@ -64,8 +67,10 @@ class GenericValidatorTest {
         final Definitions definitions = dmnModelInstance.newInstance(Definitions.class);
         dmnModelInstance.setDefinitions(definitions);
 
-        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class))).thenReturn(true);
-        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class))).thenReturn(Collections.emptyList());
+        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(true);
+        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(Collections.emptyList());
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -84,10 +89,16 @@ class GenericValidatorTest {
         final Definitions definitions = dmnModelInstance.newInstance(Definitions.class);
         dmnModelInstance.setDefinitions(definitions);
 
-        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class))).thenReturn(false);
+        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(false);
 
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(definitions).build();
-        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class))).thenReturn(Collections.singletonList(error));
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(definitions)
+                .build();
+        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(Collections.singletonList(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -106,10 +117,16 @@ class GenericValidatorTest {
         final Definitions definitions = dmnModelInstance.newInstance(Definitions.class);
         dmnModelInstance.setDefinitions(definitions);
 
-        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class))).thenReturn(true);
+        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(true);
 
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(definitions).build();
-        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class))).thenReturn(Collections.singletonList(error));
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(definitions)
+                .build();
+        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(Collections.singletonList(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -129,10 +146,16 @@ class GenericValidatorTest {
         final Definitions definitions = dmnModelInstance.newInstance(Definitions.class);
         dmnModelInstance.setDefinitions(definitions);
 
-        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class))).thenReturn(true);
+        when(genericValidator.isApplicable(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(true);
 
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(definitions).build();
-        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class))).thenReturn(Collections.singletonList(error));
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(definitions)
+                .build();
+        when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
+                .thenReturn(Collections.singletonList(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -164,10 +187,16 @@ class GenericValidatorTest {
         final Question question = dmnModelInstance.newInstance(Question.class);
         decisionWithQuestion.setQuestion(question);
 
-        when(genericValidator.isApplicable(any(Decision.class), any(ValidationContext.class))).thenReturn(true);
+        when(genericValidator.isApplicable(any(Decision.class), any(ValidationContext.class)))
+                .thenReturn(true);
 
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(question).build();
-        when(genericValidator.validate(any(Question.class), any(ValidationContext.class))).thenReturn(Collections.singletonList(error));
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(question)
+                .build();
+        when(genericValidator.validate(any(Question.class), any(ValidationContext.class)))
+                .thenReturn(Collections.singletonList(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -176,7 +205,6 @@ class GenericValidatorTest {
         assertEquals(1, validationResults.size());
         assertEquals(error, validationResults.get(0));
     }
-
 
     @Test
     void validatesOnlyChildelementsOfApplicaleElements() {
@@ -205,10 +233,16 @@ class GenericValidatorTest {
         final Description inputDescription = dmnModelInstance.newInstance(Description.class);
         input.setDescription(inputDescription);
 
-        when(genericValidator.isApplicable(any(Rule.class), any(ValidationContext.class))).thenReturn(false);
+        when(genericValidator.isApplicable(any(Rule.class), any(ValidationContext.class)))
+                .thenReturn(false);
 
-        final ValidationResult error = ValidationResult.init.message("").severity(Severity.ERROR).element(ruleDescription).build();
-        when(genericValidator.validate(any(Description.class), any(ValidationContext.class))).thenReturn(Collections.singletonList(error));
+        final ValidationResult error = ValidationResult.init
+                .message("")
+                .severity(Severity.ERROR)
+                .element(ruleDescription)
+                .build();
+        when(genericValidator.validate(any(Description.class), any(ValidationContext.class)))
+                .thenReturn(Collections.singletonList(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -221,8 +255,8 @@ class GenericValidatorTest {
         return this.createTestee(clazz, clazz);
     }
 
-    private <S extends ModelElementInstance, T extends ModelElementInstance> GenericValidator<S, T> createTestee(Class<S> applicableClass,
-            Class<T> validationClass) {
+    private <S extends ModelElementInstance, T extends ModelElementInstance> GenericValidator<S, T> createTestee(
+            Class<S> applicableClass, Class<T> validationClass) {
 
         @SuppressWarnings("unchecked")
         final GenericValidator<S, T> genericValidator = (GenericValidator<S, T>) mock(GenericValidator.class);
@@ -232,5 +266,4 @@ class GenericValidatorTest {
 
         return genericValidator;
     }
-
 }

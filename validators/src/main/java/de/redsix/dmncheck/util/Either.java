@@ -1,16 +1,15 @@
 package de.redsix.dmncheck.util;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.derive4j.Data;
-import org.derive4j.Derive;
-import org.derive4j.Make;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.derive4j.Data;
+import org.derive4j.Derive;
+import org.derive4j.Make;
 
 @Data(value = @Derive(make = {Make.constructors, Make.caseOfMatching, Make.getters}))
 public abstract class Either<A, B> {

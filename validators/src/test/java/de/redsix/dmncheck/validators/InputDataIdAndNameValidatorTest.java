@@ -1,16 +1,15 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.camunda.bpm.model.dmn.instance.InputData;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
+import org.camunda.bpm.model.dmn.instance.InputData;
+import org.junit.jupiter.api.Test;
 
 class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
@@ -21,8 +20,10 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
 
-        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model programmatically using
+        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
+        // InputDataReferenceImpl. This issue
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
+        // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
@@ -36,8 +37,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A input has no id.", validationResult.getMessage()),
                 () -> assertEquals(inputData, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -45,8 +45,10 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
 
-        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model programmatically using
+        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
+        // InputDataReferenceImpl. This issue
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
+        // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
@@ -60,8 +62,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A input has no name.", validationResult.getMessage()),
                 () -> assertEquals(inputData, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -69,8 +70,10 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         final InputData inputData = modelInstance.newInstance(InputData.class);
         definitions.addChildElement(inputData);
 
-        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model programmatically using
+        // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
+        // InputDataReferenceImpl. This issue
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
+        // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 

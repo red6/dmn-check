@@ -1,18 +1,17 @@
 package de.redsix.dmncheck.validators;
 
-import de.redsix.dmncheck.result.Severity;
-import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.validators.util.WithDecisionTable;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.redsix.dmncheck.result.Severity;
+import de.redsix.dmncheck.result.ValidationResult;
+import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
 class DecisionIdAndNameValidatorTest extends WithDecisionTable {
-    
+
     private final DecisionIdAndNameValidator testee = new DecisionIdAndNameValidator();
 
     @Test
@@ -27,8 +26,7 @@ class DecisionIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A decision has no id.", validationResult.getMessage()),
                 () -> assertEquals(decision, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
 
     @Test
@@ -43,8 +41,7 @@ class DecisionIdAndNameValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("A decision has no name.", validationResult.getMessage()),
                 () -> assertEquals(decision, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test

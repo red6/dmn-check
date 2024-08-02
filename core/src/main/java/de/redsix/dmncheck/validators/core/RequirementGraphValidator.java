@@ -2,15 +2,11 @@ package de.redsix.dmncheck.validators.core;
 
 import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-
 import java.util.Collections;
 import java.util.List;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 
-/**
- * Generic validator that facilitates writing validations on graph-based representation of the DMN model instance.
- *
- */
+/** Generic validator that facilitates writing validations on graph-based representation of the DMN model instance. */
 public abstract class RequirementGraphValidator implements Validator {
 
     /**
@@ -28,10 +24,9 @@ public abstract class RequirementGraphValidator implements Validator {
             return validate(requirementGraph);
         } catch (IllegalArgumentException exception) {
             return Collections.singletonList(ValidationResult.init
-                                                     .message("Error while construction requirement graph: " + exception.getMessage())
-                                                     .element(dmnModelInstance.getDefinitions())
-                                                     .build());
+                    .message("Error while construction requirement graph: " + exception.getMessage())
+                    .element(dmnModelInstance.getDefinitions())
+                    .build());
         }
     }
-
 }

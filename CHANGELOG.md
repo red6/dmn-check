@@ -21,13 +21,13 @@ Features:
 
 Bugfixes:
 
- - Only attempt to verify FEEL expressions and warn that other expression languages are currently unsupported (#83, #88, #98), thank you @nairagit.
+ - Only attempt to verify FEEL expressions and warn that other expression languages are currently unsupported (#83, #88, #98), thank you, @nairagit.
 
 ## 1.2.2 (2022-03-30)
 
 Bugfixes:
 
- - Allow negative numbers in the typechecker (#87), thank you @kishorehs123.
+ - Allow negative numbers in the typechecker (#87), thank you, @kishorehs123.
 
 
 ## 1.2.1 (2021-10-01)
@@ -46,7 +46,7 @@ Features:
     Modeler. A demo version is live at https://dmn-check.pascal-wittmann.de/demo/.
   - A Gradle plugin that allows you to use dmn-check in your Gradle projects.
   - A maven module plugin-base that provides common functionality for build system plugins.
-  - Adds failOnWarning flag to support failing validation on Warning severity (#18), thank you Krzysztof Barczynski.
+  - Adds failOnWarning flag to support failing validation on Warning severity (#18), thank you, Krzysztof Barczynski.
 
 Bugfixes:
 
@@ -61,8 +61,8 @@ Features:
 
 Bugfixes:
 
-  - Support for ItemComponents in ItemDefintionAllowedValuesTypeValidator
-    An ItemDefintion can consist of multiple ItemComponent with their own
+  - Support for ItemComponents in ItemDefinitionAllowedValuesTypeValidator
+    An ItemDefinition can consist of multiple ItemComponent with their own
     AllowedValues. Now the AllowedValues in ItemComponents are typechecked 
     as well.
 

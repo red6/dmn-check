@@ -1,17 +1,16 @@
 package de.redsix.dmncheck.validators;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
+import java.util.List;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.Definitions;
 import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class NoDecisionPresentValidatorTest extends WithDecisionTable {
 
@@ -35,8 +34,7 @@ class NoDecisionPresentValidatorTest extends WithDecisionTable {
         assertAll(
                 () -> assertEquals("No decisions found", validationResult.getMessage()),
                 () -> assertEquals(definitionsWithOnlyOneKnowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
-        );
+                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }
 
     @Test
@@ -47,5 +45,4 @@ class NoDecisionPresentValidatorTest extends WithDecisionTable {
 
         assertEquals(0, validationResults.size());
     }
-
 }
