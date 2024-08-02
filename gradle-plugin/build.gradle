@@ -116,7 +116,7 @@ signing {
         //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
         //Apply signing to publication identity 'publishing.publications.maven'
-        sign publishing.publications.pluginMaven
+        sign publishing.publications
     }else {
         println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'
     }
