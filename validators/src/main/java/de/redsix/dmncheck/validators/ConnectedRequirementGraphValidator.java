@@ -42,8 +42,8 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                     .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
                     .collect(Collectors.toList());
         } else if (connectivityInspector.connectedSets().isEmpty()) {
-            // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of an
-            // other validator
+            // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of
+            // another validator
             return Collections.emptyList();
         } else {
             return reportUnconnectedComponents(drg, connectivityInspector);
@@ -61,9 +61,9 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
     }
 
     private List<ValidationResult> checkInAndOutputs(Decision sourceDecision, Decision targetDecision) {
-        return applyOnDecsionTable(
+        return applyOnDecisionTable(
                 sourceDecision,
-                sourceDecisionTable -> applyOnDecsionTable(targetDecision, targetDecisionTable -> {
+                sourceDecisionTable -> applyOnDecisionTable(targetDecision, targetDecisionTable -> {
                     final Either<ValidationResult.Builder.ElementStep, List<FeelExpression>> eitherInputExpressions =
                             targetDecisionTable.getInputs().stream()
                                     .map(Input::getInputExpression)
@@ -97,7 +97,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                 }));
     }
 
-    private List<ValidationResult> applyOnDecsionTable(
+    private List<ValidationResult> applyOnDecisionTable(
             Decision decision, Function<DecisionTable, List<ValidationResult>> validate) {
         final Collection<DecisionTable> decisionTables = decision.getChildElementsByType(DecisionTable.class);
 

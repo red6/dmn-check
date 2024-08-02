@@ -47,7 +47,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         // InputDataReferenceImpl. If we
         // do not do this and call InformationRequirement.setRequiredInput the id of our InputData node is associated
         // with an
-        // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However this issue
+        // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However, this issue
         // only occurs when
         // creating a DMN model programmatically using the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
@@ -162,7 +162,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldDetectUnconnectdDecisionGraphs() {
+    void shouldDetectUnconnectedDecisionGraphs() {
         final KnowledgeSource knowledgeSource = modelInstance.newInstance(KnowledgeSource.class);
         definitions.addChildElement(knowledgeSource);
 
@@ -196,7 +196,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldDetectUnconnectdDecision() {
+    void shouldDetectUnconnectedDecision() {
         final Decision otherDecision = modelInstance.newInstance(Decision.class);
         final DecisionTable otherDecisiontable = modelInstance.newInstance(DecisionTable.class);
         otherDecision.addChildElement(otherDecisiontable);

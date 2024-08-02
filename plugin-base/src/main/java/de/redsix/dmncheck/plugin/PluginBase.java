@@ -73,7 +73,7 @@ public interface PluginBase {
                 encounteredError = validationResults.stream().anyMatch(result -> errors.contains(result.getSeverity()));
             }
         } catch (Exception e) {
-            getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unkown Error"));
+            getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unknown Error"));
             encounteredError = true;
         }
 

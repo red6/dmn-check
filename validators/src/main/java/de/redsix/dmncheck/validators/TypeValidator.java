@@ -124,7 +124,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         if (clazz.isEnum()) {
             // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because
             // asSubclass introduces
-            // a fresh type variable. Therefore we cast the value to the correct type.
+            // a fresh type variable. Therefore, we cast the value to the correct type.
             // equality constraints: Class<? extends Enum<?>>
             // lower bounds: Class<CAP#1>
             return right((Class<? extends Enum<?>>) clazz);
