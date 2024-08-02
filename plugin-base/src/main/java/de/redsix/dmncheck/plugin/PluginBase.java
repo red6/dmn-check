@@ -88,7 +88,7 @@ public interface PluginBase {
 
     default List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
         final List<Path> fileNames = getFileNames(searchPaths);
-        final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
+        final List<File> files = fileNames.stream().map(Path::toFile).toList();
         return files.stream()
                 .filter(file -> {
                     if (getExcludeList().contains(file.getName())) {

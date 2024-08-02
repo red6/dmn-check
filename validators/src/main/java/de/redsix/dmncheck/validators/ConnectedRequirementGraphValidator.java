@@ -115,12 +115,12 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
             RequirementGraph drg, ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector) {
         final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
                 .filter(connectedSet -> connectedSet.size() == 1)
-                .collect(Collectors.toList());
+                .toList();
 
         if (connectedSetsOfSizeOne.isEmpty()) {
             final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
                     .filter(connectedSet -> connectedSet.size() > 1)
-                    .collect(Collectors.toList());
+                    .toList();
             return Collections.singletonList(ValidationResult.init
                     .message("Found unconnected requirement graphs: " + subgraphs)
                     .element(drg.getDefinitions())

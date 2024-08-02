@@ -39,7 +39,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                 .filter(rules -> rules.size() > 1)
                 .map(rules -> ValidationResult.init
                         .message("Rule is conflicting with rules "
-                                + rules.stream().skip(1).map(Rule::getId).collect(Collectors.toList()))
+                                + rules.stream().skip(1).map(Rule::getId).toList())
                         .severity(
                                 Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER)
                                                 .contains(decisionTable.getHitPolicy())

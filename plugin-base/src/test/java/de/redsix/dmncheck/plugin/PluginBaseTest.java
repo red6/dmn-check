@@ -60,7 +60,7 @@ class PluginBaseTest {
                 folder2.toAbsolutePath() + File.separator + "file2.txt");
 
         final List<String> allFileNames =
-                Stream.concat(dmnFileNames.stream(), txtFileNames.stream()).collect(Collectors.toList());
+                Stream.concat(dmnFileNames.stream(), txtFileNames.stream()).toList();
 
         for (String fileName : allFileNames) {
             File file = new File(fileName);
