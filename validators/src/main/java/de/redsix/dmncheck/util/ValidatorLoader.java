@@ -35,23 +35,24 @@ public class ValidatorLoader {
 
         inputParameterHash = Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes));
 
-        final ScanResult scanResult = new ClassGraph()
+        try (ScanResult scanResult = new ClassGraph()
                 .acceptClasses(Validator.class.getName())
                 .acceptPackages(VALIDATOR_CORE_PACKAGE)
                 .acceptPackagesNonRecursive(
                         packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_CORE_PACKAGE} : packages)
                 .acceptClasses(classes == null ? new String[] {} : classes)
-                .scan();
+                .scan()) {
 
-        final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
+            final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
 
-        validators = allValidatorClasses.loadClasses(Validator.class).stream()
-                .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
-                .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
-                .map(ValidatorLoader::instantiateValidator)
-                .collect(Collectors.toList());
+            validators = allValidatorClasses.loadClasses(Validator.class).stream()
+                    .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
+                    .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
+                    .map(ValidatorLoader::instantiateValidator)
+                    .collect(Collectors.toList());
 
-        return validators;
+            return validators;
+        }
     }
 
     private static Validator instantiateValidator(final Class<? extends Validator> validator) {
