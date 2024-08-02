@@ -53,7 +53,7 @@ jobs:
 
       - name: Publish package
         run: |
-          mvn clean install deploy \
+          mvn clean deploy \
             --batch-mode \
             --update-snapshots \
             --activate-profiles release \
