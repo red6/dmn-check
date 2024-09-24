@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
@@ -98,7 +97,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         final Enum<?>[] enumConstants = clazz.getEnumConstants();
         final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants)
                 .map(Enum::name)
-                .collect(Collectors.toList());
+                .toList();
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
         if (enumConstantNames.contains(value)) {
@@ -124,7 +123,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         if (clazz.isEnum()) {
             // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because
             // asSubclass introduces
-            // a fresh type variable. Therefore we cast the value to the correct type.
+            // a fresh type variable. Therefore, we cast the value to the correct type.
             // equality constraints: Class<? extends Enum<?>>
             // lower bounds: Class<CAP#1>
             return right((Class<? extends Enum<?>>) clazz);

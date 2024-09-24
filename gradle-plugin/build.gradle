@@ -10,8 +10,11 @@ group 'de.redsix'
 description 'Gradle Plugin for the DMN analysis tool dmn-check'
 version '1.4.0-SNAPSHOT'
 
-sourceCompatibility = 1.17
-targetCompatibility = 1.17
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenLocal()
@@ -114,7 +117,7 @@ signing {
             //useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
             //Apply signing to publication identity 'publishing.publications.maven'
-            sign publishing.publications.pluginMaven
+            sign publishing.publications
             sign publishing.publications.simplePluginPluginMarkerMaven
         } else {
             println 'WARNING: No property \'signingKey\' found. Artifact signing will be skipped.'

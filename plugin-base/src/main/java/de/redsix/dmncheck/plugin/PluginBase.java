@@ -73,7 +73,7 @@ public interface PluginBase {
                 encounteredError = validationResults.stream().anyMatch(result -> errors.contains(result.getSeverity()));
             }
         } catch (Exception e) {
-            getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unkown Error"));
+            getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unknown Error"));
             encounteredError = true;
         }
 
@@ -88,7 +88,7 @@ public interface PluginBase {
 
     default List<File> fetchFilesToTestFromSearchPaths(final List<Path> searchPaths) {
         final List<Path> fileNames = getFileNames(searchPaths);
-        final List<File> files = fileNames.stream().map(Path::toFile).collect(Collectors.toList());
+        final List<File> files = fileNames.stream().map(Path::toFile).toList();
         return files.stream()
                 .filter(file -> {
                     if (getExcludeList().contains(file.getName())) {

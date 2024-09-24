@@ -86,7 +86,6 @@ public final class FeelTypecheck {
                             "Operator " + operator + " expects boolean but got " + type)
                     .orElse(right(type));
             case NOT -> right(type);
-            default -> left(ValidationResult.init.message("Unexpected operand " + operator));
         };
     }
 

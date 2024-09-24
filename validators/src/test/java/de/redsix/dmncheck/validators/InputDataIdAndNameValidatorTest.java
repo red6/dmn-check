@@ -22,7 +22,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
         // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
         // InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
@@ -47,7 +47,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
         // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
         // InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
@@ -72,7 +72,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
         // We access the just created InputData node to ensure it is loaded as InputDataImpl instead of
         // InputDataReferenceImpl. This issue
-        // seems to be related to CAM-8888 and CAM-8889. However this issue only occurs when creating a DMN model
+        // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
         // the parser of camunda-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);

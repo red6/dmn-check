@@ -31,7 +31,7 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
 
     private <T> List<ValidationResult> validateColumn(
             DecisionTable decisionTable, Collection<T> columns, Function<T, String> getLabel) {
-        final List<String> labels = columns.stream().map(getLabel).collect(Collectors.toList());
+        final List<String> labels = columns.stream().map(getLabel).toList();
 
         return labels.stream()
                 .filter(label -> Collections.frequency(labels, label) > 1)

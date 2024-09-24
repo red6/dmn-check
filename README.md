@@ -104,11 +104,11 @@ might not work for different DMN implementations.
 
 ## Integrated in dmnmgr
 
-dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross-functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
 
 ## As a Docker container
 
-A Docker image containing `dmn-check` is available from the Github Container Registry and you can pull the latest version by executing
+A Docker image containing `dmn-check` is available from the GitHub Container Registry and you can pull the latest version by executing
 
     docker pull ghcr.io/red6/dmn-check:latest
 

@@ -53,7 +53,7 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
     }
 
     @Test
-    void shouldAllowKnowledgeSourceWithIdAndname() {
+    void shouldAllowKnowledgeSourceWithIdAndName() {
         knowledgeSource.setId("1");
         knowledgeSource.setName("Test");
 

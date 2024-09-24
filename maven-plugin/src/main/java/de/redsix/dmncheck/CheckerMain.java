@@ -90,7 +90,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         return this.failOnWarning;
     }
 
-    void loadClasspath() throws MojoExecutionException {
+    void loadClasspath() {
         if (classpath != null && classpath.length != 0) {
             loadProjectClasspath(Arrays.asList(classpath));
         } else {
@@ -98,7 +98,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         }
     }
 
-    void loadProjectClasspath() throws MojoExecutionException {
+    void loadProjectClasspath() {
         List<String> classpath = project.getArtifacts().stream()
                 .map(Artifact::getFile)
                 .map(File::getAbsolutePath)
