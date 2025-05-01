@@ -34,7 +34,8 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                 .values()
                 .stream()
                 .map(rules -> rules.stream()
-                        .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(
+                        // Explicit types until https://github.com/typetools/checker-framework/issues/7064 is fixed.
+                        .collect(Collectors.<Rule, TreeSet<Rule>>toCollection(() -> new TreeSet<>(Comparator.comparing(
                                 ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
                 .filter(rules -> rules.size() > 1)
                 .map(rules -> ValidationResult.init
