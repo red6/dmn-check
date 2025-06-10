@@ -83,23 +83,28 @@ public class ValidationServer {
                 .put(
                         "items",
                         validationResults.stream()
-                                .map(vr -> new JSONObject()
-                                        .put("id", vr.getElement().getAttributeValue("id"))
-                                        .put(
-                                                "drgElementId",
-                                                getDrgElementParent(vr.getElement())
-                                                        .getAttributeValue("id"))
-                                        .put("message", vr.getMessage())
-                                        .put("severity", vr.getSeverity().toString()))
+                                .map(vr -> {
+                                    JSONObject json = new JSONObject()
+                                            .put("id", vr.getElement().getAttributeValue("id"))
+                                            .put("message", vr.getMessage())
+                                            .put("severity", vr.getSeverity().toString());
+
+                                    getCorrespondingDrgElement(vr.getElement())
+                                            .ifPresent(drgElement ->
+                                                    json.put("drgElementId", drgElement.getAttributeValue("id")));
+
+                                    return json;
+                                })
                                 .collect(Collectors.toList()));
     }
 
-    private DrgElement getDrgElementParent(final ModelElementInstance elementInstance) {
-
+    private Optional<DrgElement> getCorrespondingDrgElement(final ModelElementInstance elementInstance) {
         if (elementInstance instanceof DrgElement) {
-            return (DrgElement) elementInstance;
+            return Optional.of((DrgElement) elementInstance);
+        } else if (elementInstance.getParentElement() == null) {
+            return Optional.empty();
         } else {
-            return this.getDrgElementParent(elementInstance.getParentElement());
+            return this.getCorrespondingDrgElement(elementInstance.getParentElement());
         }
     }
 
