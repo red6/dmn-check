@@ -73,9 +73,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 
-        <checker.framework.version>3.49.3</checker.framework.version>
+        <checker.framework.version>3.49.5</checker.framework.version>
 
-        <junit.version>5.13.0</junit.version>
+        <junit.version>5.13.2</junit.version>
         <mockito.version>5.18.0</mockito.version>
         <derive4j.version>1.1.1</derive4j.version>
 
@@ -207,7 +207,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>test</id>
@@ -386,7 +386,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.13.0</version>
+            <version>1.13.2</version>
             <scope>test</scope>
         </dependency>
 
