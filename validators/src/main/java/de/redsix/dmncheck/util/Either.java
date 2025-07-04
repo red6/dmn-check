@@ -45,10 +45,10 @@ public sealed interface Either<A, B> {
 
 
     default Optional<A> getLeft() {
-        return this.match(Optional::of, (__) -> Optional.empty());
+        return this.match(Optional::ofNullable, (__) -> Optional.empty());
     }
 
     default Optional<B> getRight() {
-        return this.match((__) -> Optional.empty(), Optional::of);
+        return this.match((__) -> Optional.empty(), Optional::ofNullable);
     }
 }
