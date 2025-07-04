@@ -20,6 +20,6 @@ jobs:
         uses: MathieuSoysal/jib-container-publish.yml@8df13913445f036bf93d0450669dbfbac2cac541 # main
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          java-version: 17
+          java-version: 21
           module: cli
           main-class: de.redsix.dmncheck.cli.Main
