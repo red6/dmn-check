@@ -1,24 +1,21 @@
 package de.redsix.dmncheck.validators;
 
-import static de.redsix.dmncheck.util.Eithers.left;
-import static de.redsix.dmncheck.util.Eithers.right;
-
 import de.redsix.dmncheck.feel.ExpressionType;
-import de.redsix.dmncheck.feel.ExpressionTypes;
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.feel.FeelTypecheck;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.dmn.instance.DmnElement;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DmnElement;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
 
@@ -69,12 +66,12 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         return FeelParser.parse(expression)
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
                 .map(type -> {
-                    if (type.isSubtypeOf(ExpressionTypes.STRING())
-                            && ExpressionTypes.getClassName(expectedType).isPresent()) {
+                    if (type.isSubtypeOf(new ExpressionType.STRING())
+                            && extractClassName(expectedType).isPresent()) {
                         return checkEnumValue(
-                                ExpressionTypes.getClassName(expectedType).get(), expression.textContent);
+                                extractClassName(expectedType).get(), expression.textContent);
                     } else if (type.isSubtypeOf(expectedType)
-                            || ExpressionTypes.TOP().equals(type)) {
+                            || new ExpressionType.TOP().equals(type)) {
                         return Optional.<ValidationResult.Builder.ElementStep>empty();
                     } else {
                         return Optional.of(
@@ -82,6 +79,13 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
                     }
                 })
                 .match(Optional::of, Function.identity());
+    }
+
+    private Optional<String> extractClassName(final ExpressionType expressionType) {
+        return switch (expressionType) {
+            case ExpressionType.ENUM(var className) -> Optional.of(className);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<ValidationResult.Builder.ElementStep> checkEnumValue(
@@ -101,21 +105,21 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
         if (enumConstantNames.contains(value)) {
-            return right(clazz);
+            return new Either.Right<>(clazz);
         } else {
-            return left(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
+            return new Either.Left<>(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
         }
     }
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> loadEnum(final String className) {
         try {
             if (ProjectClassLoader.INSTANCE.classLoader != null) {
-                return right(ProjectClassLoader.INSTANCE.classLoader.loadClass(className));
+                return new Either.Right<>(ProjectClassLoader.INSTANCE.classLoader.loadClass(className));
             } else {
-                return left(ValidationResult.init.message("Classloader of project under validation not found"));
+                return new Either.Left<>(ValidationResult.init.message("Classloader of project under validation not found"));
             }
         } catch (ClassNotFoundException e) {
-            return left(ValidationResult.init.message("Class " + className + " not found on project classpath."));
+            return new Either.Left<>(ValidationResult.init.message("Class " + className + " not found on project classpath."));
         }
     }
 
@@ -126,9 +130,9 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
             // a fresh type variable. Therefore, we cast the value to the correct type.
             // equality constraints: Class<? extends Enum<?>>
             // lower bounds: Class<CAP#1>
-            return right((Class<? extends Enum<?>>) clazz);
+            return new Either.Right<>((Class<? extends Enum<?>>) clazz);
         } else {
-            return left(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
+            return new Either.Left<>(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
         }
     }
 
