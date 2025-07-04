@@ -1,55 +1,43 @@
 package de.redsix.dmncheck.feel;
 
-import static de.redsix.dmncheck.feel.ExpressionTypes.DOUBLE;
-import static de.redsix.dmncheck.feel.ExpressionTypes.INTEGER;
-import static de.redsix.dmncheck.feel.ExpressionTypes.LONG;
-import static de.redsix.dmncheck.feel.ExpressionTypes.TOP;
+import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
 import java.util.Arrays;
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.derive4j.Data;
 
-@Data
-public abstract class ExpressionType {
+public sealed interface ExpressionType {
 
-    public interface Cases<R> {
-        R TOP();
-
-        R STRING();
-
-        R BOOLEAN();
-
-        R INTEGER();
-
-        R LONG();
-
-        R DOUBLE();
-
-        R DATE();
-
-        R ENUM(String className);
-
-        R ITEMDEFINITION(ItemDefinition itemDefinition);
+    record TOP() implements ExpressionType {
     }
 
-    public abstract <R> R match(ExpressionType.Cases<R> cases);
-
-    @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract boolean equals(@Nullable Object obj);
-
-    @Override
-    public abstract String toString();
-
-    public static boolean isNumeric(final ExpressionType givenType) {
-        return !TOP().equals(givenType)
-                && Arrays.asList(INTEGER(), LONG(), DOUBLE()).contains(givenType);
+    record STRING() implements ExpressionType {
     }
 
-    public boolean isSubtypeOf(final ExpressionType supertype) {
+    record BOOLEAN() implements ExpressionType {
+    }
+
+    record INTEGER() implements ExpressionType {
+    }
+    record LONG() implements ExpressionType {
+    }
+
+    record DOUBLE() implements ExpressionType {
+    }
+
+    record DATE() implements ExpressionType {
+    }
+
+    record ENUM(String className) implements ExpressionType {
+    }
+
+    record ITEMDEFINITION(ItemDefinition itemDefinition) implements ExpressionType {
+    }
+
+    static boolean isNumeric(final ExpressionType givenType) {
+        return !new TOP().equals(givenType)
+                && Arrays.asList(new INTEGER(), new LONG(), new DOUBLE()).contains(givenType);
+    }
+
+    default boolean isSubtypeOf(final ExpressionType supertype) {
         return reflexivity(this, supertype)
                 || TOPisTopElement(supertype)
                 || INTEGERsubtypeOfLONG(this, supertype)
@@ -61,14 +49,14 @@ public abstract class ExpressionType {
     }
 
     private boolean TOPisTopElement(final ExpressionType supertype) {
-        return TOP().equals(supertype);
+        return new TOP().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfLONG(final ExpressionType subtype, final ExpressionType supertype) {
-        return INTEGER().equals(subtype) && LONG().equals(supertype);
+        return new INTEGER().equals(subtype) && new LONG().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfDOUBLE(final ExpressionType subtype, final ExpressionType supertype) {
-        return INTEGER().equals(subtype) && DOUBLE().equals(supertype);
+        return new INTEGER().equals(subtype) && new DOUBLE().equals(supertype);
     }
 }

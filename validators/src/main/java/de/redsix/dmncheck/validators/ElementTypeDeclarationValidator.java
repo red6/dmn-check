@@ -2,7 +2,6 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.ExpressionType;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
-import de.redsix.dmncheck.feel.ExpressionTypes;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
@@ -36,7 +35,7 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
                     validationResult -> Collections.singletonList(
                             validationResult.element(expression).build()),
                     type -> {
-                        if (ExpressionTypes.TOP().equals(type)) {
+                        if (new ExpressionType.TOP().equals(type)) {
                             return Collections.singletonList(ValidationResult.init
                                     .message("TOP is an internal type and cannot be used in declarations.")
                                     .severity(Severity.ERROR)

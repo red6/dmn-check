@@ -79,7 +79,7 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
                 .bind(inputExpression -> FeelParser.parse(
                                 toplevelExpressionLanguage.toExpression(potentiallySubsumingInput))
                         .bind(potentiallySubsumingInputExpression ->
-                                Eithers.right(potentiallySubsumingInputExpression.subsumes(inputExpression))));
+                                new Either.Right<>(potentiallySubsumingInputExpression.subsumes(inputExpression))));
     }
 
     private Stream<ValidationResult> isRuleSubsumed(

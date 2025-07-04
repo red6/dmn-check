@@ -17,7 +17,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("");
 
-        final ExpressionType expectedType = ExpressionTypes.TOP();
+        final ExpressionType expectedType = new ExpressionType.TOP();
 
         assertEquals(expectedType, type);
     }
@@ -28,7 +28,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("boolean");
 
-        final ExpressionType expectedType = ExpressionTypes.BOOLEAN();
+        final ExpressionType expectedType = new ExpressionType.BOOLEAN();
 
         assertEquals(expectedType, type);
     }
@@ -39,7 +39,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("integer");
 
-        final ExpressionType expectedType = ExpressionTypes.INTEGER();
+        final ExpressionType expectedType = new ExpressionType.INTEGER();
 
         assertEquals(expectedType, type);
     }
@@ -50,7 +50,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("string");
 
-        final ExpressionType expectedType = ExpressionTypes.STRING();
+        final ExpressionType expectedType = new ExpressionType.STRING();
 
         assertEquals(expectedType, type);
     }
@@ -61,7 +61,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("double");
 
-        final ExpressionType expectedType = ExpressionTypes.DOUBLE();
+        final ExpressionType expectedType = new ExpressionType.DOUBLE();
 
         assertEquals(expectedType, type);
     }
@@ -72,7 +72,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("date");
 
-        final ExpressionType expectedType = ExpressionTypes.DATE();
+        final ExpressionType expectedType = new ExpressionType.DATE();
 
         assertEquals(expectedType, type);
     }
@@ -84,7 +84,7 @@ class ExpressionTypeParserTest {
         final ExpressionType type =
                 ExpressionTypeParser.PARSER(itemDefinitions).parse(TestEnum.class.getCanonicalName());
 
-        final ExpressionType expectedType = ExpressionTypes.ENUM(TestEnum.class.getCanonicalName());
+        final ExpressionType expectedType = new ExpressionType.ENUM(TestEnum.class.getCanonicalName());
 
         assertEquals(expectedType, type);
     }
@@ -98,7 +98,7 @@ class ExpressionTypeParserTest {
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("myItemDefinition");
 
-        final ExpressionType expectedType = ExpressionTypes.ITEMDEFINITION(itemDefinition);
+        final ExpressionType expectedType = new ExpressionType.ITEMDEFINITION(itemDefinition);
 
         assertEquals(expectedType, type);
     }

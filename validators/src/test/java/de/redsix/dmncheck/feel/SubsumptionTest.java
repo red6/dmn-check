@@ -1,11 +1,12 @@
 package de.redsix.dmncheck.feel;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubsumptionTest {
 
@@ -13,7 +14,7 @@ class SubsumptionTest {
     @CsvSource({"1", "\"a\"", "[1..2]", "<3", "not(3)"})
     void emptySubsumesEverything(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
-        final FeelExpression emptyExpression = FeelExpressions.Empty();
+        final FeelExpression emptyExpression = new FeelExpression.Empty();
 
         assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, expression, Subsumption.eq));
     }
@@ -22,20 +23,20 @@ class SubsumptionTest {
     @CsvSource({"1", "\"a\"", "[1..2]", "<3", "not(3)"})
     void nothingSubsumesEmptyExceptEmpty(final String input) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
-        final FeelExpression emptyExpression = FeelExpressions.Empty();
+        final FeelExpression emptyExpression = new FeelExpression.Empty();
 
         assertEquals(Optional.of(false), Subsumption.subsumes(expression, emptyExpression, Subsumption.eq));
     }
 
     @Test
     void emptySubsumesEmpty() {
-        final FeelExpression emptyExpression = FeelExpressions.Empty();
+        final FeelExpression emptyExpression = new FeelExpression.Empty();
         assertEquals(Optional.of(true), Subsumption.subsumes(emptyExpression, emptyExpression, Subsumption.eq));
     }
 
     @Test
     void nullSubsumesNull() {
-        final FeelExpression nullExpression = FeelExpressions.Null();
+        final FeelExpression nullExpression = new FeelExpression.Null();
         assertEquals(Optional.of(true), Subsumption.subsumes(nullExpression, nullExpression, Subsumption.eq));
     }
 

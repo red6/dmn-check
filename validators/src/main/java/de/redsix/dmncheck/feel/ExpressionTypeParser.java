@@ -2,7 +2,7 @@ package de.redsix.dmncheck.feel;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.Eithers;
+
 import java.util.Collection;
 import java.util.Objects;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
@@ -64,20 +64,20 @@ public final class ExpressionTypeParser {
     }
 
     private static final Parser<ExpressionType> STRING =
-            Terminals.fragment("stringfragment").map(__ -> ExpressionTypes.STRING());
+            Terminals.fragment("stringfragment").map(__ -> new ExpressionType.STRING());
     private static final Parser<ExpressionType> BOOLEAN =
-            Terminals.fragment("booleanfragment").map(__ -> ExpressionTypes.BOOLEAN());
+            Terminals.fragment("booleanfragment").map(__ -> new ExpressionType.BOOLEAN());
     private static final Parser<ExpressionType> INTEGER =
-            Terminals.fragment("integerfragment").map(__ -> ExpressionTypes.INTEGER());
+            Terminals.fragment("integerfragment").map(__ -> new ExpressionType.INTEGER());
     private static final Parser<ExpressionType> LONG =
-            Terminals.fragment("longfragment").map(__ -> ExpressionTypes.LONG());
+            Terminals.fragment("longfragment").map(__ -> new ExpressionType.LONG());
     private static final Parser<ExpressionType> DOUBLE =
-            Terminals.fragment("doublefragment").map(__ -> ExpressionTypes.DOUBLE());
+            Terminals.fragment("doublefragment").map(__ -> new ExpressionType.DOUBLE());
     private static final Parser<ExpressionType> DATE =
-            Terminals.fragment("datefragment").map(__ -> ExpressionTypes.DATE());
+            Terminals.fragment("datefragment").map(__ -> new ExpressionType.DATE());
     private static final Parser<ExpressionType> ENUM =
-            Terminals.fragment("enumfragment").map(ExpressionTypes::ENUM);
-    private static final Parser<ExpressionType> TOP = Parsers.EOF.map((__) -> ExpressionTypes.TOP());
+            Terminals.fragment("enumfragment").map(ExpressionType.ENUM::new);
+    private static final Parser<ExpressionType> TOP = Parsers.EOF.map((__) -> new ExpressionType.TOP());
 
     private static Parser<ExpressionType> ITEMDEFINITION(Collection<ItemDefinition> itemDefinitions) {
         return Terminals.fragment("itemDefinitionFragment").map(name -> {
@@ -85,7 +85,7 @@ public final class ExpressionTypeParser {
                     .filter(itemDefinition -> name.equals(itemDefinition.getName()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("ItemDefinitions are broken."));
-            return ExpressionTypes.ITEMDEFINITION(matchedItemDefinition);
+            return new ExpressionType.ITEMDEFINITION(matchedItemDefinition);
         });
     }
 
@@ -97,10 +97,10 @@ public final class ExpressionTypeParser {
     public static Either<ValidationResult.Builder.ElementStep, ExpressionType> parse(
             final CharSequence charSequence, Collection<ItemDefinition> itemDefinitions) {
         try {
-            return Eithers.right(
-                    charSequence != null ? PARSER(itemDefinitions).parse(charSequence) : ExpressionTypes.TOP());
+            return new Either.Right<>(
+                    charSequence != null ? PARSER(itemDefinitions).parse(charSequence) : new ExpressionType.TOP());
         } catch (final ParserException e) {
-            return Eithers.left(
+            return new Either.Left<>(
                     ValidationResult.init.message("Could not parse FEEL expression type '" + charSequence + "'"));
         }
     }
