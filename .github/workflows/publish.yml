@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: maven
           server-id: ossrh
           server-username: MAVEN_USERNAME
@@ -77,7 +77,7 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: maven
       - name: Publish package
         # Note that until #19 is done, the publishToSonatype closeAndReleaseSonatypeStagingRepository tasks have to be executed in the same Gradle invocation because closeAndRelease relies on information that is not persisted between calls to Gradle.

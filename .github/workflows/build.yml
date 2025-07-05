@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: maven
       - name: Build with Maven
         run: mvn clean install -P checkerframework
@@ -69,7 +69,7 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -100,7 +100,7 @@ jobs:
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: maven
       - name: Build with Gradle
         run: cd gradle-plugin && ./gradlew build
