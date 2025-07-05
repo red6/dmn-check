@@ -21,5 +21,6 @@ jobs:
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           java-version: 21
+          java-distribution: temurin
           module: cli
           main-class: de.redsix.dmncheck.cli.Main
