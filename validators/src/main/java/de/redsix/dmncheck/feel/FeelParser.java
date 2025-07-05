@@ -3,7 +3,6 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
-import de.redsix.dmncheck.util.Eithers;
 import de.redsix.dmncheck.util.Expression;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -70,27 +69,27 @@ public final class FeelParser {
             Terminals.IntegerLiteral.TOKENIZER.or(Terminals.IntegerLiteral.TOKENIZER));
 
     private static final Parser<FeelExpression> INTEGER =
-            Terminals.IntegerLiteral.PARSER.map(Integer::valueOf).map(FeelExpressions::IntegerLiteral);
+            Terminals.IntegerLiteral.PARSER.map(Integer::valueOf).map(FeelExpression.IntegerLiteral::new);
 
     private static final Parser<FeelExpression> DOUBLE =
-            Terminals.DecimalLiteral.PARSER.map(Double::valueOf).map(FeelExpressions::DoubleLiteral);
+            Terminals.DecimalLiteral.PARSER.map(Double::valueOf).map(FeelExpression.DoubleLiteral::new);
 
     private static final Parser<FeelExpression> VARIABLE =
-            Terminals.fragment("variablefragment").map(FeelExpressions::VariableLiteral);
+            Terminals.fragment("variablefragment").map(FeelExpression.VariableLiteral::new);
 
     private static final Parser<FeelExpression> STRING = Terminals.fragment("stringfragment")
             .map(s -> s.substring(1, s.length() - 1))
-            .map(FeelExpressions::StringLiteral);
+            .map(FeelExpression.StringLiteral::new);
 
     private static final Parser<FeelExpression> BOOLEAN =
-            Terminals.fragment("booleanfragment").map(Boolean::valueOf).map(FeelExpressions::BooleanLiteral);
+            Terminals.fragment("booleanfragment").map(Boolean::valueOf).map(FeelExpression.BooleanLiteral::new);
 
     private static final Parser<FeelExpression> NULL =
-            Terminals.fragment("nullfragment").map(__ -> FeelExpressions.Null());
+            Terminals.fragment("nullfragment").map(__ -> new FeelExpression.Null());
 
     private static final Parser<FeelExpression> DATE = Parsers.between(
             OPERATORS.token("date and time(\""),
-            Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpressions::DateLiteral),
+            Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpression.DateLiteral::new),
             OPERATORS.token("\")"));
 
     private static Parser<FeelExpression> parseRangeExpression(
@@ -104,7 +103,7 @@ public final class FeelParser {
                 expression,
                 rightBound,
                 (isLeftInclusive, lowerBound, __, upperBound, isRightInclusive) ->
-                        FeelExpressions.RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
+                        new FeelExpression.RangeExpression(isLeftInclusive, lowerBound, upperBound, isRightInclusive));
     }
 
     private static Parser<FeelExpression> createRangeExpressionParser(final Parser<FeelExpression> expressionParser) {
@@ -123,19 +122,19 @@ public final class FeelParser {
     private static Parser<FeelExpression> createBinaryExpressionParser(
             final Parser<FeelExpression> feelExpressionParser) {
         return new OperatorTable<FeelExpression>()
-                .infixr(op(",", FeelExpressions::DisjunctionExpression), 0)
-                .prefix(op("<", v -> FeelExpressions.UnaryExpression(Operator.LT, v)), 5)
-                .prefix(op(">", v -> FeelExpressions.UnaryExpression(Operator.GT, v)), 5)
-                .prefix(op("<=", v -> FeelExpressions.UnaryExpression(Operator.LE, v)), 5)
-                .prefix(op(">=", v -> FeelExpressions.UnaryExpression(Operator.GE, v)), 5)
-                .infixl(op("or", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.OR, r)), 8)
-                .infixl(op("and", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.AND, r)), 8)
-                .infixl(op("+", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.ADD, r)), 10)
-                .infixl(op("-", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.SUB, r)), 10)
-                .infixl(op("*", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.MUL, r)), 20)
-                .infixl(op("**", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.EXP, r)), 20)
-                .infixl(op("/", (l, r) -> FeelExpressions.BinaryExpression(l, Operator.DIV, r)), 20)
-                .prefix(op("-", v -> FeelExpressions.UnaryExpression(Operator.SUB, v)), 30)
+                .infixr(op(",", FeelExpression.DisjunctionExpression::new), 0)
+                .prefix(op("<", v -> new FeelExpression.UnaryExpression(Operator.LT, v)), 5)
+                .prefix(op(">", v -> new FeelExpression.UnaryExpression(Operator.GT, v)), 5)
+                .prefix(op("<=", v -> new FeelExpression.UnaryExpression(Operator.LE, v)), 5)
+                .prefix(op(">=", v -> new FeelExpression.UnaryExpression(Operator.GE, v)), 5)
+                .infixl(op("or", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.OR, r)), 8)
+                .infixl(op("and", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.AND, r)), 8)
+                .infixl(op("+", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.ADD, r)), 10)
+                .infixl(op("-", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.SUB, r)), 10)
+                .infixl(op("*", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.MUL, r)), 20)
+                .infixl(op("**", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.EXP, r)), 20)
+                .infixl(op("/", (l, r) -> new FeelExpression.BinaryExpression(l, Operator.DIV, r)), 20)
+                .prefix(op("-", v -> new FeelExpression.UnaryExpression(Operator.SUB, v)), 30)
                 .build(feelExpressionParser);
     }
 
@@ -146,15 +145,15 @@ public final class FeelParser {
                         // TODO: How can this constraint be expressed in the grammar?
                         throw new RuntimeException("Negations cannot be nested in FEEL expressions.");
                     } else {
-                        return FeelExpressions.UnaryExpression(Operator.NOT, expression);
+                        return new FeelExpression.UnaryExpression(Operator.NOT, expression);
                     }
                 });
     }
 
-    private static Parser<FeelExpression> parseEmpty() {
+    private static Parser<FeelExpression.Empty> parseEmpty() {
         return Parsers.EOF
-                .map((__) -> FeelExpressions.Empty())
-                .or(Terminals.fragment("emptyfragment").map((__) -> FeelExpressions.Empty()));
+                .map((__) -> new FeelExpression.Empty())
+                .or(Terminals.fragment("emptyfragment").map((__) -> new FeelExpression.Empty()));
     }
 
     private static <T> Parser<T> op(final String name, final T value) {
@@ -189,9 +188,9 @@ public final class FeelParser {
 
     public static Either<ValidationResult.Builder.ElementStep, FeelExpression> parse(final CharSequence charSequence) {
         try {
-            return Eithers.right(PARSER.parse(charSequence));
+            return new Either.Right<>(PARSER.parse(charSequence));
         } catch (final ParserException e) {
-            return Eithers.left(
+            return new Either.Left<>(
                     ValidationResult.init.message("Could not parse '" + charSequence + "': " + e.getMessage()));
         }
     }
@@ -200,7 +199,7 @@ public final class FeelParser {
         if (expressionLanguageIsFeel(expression.expressionLanguage)) {
             return parse(expression.textContent);
         } else {
-            return Eithers.left(ValidationResult.init
+            return new Either.Left<>(ValidationResult.init
                     .message("Expression language '" + expression.expressionLanguage + "' not supported")
                     .severity(Severity.WARNING));
         }

@@ -6,7 +6,8 @@ import java.util.function.Function;
 
 final class Subsumption {
 
-    private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {}
+    private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {
+    }
 
     static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
     private static final Comparison<?> nq = (a, b) -> a.compareTo(b) != 0;
@@ -17,66 +18,93 @@ final class Subsumption {
 
     static Optional<Boolean> subsumes(
             final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
-        return FeelExpressions.caseOf(expression)
-                .Empty_(Optional.of(true))
-                .Null_(FeelExpressions.caseOf(otherExpression)
-                        .Null_(Optional.of(true))
-                        .otherwise_(Optional.of(false)))
-                .BooleanLiteral(
-                        (aBool) -> compareLiterals(aBool, FeelExpressions::getABoolean, otherExpression, comparison))
-                .DateLiteral((dateTime) ->
-                        compareLiterals(dateTime, FeelExpressions::getDateTime, otherExpression, comparison))
-                .DoubleLiteral(
-                        (aDouble) -> compareLiterals(aDouble, FeelExpressions::getADouble, otherExpression, comparison))
-                .IntegerLiteral((integer) ->
-                        compareLiterals(integer, FeelExpressions::getAInteger, otherExpression, comparison))
-                .StringLiteral(
-                        (string) -> compareLiterals(string, FeelExpressions::getString, otherExpression, comparison))
-                .VariableLiteral((name) -> subsumesVariableLiteral(name, otherExpression, comparison))
-                .RangeExpression((leftInc, lowerBound, upperBound, rightInc) ->
-                        subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression))
-                .UnaryExpression((operator, operand) -> subsumesUnaryExpression(operator, operand, otherExpression))
-                .otherwise_(Optional.empty());
+        return switch (expression) {
+            case FeelExpression.Empty() -> Optional.of(true);
+            case FeelExpression.Null() -> switch (otherExpression) {
+                case FeelExpression.Null() -> Optional.of(true);
+                default -> Optional.of(false);
+            };
+            case FeelExpression.BooleanLiteral(
+                    var aBool
+            ) -> switch (otherExpression) {
+                case FeelExpression.BooleanLiteral(var anOtherBool) -> Optional.of(comparison.test(aBool, anOtherBool));
+                default -> Optional.of(false);
+            };
+
+            case FeelExpression.DateLiteral(var dateTime) -> switch (otherExpression) {
+                case FeelExpression.DateLiteral(var anOtherDateTime) ->
+                        Optional.of(comparison.test(dateTime, anOtherDateTime));
+                default -> Optional.of(false);
+            };
+            case FeelExpression.DoubleLiteral(
+                    var aDouble
+            ) -> switch (otherExpression) {
+                case FeelExpression.DoubleLiteral(var anOtherDouble) ->
+                        Optional.of(comparison.test(aDouble, anOtherDouble));
+                default -> Optional.of(false);
+            };
+            case FeelExpression.IntegerLiteral(var anInteger) -> switch (otherExpression) {
+                case FeelExpression.IntegerLiteral(var anOtherInteger) ->
+                        Optional.of(comparison.test(anInteger, anOtherInteger));
+                default -> Optional.of(false);
+            };
+            case FeelExpression.StringLiteral(
+                    var aString
+            ) -> switch (otherExpression) {
+                case FeelExpression.StringLiteral(var anOtherString) ->
+                        Optional.of(comparison.test(aString, anOtherString));
+                default -> Optional.of(false);
+            };
+            case FeelExpression.VariableLiteral(var name) -> subsumesVariableLiteral(name, otherExpression, comparison);
+            case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
+                    subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression);
+            case FeelExpression.UnaryExpression(var operator, var operand) ->
+                    subsumesUnaryExpression(operator, operand, otherExpression);
+            default -> Optional.empty();
+        };
     }
 
     private static Optional<Boolean> subsumesVariableLiteral(
             String name, FeelExpression otherExpression, Comparison comparison) {
-        return FeelExpressions.caseOf(otherExpression)
-                .VariableLiteral(otherName -> Optional.of(comparison.test(name, otherName)))
-                .UnaryExpression(((operator, operand) ->
-                        Operator.NOT.equals(operator) ? subsumesVariableLiteral(name, operand, nq) : Optional.of(true)))
-                .otherwise_(Optional.of(true));
+        return switch (otherExpression) {
+            case FeelExpression.VariableLiteral(var otherName) -> Optional.of(comparison.test(name, otherName));
+            case FeelExpression.UnaryExpression(var operator, var operand) ->
+                    Operator.NOT.equals(operator) ? subsumesVariableLiteral(name, operand, nq) : Optional.of(true);
+            default -> (Optional.of(true));
+        };
     }
 
     private static Optional<Boolean> subsumesUnaryExpression(
             Operator operator, FeelExpression operand, FeelExpression otherExpression) {
-        return FeelExpressions.caseOf(otherExpression)
-                .RangeExpression((leftInc, lowerBound, upperBound, rightInc) -> switch (operator) {
-                    case LT -> subsumes(upperBound, operand, rightInc ? lt : le);
-                    case GT -> subsumes(operand, lowerBound, leftInc ? lt : le);
-                    case LE -> subsumes(upperBound, operand, rightInc ? le : lt);
-                    case GE -> subsumes(operand, lowerBound, leftInc ? le : lt);
-                    default -> Optional.of(false);
-                })
-                .UnaryExpression((otherOperator, otherOperand) -> {
-                    if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
-                        return Optional.of(true);
-                    }
+        return switch (otherExpression) {
+            case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
+                    switch (operator) {
+                        case LT -> subsumes(upperBound, operand, rightInc ? lt : le);
+                        case GT -> subsumes(operand, lowerBound, leftInc ? lt : le);
+                        case LE -> subsumes(upperBound, operand, rightInc ? le : lt);
+                        case GE -> subsumes(operand, lowerBound, leftInc ? le : lt);
+                        default -> Optional.of(false);
+                    };
+            case FeelExpression.UnaryExpression(var otherOperator, var otherOperand) -> {
+                if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
+                    yield Optional.of(true);
+                }
 
-                    if (operator.isGreaterThan() && otherOperator.isGreaterThan()
-                            || operator.isLessThan() && otherOperator.isLessThan()) {
-                        return subsumes(otherOperand, operand, fromOperator(operator));
-                    } else {
-                        return Optional.of(false);
-                    }
-                })
-                .otherwise(() -> {
-                    if (operator.equals(Operator.NOT) && otherExpression.isLiteral()) {
-                        return subsumes(operand, otherExpression, nq);
-                    } else {
-                        return Optional.of(false);
-                    }
-                });
+                if (operator.isGreaterThan() && otherOperator.isGreaterThan()
+                        || operator.isLessThan() && otherOperator.isLessThan()) {
+                    yield subsumes(otherOperand, operand, fromOperator(operator));
+                } else {
+                    yield Optional.of(false);
+                }
+            }
+            default -> {
+                if (operator.equals(Operator.NOT) && otherExpression.isLiteral()) {
+                    yield subsumes(operand, otherExpression, nq);
+                } else {
+                    yield Optional.of(false);
+                }
+            }
+        };
     }
 
     private static Optional<Boolean> subsumesRangeExpression(
@@ -85,22 +113,25 @@ final class Subsumption {
             FeelExpression upperBound,
             boolean rightInc,
             FeelExpression otherExpression) {
-        return FeelExpressions.caseOf(otherExpression)
-                .RangeExpression((otherLeftInc, otherLowerBound, otherUpperBound, otherRightInc) -> subsumes(
-                                lowerBound, otherLowerBound, leftInc ? le : lt)
-                        .flatMap(subsumesLowerBound -> subsumes(otherUpperBound, upperBound, rightInc ? le : lt)
-                                .flatMap(subsumesUpperBound -> Optional.of(subsumesLowerBound && subsumesUpperBound))))
-                .otherwise(() -> {
-                    if (otherExpression.isLiteral()) {
-                        return subsumes(lowerBound, otherExpression, leftInc ? le : lt)
-                                .flatMap(subsumedByLowerBound -> subsumes(
-                                                upperBound, otherExpression, rightInc ? ge : gt)
-                                        .flatMap(subsumedByUpperBound ->
-                                                Optional.of(subsumedByLowerBound && subsumedByUpperBound)));
-                    } else {
-                        return Optional.of(false);
-                    }
-                });
+        return switch (otherExpression) {
+            case FeelExpression.RangeExpression(
+                    var __, var otherLowerBound, var otherUpperBound, var ___
+            ) -> subsumes(
+                    lowerBound, otherLowerBound, leftInc ? le : lt)
+                    .flatMap(subsumesLowerBound -> subsumes(otherUpperBound, upperBound, rightInc ? le : lt)
+                            .flatMap(subsumesUpperBound -> Optional.of(subsumesLowerBound && subsumesUpperBound)));
+            default -> {
+                if (otherExpression.isLiteral()) {
+                    yield subsumes(lowerBound, otherExpression, leftInc ? le : lt)
+                            .flatMap(subsumedByLowerBound -> subsumes(
+                                    upperBound, otherExpression, rightInc ? ge : gt)
+                                    .flatMap(subsumedByUpperBound ->
+                                            Optional.of(subsumedByLowerBound && subsumedByUpperBound)));
+                } else {
+                    yield Optional.of(false);
+                }
+            }
+        };
     }
 
     private static <R extends Comparable> Optional<Boolean> compareLiterals(
@@ -108,8 +139,7 @@ final class Subsumption {
             Function<FeelExpression, Optional<R>> extractOtherValue,
             FeelExpression otherExpression,
             Comparison comparison) {
-        return Optional.of(extractOtherValue
-                .apply(otherExpression)
+        return Optional.of(extractOtherValue.apply(otherExpression)
                 .map(otherValue -> comparison.test(value, otherValue))
                 .orElse(false));
     }

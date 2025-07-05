@@ -3,31 +3,39 @@ package de.redsix.dmncheck.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.derive4j.Data;
-import org.derive4j.Derive;
-import org.derive4j.Make;
 
-@Data(value = @Derive(make = {Make.constructors, Make.caseOfMatching, Make.getters}))
-public abstract class Either<A, B> {
-    public abstract <X> X match(Function<A, X> left, Function<B, X> right);
+public sealed interface Either<A, B> {
 
-    public <C> Either<A, C> bind(Function<B, Either<A, C>> function) {
-        return this.match(Eithers::left, function);
+    record Left<A, B>(A left) implements Either<A, B> {
     }
 
-    public <C> Either<A, C> map(Function<B, C> function) {
-        return this.match(Eithers::left, right -> Eithers.right(function.apply(right)));
+    record Right<A, B>(B right) implements Either<A, B> {
+
     }
 
-    public static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> reduce() {
-        return Collectors.reducing(
-                Eithers.right(new ArrayList<>()),
-                either -> either.map(Arrays::asList),
-                (either, eithers) -> either.bind(a -> eithers.bind(listOfA -> Eithers.right(appendAll(a, listOfA)))));
+    default <X> X match(Function<A, X> f, Function<B, X> g) {
+        return switch (this) {
+            case Left(var left) -> f.apply(left);
+            case Right(var right) -> g.apply(right);
+        };
+    }
+
+    default <C> Either<A, C> bind(Function<B, Either<A, C>> function) {
+        return this.match(Either.Left::new, function);
+    }
+
+    default <C> Either<A, C> map(Function<B, C> function) {
+        return this.match(Either.Left::new, right -> new Either.Right<>(function.apply(right)));
+    }
+
+    static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> reduce() {
+        return Collectors.reducing(new Either.Right<>(new ArrayList<>()),
+                either -> either.map(Arrays::asList), (either, eithers) ->
+                        either.bind(a -> eithers.bind(listOfA -> new Either.Right<>(appendAll(a, listOfA)))));
     }
 
     private static <A> List<A> appendAll(List<A> list1, List<A> list2) {
@@ -35,12 +43,12 @@ public abstract class Either<A, B> {
         return list1;
     }
 
-    @Override
-    public abstract int hashCode();
 
-    @Override
-    public abstract boolean equals(@Nullable Object obj);
+    default Optional<A> getLeft() {
+        return this.match(Optional::ofNullable, (__) -> Optional.empty());
+    }
 
-    @Override
-    public abstract String toString();
+    default Optional<B> getRight() {
+        return this.match((__) -> Optional.empty(), Optional::ofNullable);
+    }
 }
