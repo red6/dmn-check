@@ -68,7 +68,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Type of output entry does not match type of output expression", validationResult.getMessage()),
@@ -90,7 +90,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
@@ -112,7 +112,7 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),

@@ -133,7 +133,7 @@ class GenericValidatorTest {
 
         // Assert
         assertEquals(1, validationResults.size());
-        assertEquals(error, validationResults.get(0));
+        assertEquals(error, validationResults.getFirst());
     }
 
     @Test
@@ -162,7 +162,7 @@ class GenericValidatorTest {
 
         // Assert
         assertEquals(1, validationResults.size());
-        assertEquals(error, validationResults.get(0));
+        assertEquals(error, validationResults.getFirst());
     }
 
     @Test
@@ -203,7 +203,7 @@ class GenericValidatorTest {
 
         // Assert
         assertEquals(1, validationResults.size());
-        assertEquals(error, validationResults.get(0));
+        assertEquals(error, validationResults.getFirst());
     }
 
     @Test

@@ -26,7 +26,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("InputExpression has no type", validationResult.getMessage()),
                 () -> assertEquals(inputExpression, validationResult.getElement()),
@@ -44,7 +44,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
@@ -63,7 +63,7 @@ class InputTypeDeclarationValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "TOP is an internal type and cannot be used in declarations.", validationResult.getMessage()),

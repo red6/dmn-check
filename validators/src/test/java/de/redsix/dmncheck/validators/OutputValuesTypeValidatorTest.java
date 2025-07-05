@@ -54,7 +54,7 @@ class OutputValuesTypeValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Type of predefined output values does not match type of output expression",
@@ -77,7 +77,7 @@ class OutputValuesTypeValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),

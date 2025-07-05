@@ -82,7 +82,7 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Requirement graphs may only contain one leaf node", validationResult.getMessage()),
                 () -> assertEquals(definitions, validationResult.getElement()),

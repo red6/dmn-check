@@ -33,7 +33,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("A input has no id.", validationResult.getMessage()),
                 () -> assertEquals(inputData, validationResult.getElement()),
@@ -58,7 +58,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("A input has no name.", validationResult.getMessage()),
                 () -> assertEquals(inputData, validationResult.getElement()),

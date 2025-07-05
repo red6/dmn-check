@@ -58,7 +58,7 @@ class ConflictingRuleValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Rule is conflicting with rules [" + rule2.getId() + "]", validationResult.getMessage()),

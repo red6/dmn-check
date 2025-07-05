@@ -188,7 +188,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertTrue(validationResult.getMessage().startsWith("Found unconnected requirement graphs:")),
                 () -> assertEquals(definitions, validationResult.getElement()),
@@ -244,7 +244,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
@@ -277,7 +277,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),

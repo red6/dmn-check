@@ -44,7 +44,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Rule is shadowed by rule " + catchAllRule.getId(), validationResult.getMessage()),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
@@ -110,7 +110,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertTrue(validationResult.getMessage().contains("Could not parse")),
                 () -> assertEquals(shadowedRule, validationResult.getElement()),
@@ -143,7 +143,7 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertTrue(
                         validationResult.getMessage().contains("Expression language 'javascript' not supported")),

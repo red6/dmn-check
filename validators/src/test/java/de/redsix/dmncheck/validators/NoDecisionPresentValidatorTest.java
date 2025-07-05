@@ -30,7 +30,7 @@ class NoDecisionPresentValidatorTest extends WithDecisionTable {
 
         assertEquals(1, validationResults.size());
 
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("No decisions found", validationResult.getMessage()),
                 () -> assertEquals(definitionsWithOnlyOneKnowledgeSource, validationResult.getElement()),

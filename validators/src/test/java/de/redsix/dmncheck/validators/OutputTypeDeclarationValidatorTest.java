@@ -23,7 +23,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Output has no type", validationResult.getMessage()),
                 () -> assertEquals(output, validationResult.getElement()),
@@ -39,7 +39,7 @@ class OutputTypeDeclarationValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),

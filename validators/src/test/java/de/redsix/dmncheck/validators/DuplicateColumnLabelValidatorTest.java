@@ -42,7 +42,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),
@@ -77,7 +77,7 @@ class DuplicateColumnLabelValidatorTest extends WithDecisionTable {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Column with label 'Label' is used more than once", validationResult.getMessage()),
                 () -> assertEquals(decisionTable, validationResult.getElement()),

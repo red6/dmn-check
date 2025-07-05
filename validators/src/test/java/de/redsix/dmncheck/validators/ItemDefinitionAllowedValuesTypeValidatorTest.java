@@ -76,7 +76,7 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "ItemDefintion uses AllowedValues without a type declaration", validationResult.getMessage()),
@@ -98,7 +98,7 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
                         "Type of item definition does not match type of allowed values", validationResult.getMessage()),
@@ -121,7 +121,7 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),

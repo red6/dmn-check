@@ -20,7 +20,7 @@ class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("A item definition has no id.", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
@@ -35,7 +35,7 @@ class ItemDefinitionIdAndNameValidatorTest extends WithItemDefinition {
         final List<ValidationResult> validationResults = testee.apply(modelInstance);
 
         assertEquals(1, validationResults.size());
-        final ValidationResult validationResult = validationResults.get(0);
+        final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals("A item definition has no name.", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
