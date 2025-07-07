@@ -7,81 +7,118 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DmnElement;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.camunda.bpm.model.dmn.instance.DmnElement;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
-public abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
+public abstract class TypeValidator<T extends ModelElementInstance>
+    extends SimpleValidator<T> {
 
-    TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+    TopLevelExpressionLanguage toplevelExpressionLanguage =
+        new TopLevelExpressionLanguage(null);
 
     abstract String errorMessage();
 
     @Override
-    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
-        toplevelExpressionLanguage =
-                new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+    public List<ValidationResult> apply(
+        final DmnModelInstance dmnModelInstance
+    ) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(
+            dmnModelInstance.getDefinitions().getExpressionLanguage()
+        );
         return super.apply(dmnModelInstance);
     }
 
     Stream<ValidationResult> typecheck(
-            final DmnElement dmnElement,
-            final Stream<Expression> expressions,
-            final Stream<String> variables,
-            final Stream<ExpressionType> types) {
-        final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults =
-                Util.zip(expressions, variables, types, (expression, variable, type) -> {
-                    final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        final DmnElement dmnElement,
+        final Stream<Expression> expressions,
+        final Stream<String> variables,
+        final Stream<ExpressionType> types
+    ) {
+        final Stream<
+            Optional<ValidationResult.Builder.ElementStep>
+        > intermediateResults = Util.zip(
+            expressions,
+            variables,
+            types,
+            (expression, variable, type) -> {
+                final FeelTypecheck.Context context =
+                    new FeelTypecheck.Context();
 
-                    context.put(variable, type);
+                context.put(variable, type);
 
-                    return typecheckExpression(expression, context, type);
-                });
+                return typecheckExpression(expression, context, type);
+            }
+        );
 
         return buildValidationResults(intermediateResults, dmnElement);
     }
 
     Stream<ValidationResult> typecheck(
-            final DmnElement dmnElement,
-            final Stream<Expression> expressionStream,
-            final Stream<ExpressionType> types) {
-        final Stream<Optional<ValidationResult.Builder.ElementStep>> intermediateResults =
-                Util.zip(expressionStream, types, (unaryTest, type) -> {
-                    final FeelTypecheck.Context emptyContext = new FeelTypecheck.Context();
+        final DmnElement dmnElement,
+        final Stream<Expression> expressionStream,
+        final Stream<ExpressionType> types
+    ) {
+        final Stream<
+            Optional<ValidationResult.Builder.ElementStep>
+        > intermediateResults = Util.zip(
+            expressionStream,
+            types,
+            (unaryTest, type) -> {
+                final FeelTypecheck.Context emptyContext =
+                    new FeelTypecheck.Context();
 
-                    return typecheckExpression(unaryTest, emptyContext, type);
-                });
+                return typecheckExpression(unaryTest, emptyContext, type);
+            }
+        );
 
         return buildValidationResults(intermediateResults, dmnElement);
     }
 
     private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(
-            Expression expression, FeelTypecheck.Context context, ExpressionType expectedType) {
+        Expression expression,
+        FeelTypecheck.Context context,
+        ExpressionType expectedType
+    ) {
         return FeelParser.parse(expression)
-                .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
-                .map(type -> {
-                    if (type.isSubtypeOf(new ExpressionType.STRING())
-                            && extractClassName(expectedType).isPresent()) {
-                        return checkEnumValue(
-                                extractClassName(expectedType).get(), expression.textContent);
-                    } else if (type.isSubtypeOf(expectedType)
-                            || new ExpressionType.TOP().equals(type)) {
-                        return Optional.<ValidationResult.Builder.ElementStep>empty();
-                    } else {
-                        return Optional.of(
-                                ValidationResult.init.message(errorMessage()).severity(Severity.ERROR));
-                    }
-                })
-                .match(Optional::of, Function.identity());
+            .bind(feelExpression ->
+                FeelTypecheck.typecheck(context, feelExpression)
+            )
+            .map(type -> {
+                if (
+                    type.isSubtypeOf(new ExpressionType.STRING()) &&
+                    extractClassName(expectedType).isPresent()
+                ) {
+                    return checkEnumValue(
+                        extractClassName(expectedType).get(),
+                        expression.textContent
+                    );
+                } else if (
+                    type.isSubtypeOf(expectedType) ||
+                    new ExpressionType.TOP().equals(type)
+                ) {
+                    return Optional.<
+                            ValidationResult.Builder.ElementStep
+                        >empty();
+                } else {
+                    return Optional.of(
+                        ValidationResult.init
+                            .message(errorMessage())
+                            .severity(Severity.ERROR)
+                    );
+                }
+            })
+            .match(Optional::of, Function.identity());
     }
 
-    private Optional<String> extractClassName(final ExpressionType expressionType) {
+    private Optional<String> extractClassName(
+        final ExpressionType expressionType
+    ) {
         return switch (expressionType) {
             case ExpressionType.ENUM(var className) -> Optional.of(className);
             default -> Optional.empty();
@@ -89,41 +126,72 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     }
 
     private Optional<ValidationResult.Builder.ElementStep> checkEnumValue(
-            final String className, final String stringValue) {
+        final String className,
+        final String stringValue
+    ) {
         return loadEnum(className)
-                .bind(this::isEnum)
-                .bind(clazz -> doesStringBelongToEnum(className, stringValue, clazz))
-                .match(Optional::of, (__) -> Optional.empty());
+            .bind(this::isEnum)
+            .bind(clazz ->
+                doesStringBelongToEnum(className, stringValue, clazz)
+            )
+            .match(Optional::of, __ -> Optional.empty());
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(
-            String className, String stringValue, Class<? extends Enum<?>> clazz) {
+    private Either<
+        ValidationResult.Builder.ElementStep,
+        Class<?>
+    > doesStringBelongToEnum(
+        String className,
+        String stringValue,
+        Class<? extends Enum<?>> clazz
+    ) {
         final Enum<?>[] enumConstants = clazz.getEnumConstants();
-        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants)
-                .map(Enum::name)
-                .toList();
+        final List<String> enumConstantNames = Arrays.stream(
+            enumConstants == null ? new Enum<?>[] {} : enumConstants
+        )
+            .map(Enum::name)
+            .toList();
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
         if (enumConstantNames.contains(value)) {
             return new Either.Right<>(clazz);
         } else {
-            return new Either.Left<>(ValidationResult.init.message("Value " + stringValue + " does not belong to " + className));
+            return new Either.Left<>(
+                ValidationResult.init.message(
+                    "Value " + stringValue + " does not belong to " + className
+                )
+            );
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<?>> loadEnum(final String className) {
+    private Either<ValidationResult.Builder.ElementStep, Class<?>> loadEnum(
+        final String className
+    ) {
         try {
             if (ProjectClassLoader.INSTANCE.classLoader != null) {
-                return new Either.Right<>(ProjectClassLoader.INSTANCE.classLoader.loadClass(className));
+                return new Either.Right<>(
+                    ProjectClassLoader.INSTANCE.classLoader.loadClass(className)
+                );
             } else {
-                return new Either.Left<>(ValidationResult.init.message("Classloader of project under validation not found"));
+                return new Either.Left<>(
+                    ValidationResult.init.message(
+                        "Classloader of project under validation not found"
+                    )
+                );
             }
         } catch (ClassNotFoundException e) {
-            return new Either.Left<>(ValidationResult.init.message("Class " + className + " not found on project classpath."));
+            return new Either.Left<>(
+                ValidationResult.init.message(
+                    "Class " + className + " not found on project classpath."
+                )
+            );
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(Class<?> clazz) {
+    private Either<
+        ValidationResult.Builder.ElementStep,
+        Class<? extends Enum<?>>
+    > isEnum(Class<?> clazz) {
         if (clazz.isEnum()) {
             // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because
             // asSubclass introduces
@@ -132,16 +200,26 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
             // lower bounds: Class<CAP#1>
             return new Either.Right<>((Class<? extends Enum<?>>) clazz);
         } else {
-            return new Either.Left<>(ValidationResult.init.message("Class " + clazz.getCanonicalName() + " is no enum."));
+            return new Either.Left<>(
+                ValidationResult.init.message(
+                    "Class " + clazz.getCanonicalName() + " is no enum."
+                )
+            );
         }
     }
 
     private Stream<ValidationResult> buildValidationResults(
-            final Stream<Optional<ValidationResult.Builder.ElementStep>> elementSteps, final DmnElement dmnElement) {
+        final Stream<
+            Optional<ValidationResult.Builder.ElementStep>
+        > elementSteps,
+        final DmnElement dmnElement
+    ) {
         return elementSteps
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(validationResultBuilder -> validationResultBuilder.element(dmnElement))
-                .map(ValidationResult.Builder.BuildStep::build);
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(validationResultBuilder ->
+                validationResultBuilder.element(dmnElement)
+            )
+            .map(ValidationResult.Builder.BuildStep::build);
     }
 }

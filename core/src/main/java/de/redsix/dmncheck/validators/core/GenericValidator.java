@@ -25,8 +25,11 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
  * @param <S> Class used to check whether the validation is applicable
  * @param <T> Class used for validation
  */
-public abstract class GenericValidator<S extends ModelElementInstance, T extends ModelElementInstance>
-        implements Validator {
+public abstract class GenericValidator<
+    S extends ModelElementInstance,
+    T extends ModelElementInstance
+>
+    implements Validator {
 
     /**
      * Checks whether the validation is applicable for an element of type S taking account of the validation context.
@@ -35,7 +38,10 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
      * @param validationContext Validation Context
      * @return Whether the validation is applicable
      */
-    protected abstract boolean isApplicable(final S element, ValidationContext validationContext);
+    protected abstract boolean isApplicable(
+        final S element,
+        ValidationContext validationContext
+    );
 
     /**
      * Validates a given element of type T.
@@ -46,7 +52,10 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
      * @param validationContext Validation Context
      * @return A list of validation results
      */
-    protected abstract List<ValidationResult> validate(final T element, ValidationContext validationContext);
+    protected abstract List<ValidationResult> validate(
+        final T element,
+        ValidationContext validationContext
+    );
 
     /**
      * Auxiliary method to determine the class used for the applicability check.
@@ -62,23 +71,34 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
      */
     protected abstract Class<T> getClassUnderValidation();
 
-    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
-        final ValidationContext validationContext = new ValidationContext(dmnModelInstance);
+    public List<ValidationResult> apply(
+        final DmnModelInstance dmnModelInstance
+    ) {
+        final ValidationContext validationContext = new ValidationContext(
+            dmnModelInstance
+        );
 
-        final Collection<S> elements = dmnModelInstance.getModelElementsByType(getClassUsedToCheckApplicability());
-        return elements.stream()
-                .filter(element -> isApplicable(element, validationContext))
-                .flatMap(this::getElementsUnderValidation)
-                .flatMap(element -> validate(element, validationContext).stream())
-                .collect(Collectors.toList());
+        final Collection<S> elements = dmnModelInstance.getModelElementsByType(
+            getClassUsedToCheckApplicability()
+        );
+        return elements
+            .stream()
+            .filter(element -> isApplicable(element, validationContext))
+            .flatMap(this::getElementsUnderValidation)
+            .flatMap(element -> validate(element, validationContext).stream())
+            .collect(Collectors.toList());
     }
 
     private Stream<T> getElementsUnderValidation(final S element) {
-        final Stream<T> childElementsUnderValidation =
-                element.getChildElementsByType(getClassUnderValidation()).stream();
+        final Stream<T> childElementsUnderValidation = element
+            .getChildElementsByType(getClassUnderValidation())
+            .stream();
 
         if (getClassUnderValidation().isInstance(element)) {
-            return Stream.concat(childElementsUnderValidation, Stream.of((T) element));
+            return Stream.concat(
+                childElementsUnderValidation,
+                Stream.of((T) element)
+            );
         } else {
             return childElementsUnderValidation;
         }

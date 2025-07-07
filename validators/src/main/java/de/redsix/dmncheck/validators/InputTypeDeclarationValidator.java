@@ -2,7 +2,8 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.InputExpression;
 
-public class InputTypeDeclarationValidator extends ElementTypeDeclarationValidator<InputExpression> {
+public class InputTypeDeclarationValidator
+    extends ElementTypeDeclarationValidator<InputExpression> {
 
     @Override
     public String getTypeRef(InputExpression inputExpression) {

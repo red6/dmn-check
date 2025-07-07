@@ -22,12 +22,16 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 
 public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
-    private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+    private TopLevelExpressionLanguage toplevelExpressionLanguage =
+        new TopLevelExpressionLanguage(null);
 
     @Override
-    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
-        toplevelExpressionLanguage =
-                new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+    public List<ValidationResult> apply(
+        final DmnModelInstance dmnModelInstance
+    ) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(
+            dmnModelInstance.getDefinitions().getExpressionLanguage()
+        );
         return super.apply(dmnModelInstance);
     }
 
@@ -37,68 +41,128 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
-        return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
+        return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(
+            decisionTable.getHitPolicy()
+        );
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         final ArrayList<Rule> rules = new ArrayList<>(decisionTable.getRules());
         Collections.reverse(rules);
 
         return Util.zip(
-                        IntStream.range(1, rules.size()).boxed(),
-                        rules.stream(),
-                        (n, rule) -> identifySubsumedRules(n, rule, rules))
-                .flatMap(Function.identity())
-                .collect(Collectors.toList());
+            IntStream.range(1, rules.size()).boxed(),
+            rules.stream(),
+            (n, rule) -> identifySubsumedRules(n, rule, rules)
+        )
+            .flatMap(Function.identity())
+            .collect(Collectors.toList());
     }
 
     private Stream<ValidationResult> identifySubsumedRules(
-            final Integer n, final Rule rule, final ArrayList<Rule> rules) {
-        return rules.stream().skip(n).flatMap(potentiallySubsumingRule -> collectSubsumptionResults(
-                        rule, potentiallySubsumingRule)
-                .match(
-                        validationResultElementStep -> Stream.of(
-                                validationResultElementStep.element(rule).build()),
-                        subsumptionResults -> isRuleSubsumed(subsumptionResults, rule, potentiallySubsumingRule)));
+        final Integer n,
+        final Rule rule,
+        final ArrayList<Rule> rules
+    ) {
+        return rules
+            .stream()
+            .skip(n)
+            .flatMap(potentiallySubsumingRule ->
+                collectSubsumptionResults(rule, potentiallySubsumingRule).match(
+                    validationResultElementStep ->
+                        Stream.of(
+                            validationResultElementStep.element(rule).build()
+                        ),
+                    subsumptionResults ->
+                        isRuleSubsumed(
+                            subsumptionResults,
+                            rule,
+                            potentiallySubsumingRule
+                        )
+                )
+            );
     }
 
-    private Either<ValidationResult.Builder.ElementStep, List<Optional<Boolean>>> collectSubsumptionResults(
-            final Rule rule, final Rule potentiallySubsumingRule) {
+    private Either<
+        ValidationResult.Builder.ElementStep,
+        List<Optional<Boolean>>
+    > collectSubsumptionResults(
+        final Rule rule,
+        final Rule potentiallySubsumingRule
+    ) {
         return Util.zip(
-                        rule.getInputEntries().stream(),
-                        potentiallySubsumingRule.getInputEntries().stream(),
-                        this::checkInputsForSubsumption)
-                .collect(Either.reduce());
+            rule.getInputEntries().stream(),
+            potentiallySubsumingRule.getInputEntries().stream(),
+            this::checkInputsForSubsumption
+        ).collect(Either.reduce());
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Optional<Boolean>> checkInputsForSubsumption(
-            final InputEntry input, final InputEntry potentiallySubsumingInput) {
-        return FeelParser.parse(toplevelExpressionLanguage.toExpression(input))
-                .bind(inputExpression -> FeelParser.parse(
-                                toplevelExpressionLanguage.toExpression(potentiallySubsumingInput))
-                        .bind(potentiallySubsumingInputExpression ->
-                                new Either.Right<>(potentiallySubsumingInputExpression.subsumes(inputExpression))));
+    private Either<
+        ValidationResult.Builder.ElementStep,
+        Optional<Boolean>
+    > checkInputsForSubsumption(
+        final InputEntry input,
+        final InputEntry potentiallySubsumingInput
+    ) {
+        return FeelParser.parse(
+            toplevelExpressionLanguage.toExpression(input)
+        ).bind(inputExpression ->
+            FeelParser.parse(
+                toplevelExpressionLanguage.toExpression(
+                    potentiallySubsumingInput
+                )
+            ).bind(potentiallySubsumingInputExpression ->
+                new Either.Right<>(
+                    potentiallySubsumingInputExpression.subsumes(
+                        inputExpression
+                    )
+                )
+            )
+        );
     }
 
     private Stream<ValidationResult> isRuleSubsumed(
-            final List<Optional<Boolean>> subsumptionResults, final Rule rule, final Rule potentiallySubsumingRule) {
-        if (subsumptionCheckIsPossible(subsumptionResults) && everythingIsSubsumed(subsumptionResults)) {
-            return Stream.of(ValidationResult.init
-                    .message("Rule is shadowed by rule " + potentiallySubsumingRule.getId())
+        final List<Optional<Boolean>> subsumptionResults,
+        final Rule rule,
+        final Rule potentiallySubsumingRule
+    ) {
+        if (
+            subsumptionCheckIsPossible(subsumptionResults) &&
+            everythingIsSubsumed(subsumptionResults)
+        ) {
+            return Stream.of(
+                ValidationResult.init
+                    .message(
+                        "Rule is shadowed by rule " +
+                        potentiallySubsumingRule.getId()
+                    )
                     .element(rule)
-                    .build());
+                    .build()
+            );
         } else {
             return Stream.empty();
         }
     }
 
-    private boolean everythingIsSubsumed(final List<Optional<Boolean>> subsumptionResults) {
-        return subsumptionResults.stream().allMatch(result -> result.orElse(false));
+    private boolean everythingIsSubsumed(
+        final List<Optional<Boolean>> subsumptionResults
+    ) {
+        return subsumptionResults
+            .stream()
+            .allMatch(result -> result.orElse(false));
     }
 
-    private boolean subsumptionCheckIsPossible(final List<Optional<Boolean>> subsumptionResults) {
+    private boolean subsumptionCheckIsPossible(
+        final List<Optional<Boolean>> subsumptionResults
+    ) {
         return !subsumptionResults.contains(Optional.<Boolean>empty());
     }
 }

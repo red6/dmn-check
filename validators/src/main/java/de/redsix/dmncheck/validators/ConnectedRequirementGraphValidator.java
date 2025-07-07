@@ -22,25 +22,38 @@ import org.camunda.bpm.model.dmn.instance.OutputClause;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 
-public class ConnectedRequirementGraphValidator extends RequirementGraphValidator {
+public class ConnectedRequirementGraphValidator
+    extends RequirementGraphValidator {
 
-    private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
+    private TopLevelExpressionLanguage toplevelExpressionLanguage =
+        new TopLevelExpressionLanguage(null);
 
     @Override
-    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
-        toplevelExpressionLanguage =
-                new TopLevelExpressionLanguage(dmnModelInstance.getDefinitions().getExpressionLanguage());
+    public List<ValidationResult> apply(
+        final DmnModelInstance dmnModelInstance
+    ) {
+        toplevelExpressionLanguage = new TopLevelExpressionLanguage(
+            dmnModelInstance.getDefinitions().getExpressionLanguage()
+        );
         return super.apply(dmnModelInstance);
     }
 
     @Override
     public List<ValidationResult> validate(RequirementGraph drg) {
-        ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
+        ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector =
+            new ConnectivityInspector<>(drg);
 
         if (connectivityInspector.isConnected()) {
-            return drg.edgeSet().stream()
-                    .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
-                    .collect(Collectors.toList());
+            return drg
+                .edgeSet()
+                .stream()
+                .flatMap(edge ->
+                    checkInAndOuputs(
+                        drg.getEdgeSource(edge),
+                        drg.getEdgeTarget(edge)
+                    ).stream()
+                )
+                .collect(Collectors.toList());
         } else if (connectivityInspector.connectedSets().isEmpty()) {
             // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of
             // another validator
@@ -50,8 +63,14 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         }
     }
 
-    private List<ValidationResult> checkInAndOuputs(DrgElement sourceElement, DrgElement targetElement) {
-        if (sourceElement instanceof Decision sourceDecision && targetElement instanceof Decision targetDecision) {
+    private List<ValidationResult> checkInAndOuputs(
+        DrgElement sourceElement,
+        DrgElement targetElement
+    ) {
+        if (
+            sourceElement instanceof Decision sourceDecision &&
+            targetElement instanceof Decision targetDecision
+        ) {
             return checkInAndOutputs(sourceDecision, targetDecision);
         } else {
             // We only validate in- and outputs for decisions as they are the only elements
@@ -60,78 +79,126 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         }
     }
 
-    private List<ValidationResult> checkInAndOutputs(Decision sourceDecision, Decision targetDecision) {
-        return applyOnDecisionTable(
-                sourceDecision,
-                sourceDecisionTable -> applyOnDecisionTable(targetDecision, targetDecisionTable -> {
-                    final Either<ValidationResult.Builder.ElementStep, List<FeelExpression>> eitherInputExpressions =
-                            targetDecisionTable.getInputs().stream()
-                                    .map(Input::getInputExpression)
-                                    .map(toplevelExpressionLanguage::toExpression)
-                                    .map(FeelParser::parse)
-                                    .collect(Either.reduce());
+    private List<ValidationResult> checkInAndOutputs(
+        Decision sourceDecision,
+        Decision targetDecision
+    ) {
+        return applyOnDecisionTable(sourceDecision, sourceDecisionTable ->
+            applyOnDecisionTable(targetDecision, targetDecisionTable -> {
+                final Either<
+                    ValidationResult.Builder.ElementStep,
+                    List<FeelExpression>
+                > eitherInputExpressions = targetDecisionTable
+                    .getInputs()
+                    .stream()
+                    .map(Input::getInputExpression)
+                    .map(toplevelExpressionLanguage::toExpression)
+                    .map(FeelParser::parse)
+                    .collect(Either.reduce());
 
-                    Either<ValidationResult.Builder.ElementStep, Boolean> doInAndOutputsMatch =
-                            eitherInputExpressions.map(inputExpressions -> {
-                                final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
-                                        .map(OutputClause::getName)
-                                        .collect(Collectors.toSet());
+                Either<
+                    ValidationResult.Builder.ElementStep,
+                    Boolean
+                > doInAndOutputsMatch = eitherInputExpressions.map(
+                    inputExpressions -> {
+                        final Set<String> outputIds = sourceDecisionTable
+                            .getOutputs()
+                            .stream()
+                            .map(OutputClause::getName)
+                            .collect(Collectors.toSet());
 
-                                return inputExpressions.stream().anyMatch(inputExpression -> outputIds.stream()
-                                        .anyMatch(inputExpression::containsVariable));
-                            });
+                        return inputExpressions
+                            .stream()
+                            .anyMatch(inputExpression ->
+                                outputIds
+                                    .stream()
+                                    .anyMatch(inputExpression::containsVariable)
+                            );
+                    }
+                );
 
-                    return doInAndOutputsMatch.match(
-                            elementStep -> Collections.singletonList(
-                                    elementStep.element(targetDecision).build()),
-                            matching -> {
-                                if (matching) {
-                                    return Collections.emptyList();
-                                } else {
-                                    return Collections.singletonList(ValidationResult.init
-                                            .message("Inputs and outputs do not match in connected decisions.")
-                                            .element(sourceDecision)
-                                            .build());
-                                }
-                            });
-                }));
+                return doInAndOutputsMatch.match(
+                    elementStep ->
+                        Collections.singletonList(
+                            elementStep.element(targetDecision).build()
+                        ),
+                    matching -> {
+                        if (matching) {
+                            return Collections.emptyList();
+                        } else {
+                            return Collections.singletonList(
+                                ValidationResult.init
+                                    .message(
+                                        "Inputs and outputs do not match in connected decisions."
+                                    )
+                                    .element(sourceDecision)
+                                    .build()
+                            );
+                        }
+                    }
+                );
+            })
+        );
     }
 
     private List<ValidationResult> applyOnDecisionTable(
-            Decision decision, Function<DecisionTable, List<ValidationResult>> validate) {
-        final Collection<DecisionTable> decisionTables = decision.getChildElementsByType(DecisionTable.class);
+        Decision decision,
+        Function<DecisionTable, List<ValidationResult>> validate
+    ) {
+        final Collection<DecisionTable> decisionTables =
+            decision.getChildElementsByType(DecisionTable.class);
 
         if (decisionTables.size() == 1) {
             return validate.apply(decisionTables.iterator().next());
         } else {
-            return Collections.singletonList(ValidationResult.init
-                    .message("There is either no or more than one decision table.")
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        "There is either no or more than one decision table."
+                    )
                     .element(decision)
-                    .build());
+                    .build()
+            );
         }
     }
 
     private List<ValidationResult> reportUnconnectedComponents(
-            RequirementGraph drg, ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector) {
-        final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
+        RequirementGraph drg,
+        ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector
+    ) {
+        final List<Set<DrgElement>> connectedSetsOfSizeOne =
+            connectivityInspector
+                .connectedSets()
+                .stream()
                 .filter(connectedSet -> connectedSet.size() == 1)
                 .toList();
 
         if (connectedSetsOfSizeOne.isEmpty()) {
-            final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
-                    .filter(connectedSet -> connectedSet.size() > 1)
-                    .toList();
-            return Collections.singletonList(ValidationResult.init
-                    .message("Found unconnected requirement graphs: " + subgraphs)
+            final List<Set<DrgElement>> subgraphs = connectivityInspector
+                .connectedSets()
+                .stream()
+                .filter(connectedSet -> connectedSet.size() > 1)
+                .toList();
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        "Found unconnected requirement graphs: " + subgraphs
+                    )
                     .element(drg.getDefinitions())
-                    .build());
+                    .build()
+            );
         } else {
-            return connectedSetsOfSizeOne.stream()
-                    .map(connectedSetOfSizeOne -> ValidationResult.init
-                            .message("Element is not connected to requirement graph")
-                            .element(connectedSetOfSizeOne.iterator().next())
-                            .build())
-                    .collect(Collectors.toList());
+            return connectedSetsOfSizeOne
+                .stream()
+                .map(connectedSetOfSizeOne ->
+                    ValidationResult.init
+                        .message(
+                            "Element is not connected to requirement graph"
+                        )
+                        .element(connectedSetOfSizeOne.iterator().next())
+                        .build()
+                )
+                .collect(Collectors.toList());
         }
     }
 }

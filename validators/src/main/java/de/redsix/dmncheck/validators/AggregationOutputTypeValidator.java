@@ -15,39 +15,67 @@ import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 
-public class AggregationOutputTypeValidator extends GenericValidator<DecisionTable, Output> {
+public class AggregationOutputTypeValidator
+    extends GenericValidator<DecisionTable, Output> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
-        return Objects.nonNull(decisionTable.getAggregation())
-                && Arrays.asList(BuiltinAggregator.MAX, BuiltinAggregator.MIN, BuiltinAggregator.SUM)
-                        .contains(decisionTable.getAggregation());
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
+        return (
+            Objects.nonNull(decisionTable.getAggregation()) &&
+            Arrays.asList(
+                BuiltinAggregator.MAX,
+                BuiltinAggregator.MIN,
+                BuiltinAggregator.SUM
+            ).contains(decisionTable.getAggregation())
+        );
     }
 
     @Override
-    public List<ValidationResult> validate(Output output, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        Output output,
+        ValidationContext validationContext
+    ) {
         if (output.getTypeRef() == null) {
-            return Collections.singletonList(ValidationResult.init
-                    .message("An aggregation is used but no output type is defined")
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        "An aggregation is used but no output type is defined"
+                    )
                     .severity(Severity.WARNING)
                     .element(output)
-                    .build());
+                    .build()
+            );
         } else {
-            final Either<ValidationResult.Builder.ElementStep, ExpressionType> eitherType =
-                    ExpressionTypeParser.parse(output.getTypeRef(), validationContext.getItemDefinitions());
+            final Either<
+                ValidationResult.Builder.ElementStep,
+                ExpressionType
+            > eitherType = ExpressionTypeParser.parse(
+                output.getTypeRef(),
+                validationContext.getItemDefinitions()
+            );
             return eitherType.match(
-                    validationResult -> Collections.singletonList(
-                            validationResult.element(output).build()),
-                    type -> {
-                        if (!ExpressionType.isNumeric(type)) {
-                            return Collections.singletonList(ValidationResult.init
-                                    .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
-                                    .element(output)
-                                    .build());
-                        } else {
-                            return Collections.emptyList();
-                        }
-                    });
+                validationResult ->
+                    Collections.singletonList(
+                        validationResult.element(output).build()
+                    ),
+                type -> {
+                    if (!ExpressionType.isNumeric(type)) {
+                        return Collections.singletonList(
+                            ValidationResult.init
+                                .message(
+                                    "Aggregations MAX, MIN, SUM are only valid with numeric output types"
+                                )
+                                .element(output)
+                                .build()
+                        );
+                    } else {
+                        return Collections.emptyList();
+                    }
+                }
+            );
         }
     }
 

@@ -23,43 +23,77 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
-        return decisionTable.getRules().stream()
-                .collect(Collectors.groupingBy(ConflictingRuleValidator::extractInputEntriesTextContent))
-                .values()
-                .stream()
-                .map(rules -> rules.stream()
-                        // Explicit types until https://github.com/typetools/checker-framework/issues/7064 is fixed.
-                        .collect(Collectors.<Rule, TreeSet<Rule>>toCollection(() -> new TreeSet<>(Comparator.comparing(
-                                ConflictingRuleValidator::extractInputAndOutputEntriesTextContent)))))
-                .filter(rules -> rules.size() > 1)
-                .map(rules -> ValidationResult.init
-                        .message("Rule is conflicting with rules "
-                                + rules.stream().skip(1).map(Rule::getId).toList())
-                        .severity(
-                                Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER)
-                                                .contains(decisionTable.getHitPolicy())
-                                        ? Severity.WARNING
-                                        : Severity.ERROR)
-                        .element(rules.first())
-                        .build())
-                .collect(Collectors.toList());
+    public List<ValidationResult> validate(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
+        return decisionTable
+            .getRules()
+            .stream()
+            .collect(
+                Collectors.groupingBy(
+                    ConflictingRuleValidator::extractInputEntriesTextContent
+                )
+            )
+            .values()
+            .stream()
+            .map(rules ->
+                rules
+                    .stream()
+                    // Explicit types until https://github.com/typetools/checker-framework/issues/7064 is fixed.
+                    .collect(
+                        Collectors.<Rule, TreeSet<Rule>>toCollection(() ->
+                            new TreeSet<>(
+                                Comparator.comparing(
+                                    ConflictingRuleValidator::extractInputAndOutputEntriesTextContent
+                                )
+                            )
+                        )
+                    )
+            )
+            .filter(rules -> rules.size() > 1)
+            .map(rules ->
+                ValidationResult.init
+                    .message(
+                        "Rule is conflicting with rules " +
+                        rules.stream().skip(1).map(Rule::getId).toList()
+                    )
+                    .severity(
+                        Arrays.asList(
+                                HitPolicy.COLLECT,
+                                HitPolicy.RULE_ORDER
+                            ).contains(decisionTable.getHitPolicy())
+                            ? Severity.WARNING
+                            : Severity.ERROR
+                    )
+                    .element(rules.first())
+                    .build()
+            )
+            .collect(Collectors.toList());
     }
 
     private static List<String> extractInputEntriesTextContent(Rule rule) {
-        return rule.getInputEntries().stream()
-                .map(ModelElementInstance::getTextContent)
-                .collect(Collectors.toList());
+        return rule
+            .getInputEntries()
+            .stream()
+            .map(ModelElementInstance::getTextContent)
+            .collect(Collectors.toList());
     }
 
     private static String extractInputAndOutputEntriesTextContent(Rule rule) {
-        return Stream.concat(rule.getInputEntries().stream(), rule.getOutputEntries().stream())
-                .map(ModelElementInstance::getTextContent)
-                .collect(Collectors.joining());
+        return Stream.concat(
+            rule.getInputEntries().stream(),
+            rule.getOutputEntries().stream()
+        )
+            .map(ModelElementInstance::getTextContent)
+            .collect(Collectors.joining());
     }
 }

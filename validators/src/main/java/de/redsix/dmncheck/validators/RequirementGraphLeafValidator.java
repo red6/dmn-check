@@ -13,7 +13,8 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
 
     @Override
     public List<ValidationResult> validate(RequirementGraph drg) {
-        final DepthFirstIterator<DrgElement, DefaultEdge> iterator = new DepthFirstIterator<>(drg);
+        final DepthFirstIterator<DrgElement, DefaultEdge> iterator =
+            new DepthFirstIterator<>(drg);
 
         int numberLeafNodes = 0;
         while (iterator.hasNext()) {
@@ -27,10 +28,14 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
         if (numberLeafNodes < 2) {
             return Collections.emptyList();
         } else {
-            return Collections.singletonList(ValidationResult.init
-                    .message("Requirement graphs may only contain one leaf node")
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        "Requirement graphs may only contain one leaf node"
+                    )
                     .element(drg.getDefinitions())
-                    .build());
+                    .build()
+            );
         }
     }
 }

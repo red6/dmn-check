@@ -18,18 +18,26 @@ public class ValidationContext {
 
     private static class Memoizer<T, U> {
 
-        private final Map<Class<T>, @NonNull U> cache = new ConcurrentHashMap<>();
+        private final Map<Class<T>, @NonNull U> cache =
+            new ConcurrentHashMap<>();
 
-        private Function<Class<T>, U> doMemoize(final Function<Class<T>, @NonNull U> function) {
+        private Function<Class<T>, U> doMemoize(
+            final Function<Class<T>, @NonNull U> function
+        ) {
             return input -> cache.computeIfAbsent(input, function);
         }
     }
 
-    private final Function<Class<ItemDefinition>, Collection<ItemDefinition>> itemDefinitions;
+    private final Function<
+        Class<ItemDefinition>,
+        Collection<ItemDefinition>
+    > itemDefinitions;
 
     public ValidationContext(final DmnModelInstance dmnModelInstance) {
-        this.itemDefinitions = new Memoizer<ItemDefinition, Collection<ItemDefinition>>()
-                .doMemoize(dmnModelInstance::getModelElementsByType);
+        this.itemDefinitions = new Memoizer<
+            ItemDefinition,
+            Collection<ItemDefinition>
+        >().doMemoize(dmnModelInstance::getModelElementsByType);
     }
 
     /**

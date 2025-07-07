@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 
 class AggregationOutputTypeValidatorTest extends WithDecisionTable {
 
-    private final AggregationOutputTypeValidator testee = new AggregationOutputTypeValidator();
+    private final AggregationOutputTypeValidator testee =
+        new AggregationOutputTypeValidator();
 
     @Test
     void shouldErrorOnStringOutputWithMaxAggregator() {
@@ -23,16 +24,21 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         output.setTypeRef("string");
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals(
-                        "Aggregations MAX, MIN, SUM are only valid with numeric output types",
-                        validationResult.getMessage()),
-                () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Aggregations MAX, MIN, SUM are only valid with numeric output types",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(output, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -42,15 +48,21 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         final Output output = modelInstance.newInstance(Output.class);
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals(
-                        "An aggregation is used but no output type is defined", validationResult.getMessage()),
-                () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "An aggregation is used but no output type is defined",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(output, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -61,15 +73,21 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         output.setTypeRef("unsupportedType");
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals(
-                        "Could not parse FEEL expression type 'unsupportedType'", validationResult.getMessage()),
-                () -> assertEquals(output, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Could not parse FEEL expression type 'unsupportedType'",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(output, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -80,7 +98,9 @@ class AggregationOutputTypeValidatorTest extends WithDecisionTable {
         output.setTypeRef("integer");
         decisionTable.getOutputs().add(output);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }

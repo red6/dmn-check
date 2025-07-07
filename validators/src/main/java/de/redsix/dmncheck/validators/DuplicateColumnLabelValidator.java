@@ -14,34 +14,59 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
 
-public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
+public class DuplicateColumnLabelValidator
+    extends SimpleValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         return Stream.concat(
-                        validateColumn(decisionTable, decisionTable.getInputs(), Input::getLabel).stream(),
-                        validateColumn(decisionTable, decisionTable.getOutputs(), Output::getLabel).stream())
-                .collect(Collectors.toList());
+            validateColumn(
+                decisionTable,
+                decisionTable.getInputs(),
+                Input::getLabel
+            ).stream(),
+            validateColumn(
+                decisionTable,
+                decisionTable.getOutputs(),
+                Output::getLabel
+            ).stream()
+        ).collect(Collectors.toList());
     }
 
     private <T> List<ValidationResult> validateColumn(
-            DecisionTable decisionTable, Collection<T> columns, Function<T, String> getLabel) {
+        DecisionTable decisionTable,
+        Collection<T> columns,
+        Function<T, String> getLabel
+    ) {
         final List<String> labels = columns.stream().map(getLabel).toList();
 
-        return labels.stream()
-                .filter(label -> Collections.frequency(labels, label) > 1)
-                .distinct()
-                .map(label -> ValidationResult.init
-                        .message("Column with label '" + label + "' is used more than once")
-                        .severity(Severity.WARNING)
-                        .element(decisionTable)
-                        .build())
-                .collect(Collectors.toList());
+        return labels
+            .stream()
+            .filter(label -> Collections.frequency(labels, label) > 1)
+            .distinct()
+            .map(label ->
+                ValidationResult.init
+                    .message(
+                        "Column with label '" +
+                        label +
+                        "' is used more than once"
+                    )
+                    .severity(Severity.WARNING)
+                    .element(decisionTable)
+                    .build()
+            )
+            .collect(Collectors.toList());
     }
 
     @Override

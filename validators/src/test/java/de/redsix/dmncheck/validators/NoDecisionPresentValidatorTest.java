@@ -14,34 +14,51 @@ import org.junit.jupiter.api.Test;
 
 class NoDecisionPresentValidatorTest extends WithDecisionTable {
 
-    private final NoDecisionPresentValidator testee = new NoDecisionPresentValidator();
+    private final NoDecisionPresentValidator testee =
+        new NoDecisionPresentValidator();
 
     @Test
     void shouldDetectThatDefinitionsContainNoDecisions() {
         final DmnModelInstance dmnModelInstance = Dmn.createEmptyModel();
 
-        final Definitions definitionsWithOnlyOneKnowledgeSource = dmnModelInstance.newInstance(Definitions.class);
+        final Definitions definitionsWithOnlyOneKnowledgeSource =
+            dmnModelInstance.newInstance(Definitions.class);
         dmnModelInstance.setDefinitions(definitionsWithOnlyOneKnowledgeSource);
 
-        final KnowledgeSource knowledgeSource = dmnModelInstance.newInstance(KnowledgeSource.class);
+        final KnowledgeSource knowledgeSource = dmnModelInstance.newInstance(
+            KnowledgeSource.class
+        );
         definitionsWithOnlyOneKnowledgeSource.addChildElement(knowledgeSource);
 
-        final List<ValidationResult> validationResults = testee.apply(dmnModelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            dmnModelInstance
+        );
 
         assertEquals(1, validationResults.size());
 
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("No decisions found", validationResult.getMessage()),
-                () -> assertEquals(definitionsWithOnlyOneKnowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "No decisions found",
+                    validationResult.getMessage()
+                ),
+            () ->
+                assertEquals(
+                    definitionsWithOnlyOneKnowledgeSource,
+                    validationResult.getElement()
+                ),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 
     @Test
     void shouldAcceptModelWithOneDecision() {
         // Decision is defined in super class WithDecisionTable
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }

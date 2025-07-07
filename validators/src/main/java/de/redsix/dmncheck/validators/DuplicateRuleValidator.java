@@ -22,32 +22,45 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         final Collection<Rule> rules = decisionTable.getRules();
         final List<List<String>> expressions = new ArrayList<>();
         final List<ValidationResult> result = new ArrayList<>();
 
         for (Rule rule : rules) {
             final List<String> rowElements = Stream.concat(
-                            rule.getInputEntries().stream(), rule.getOutputEntries().stream())
-                    .map(ModelElementInstance::getTextContent)
-                    .collect(Collectors.toList());
+                rule.getInputEntries().stream(),
+                rule.getOutputEntries().stream()
+            )
+                .map(ModelElementInstance::getTextContent)
+                .collect(Collectors.toList());
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {
-                result.add(ValidationResult.init
+                result.add(
+                    ValidationResult.init
                         .message("Rule is defined more than once")
                         .severity(
-                                HitPolicy.COLLECT.equals(decisionTable.getHitPolicy())
-                                        ? Severity.WARNING
-                                        : Severity.ERROR)
+                            HitPolicy.COLLECT.equals(
+                                    decisionTable.getHitPolicy()
+                                )
+                                ? Severity.WARNING
+                                : Severity.ERROR
+                        )
                         .element(rule)
-                        .build());
+                        .build()
+                );
             }
         }
         return result;

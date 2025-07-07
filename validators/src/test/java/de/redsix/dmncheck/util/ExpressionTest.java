@@ -14,7 +14,9 @@ class ExpressionTest {
     @Test
     void shouldCreateExpressionFromUnaryTestsWithLocalExpressionLanguage() {
         final UnaryTests unaryTests = Mockito.mock(UnaryTests.class);
-        when(unaryTests.getExpressionLanguage()).thenReturn(DmnModelConstants.FEEL_NS);
+        when(unaryTests.getExpressionLanguage()).thenReturn(
+            DmnModelConstants.FEEL_NS
+        );
         when(unaryTests.getTextContent()).thenReturn("");
 
         final Expression expression = new Expression(unaryTests, null);
@@ -25,8 +27,12 @@ class ExpressionTest {
 
     @Test
     void shouldCreateExpressionFromLiteralExpressionWithLocalExpressionLanguage() {
-        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
-        when(literalExpression.getExpressionLanguage()).thenReturn(DmnModelConstants.FEEL_NS);
+        final LiteralExpression literalExpression = Mockito.mock(
+            LiteralExpression.class
+        );
+        when(literalExpression.getExpressionLanguage()).thenReturn(
+            DmnModelConstants.FEEL_NS
+        );
         when(literalExpression.getTextContent()).thenReturn("");
 
         final Expression expression = new Expression(literalExpression, null);
@@ -38,7 +44,9 @@ class ExpressionTest {
     @Test
     void shouldFavorLocalExpressionLanguageUnaryTests() {
         final UnaryTests unaryTests = Mockito.mock(UnaryTests.class);
-        when(unaryTests.getExpressionLanguage()).thenReturn(DmnModelConstants.FEEL_NS);
+        when(unaryTests.getExpressionLanguage()).thenReturn(
+            DmnModelConstants.FEEL_NS
+        );
         when(unaryTests.getTextContent()).thenReturn("");
 
         final Expression expression = new Expression(unaryTests, "javascript");
@@ -49,11 +57,18 @@ class ExpressionTest {
 
     @Test
     void shouldFavorLocalExpressionLanguageLiteralExpression() {
-        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
-        when(literalExpression.getExpressionLanguage()).thenReturn(DmnModelConstants.FEEL_NS);
+        final LiteralExpression literalExpression = Mockito.mock(
+            LiteralExpression.class
+        );
+        when(literalExpression.getExpressionLanguage()).thenReturn(
+            DmnModelConstants.FEEL_NS
+        );
         when(literalExpression.getTextContent()).thenReturn("");
 
-        final Expression expression = new Expression(literalExpression, "javascript");
+        final Expression expression = new Expression(
+            literalExpression,
+            "javascript"
+        );
 
         assertEquals(DmnModelConstants.FEEL_NS, expression.expressionLanguage);
         assertEquals("", expression.textContent);
@@ -72,10 +87,15 @@ class ExpressionTest {
 
     @Test
     void shouldUseTopLevelIfLocalExpressionLanguageIsMissingLiteralExpression() {
-        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
+        final LiteralExpression literalExpression = Mockito.mock(
+            LiteralExpression.class
+        );
         when(literalExpression.getTextContent()).thenReturn("");
 
-        final Expression expression = new Expression(literalExpression, "javascript");
+        final Expression expression = new Expression(
+            literalExpression,
+            "javascript"
+        );
 
         assertEquals("javascript", expression.expressionLanguage);
         assertEquals("", expression.textContent);
@@ -94,7 +114,9 @@ class ExpressionTest {
 
     @Test
     void shouldUseFeelIfNothingIsSpecifiedLiteralExpression() {
-        final LiteralExpression literalExpression = Mockito.mock(LiteralExpression.class);
+        final LiteralExpression literalExpression = Mockito.mock(
+            LiteralExpression.class
+        );
         when(literalExpression.getTextContent()).thenReturn("");
 
         final Expression expression = new Expression(literalExpression, null);

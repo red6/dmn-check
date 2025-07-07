@@ -17,7 +17,11 @@ public class ValidationResult {
     private final String message;
     private final ModelElementInstance element;
 
-    private ValidationResult(final String message, final ModelElementInstance element, final Severity severity) {
+    private ValidationResult(
+        final String message,
+        final ModelElementInstance element,
+        final Severity severity
+    ) {
         this.message = message;
         this.element = element;
         this.severity = severity;
@@ -40,17 +44,37 @@ public class ValidationResult {
         return message;
     }
 
-    public static final Builder.MessageStep init = message -> (new Builder.SeverityStep() {
-
-        private Severity severity = Severity.ERROR;
-
-        @Override
-        public Builder.BuildStep element(ModelElementInstance element) {
-            return new Builder.BuildStep() {
+    public static final Builder.MessageStep init = message ->
+        (new Builder.SeverityStep() {
+                private Severity severity = Severity.ERROR;
 
                 @Override
-                public ModelElementInstance getElement() {
-                    return element;
+                public Builder.BuildStep element(ModelElementInstance element) {
+                    return new Builder.BuildStep() {
+                        @Override
+                        public ModelElementInstance getElement() {
+                            return element;
+                        }
+
+                        @Override
+                        public Severity getSeverity() {
+                            return severity;
+                        }
+
+                        @Override
+                        public String getMessage() {
+                            return message;
+                        }
+
+                        @Override
+                        public ValidationResult build() {
+                            return new ValidationResult(
+                                message,
+                                element,
+                                severity
+                            );
+                        }
+                    };
                 }
 
                 @Override
@@ -59,33 +83,16 @@ public class ValidationResult {
                 }
 
                 @Override
-                public String getMessage() {
-                    return message;
+                public Builder.ElementStep severity(Severity severity) {
+                    this.severity = severity;
+                    return this;
                 }
 
                 @Override
-                public ValidationResult build() {
-                    return new ValidationResult(message, element, severity);
+                public String getMessage() {
+                    return message;
                 }
-            };
-        }
-
-        @Override
-        public Severity getSeverity() {
-            return severity;
-        }
-
-        @Override
-        public Builder.ElementStep severity(Severity severity) {
-            this.severity = severity;
-            return this;
-        }
-
-        @Override
-        public String getMessage() {
-            return message;
-        }
-    });
+            });
 
     public static final class Builder {
 

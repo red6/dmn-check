@@ -2,7 +2,8 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Definitions;
 
-public class DefinitionsIdAndNameValidator extends IdAndNameValidator<Definitions> {
+public class DefinitionsIdAndNameValidator
+    extends IdAndNameValidator<Definitions> {
 
     @Override
     public String getName() {

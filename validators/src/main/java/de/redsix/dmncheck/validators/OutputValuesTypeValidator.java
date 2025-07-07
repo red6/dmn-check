@@ -12,27 +12,44 @@ import org.camunda.bpm.model.dmn.instance.Output;
 public class OutputValuesTypeValidator extends TypeValidator<Output> {
 
     @Override
-    public boolean isApplicable(final Output output, ValidationContext validationContext) {
+    public boolean isApplicable(
+        final Output output,
+        ValidationContext validationContext
+    ) {
         final String expressionType = output.getTypeRef();
-        return output.getOutputValues() != null
-                && ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
-                        .match(parseError -> false, parseResult -> true);
+        return (
+            output.getOutputValues() != null &&
+            ExpressionTypeParser.parse(
+                expressionType,
+                validationContext.getItemDefinitions()
+            ).match(parseError -> false, parseResult -> true)
+        );
     }
 
     @Override
-    public List<ValidationResult> validate(final Output output, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        final Output output,
+        ValidationContext validationContext
+    ) {
         final String expressionType = output.getTypeRef();
 
-        return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
-                .match(
-                        validationResult -> Collections.singletonList(
-                                validationResult.element(output).build()),
-                        inputType -> typecheck(
-                                        output,
-                                        Stream.of(output.getOutputValues())
-                                                .map(toplevelExpressionLanguage::toExpression),
-                                        Stream.of(inputType))
-                                .collect(Collectors.toList()));
+        return ExpressionTypeParser.parse(
+            expressionType,
+            validationContext.getItemDefinitions()
+        ).match(
+            validationResult ->
+                Collections.singletonList(
+                    validationResult.element(output).build()
+                ),
+            inputType ->
+                typecheck(
+                    output,
+                    Stream.of(output.getOutputValues()).map(
+                        toplevelExpressionLanguage::toExpression
+                    ),
+                    Stream.of(inputType)
+                ).collect(Collectors.toList())
+        );
     }
 
     @Override

@@ -19,14 +19,21 @@ class AggregationValidatorTest extends WithDecisionTable {
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("Aggregations are only valid with HitPolicy COLLECT", validationResult.getMessage()),
-                () -> assertEquals(decisionTable, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Aggregations are only valid with HitPolicy COLLECT",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(decisionTable, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -34,7 +41,9 @@ class AggregationValidatorTest extends WithDecisionTable {
         decisionTable.setHitPolicy(HitPolicy.COLLECT);
         decisionTable.setAggregation(BuiltinAggregator.COUNT);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }
@@ -44,7 +53,9 @@ class AggregationValidatorTest extends WithDecisionTable {
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
         assertNull(decisionTable.getAggregation());
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }

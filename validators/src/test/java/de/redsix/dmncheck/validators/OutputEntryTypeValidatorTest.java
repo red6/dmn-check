@@ -17,22 +17,32 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class OutputEntryTypeValidatorTest extends WithDecisionTable {
 
-    private final OutputEntryTypeValidator testee = new OutputEntryTypeValidator();
+    private final OutputEntryTypeValidator testee =
+        new OutputEntryTypeValidator();
 
     @ParameterizedTest
-    @CsvSource({"integer, 42", "long, 42", "double, 42", "integer, -1", "integer, "})
-    void shouldAcceptWellTypedOutputExpression(final String typeref, final String textContent) {
+    @CsvSource(
+        { "integer, 42", "long, 42", "double, 42", "integer, -1", "integer, " }
+    )
+    void shouldAcceptWellTypedOutputExpression(
+        final String typeref,
+        final String textContent
+    ) {
         final Output output = modelInstance.newInstance(Output.class);
         output.setTypeRef(typeref);
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(
+            OutputEntry.class
+        );
         outputEntry.setTextContent(textContent);
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }
@@ -43,12 +53,16 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(
+            OutputEntry.class
+        );
         outputEntry.setTextContent("42");
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }
@@ -60,20 +74,28 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(
+            OutputEntry.class
+        );
         outputEntry.setTextContent("\"Steak\"");
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals(
-                        "Type of output entry does not match type of output expression", validationResult.getMessage()),
-                () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Type of output entry does not match type of output expression",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(rule, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -82,19 +104,28 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(
+            OutputEntry.class
+        );
         outputEntry.setTextContent("[1..true]");
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("Types of lower and upper bound do not match.", validationResult.getMessage()),
-                () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Types of lower and upper bound do not match.",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(rule, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -103,19 +134,28 @@ class OutputEntryTypeValidatorTest extends WithDecisionTable {
         decisionTable.getOutputs().add(output);
 
         final Rule rule = modelInstance.newInstance(Rule.class);
-        final OutputEntry outputEntry = modelInstance.newInstance(OutputEntry.class);
+        final OutputEntry outputEntry = modelInstance.newInstance(
+            OutputEntry.class
+        );
         outputEntry.setTextContent("'foo'.repeat(6)");
         outputEntry.setExpressionLanguage("javascript");
         rule.getOutputEntries().add(outputEntry);
         decisionTable.getRules().add(rule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("Expression language 'javascript' not supported", validationResult.getMessage()),
-                () -> assertEquals(rule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Expression language 'javascript' not supported",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(rule, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 }

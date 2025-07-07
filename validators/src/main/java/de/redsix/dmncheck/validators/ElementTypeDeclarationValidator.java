@@ -12,39 +12,63 @@ import java.util.List;
 import java.util.Objects;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
-public abstract class ElementTypeDeclarationValidator<T extends DmnElement> extends SimpleValidator<T> {
+public abstract class ElementTypeDeclarationValidator<T extends DmnElement>
+    extends SimpleValidator<T> {
 
     abstract String getTypeRef(T expression);
 
-    public boolean isApplicable(T expression, ValidationContext validationContext) {
+    public boolean isApplicable(
+        T expression,
+        ValidationContext validationContext
+    ) {
         return true;
     }
 
-    public List<ValidationResult> validate(T expression, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        T expression,
+        ValidationContext validationContext
+    ) {
         final String expressionType = getTypeRef(expression);
         if (Objects.isNull(expressionType)) {
-            return Collections.singletonList(ValidationResult.init
-                    .message(getClassUnderValidation().getSimpleName() + " has no type")
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        getClassUnderValidation().getSimpleName() +
+                        " has no type"
+                    )
                     .severity(Severity.WARNING)
                     .element(expression)
-                    .build());
+                    .build()
+            );
         } else {
-            final Either<ValidationResult.Builder.ElementStep, ExpressionType> eitherType =
-                    ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions());
+            final Either<
+                ValidationResult.Builder.ElementStep,
+                ExpressionType
+            > eitherType = ExpressionTypeParser.parse(
+                expressionType,
+                validationContext.getItemDefinitions()
+            );
             return eitherType.match(
-                    validationResult -> Collections.singletonList(
-                            validationResult.element(expression).build()),
-                    type -> {
-                        if (new ExpressionType.TOP().equals(type)) {
-                            return Collections.singletonList(ValidationResult.init
-                                    .message("TOP is an internal type and cannot be used in declarations.")
-                                    .severity(Severity.ERROR)
-                                    .element(expression)
-                                    .build());
-                        } else {
-                            return Collections.emptyList();
-                        }
-                    });
+                validationResult ->
+                    Collections.singletonList(
+                        validationResult.element(expression).build()
+                    ),
+                type -> {
+                    if (new ExpressionType.TOP().equals(type)) {
+                        return Collections.singletonList(
+                            ValidationResult.init
+                                .message(
+                                    "TOP is an internal type and cannot be used in declarations."
+                                )
+                                .severity(Severity.ERROR)
+                                .element(expression)
+                                .build()
+                        );
+                    } else {
+                        return Collections.emptyList();
+                    }
+                }
+            );
         }
     }
 }

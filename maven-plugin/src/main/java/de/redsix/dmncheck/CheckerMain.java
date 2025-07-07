@@ -13,7 +13,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-@Mojo(name = "check-dmn", requiresProject = false, requiresDependencyResolution = ResolutionScope.TEST)
+@Mojo(
+    name = "check-dmn",
+    requiresProject = false,
+    requiresDependencyResolution = ResolutionScope.TEST
+)
 public class CheckerMain extends AbstractMojo implements PluginBase {
 
     @Parameter
@@ -48,13 +52,19 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     public void execute() throws MojoExecutionException {
         loadClasspath();
         if (validate()) {
-            throw new MojoExecutionException("Some files are not valid, see previous logs.");
+            throw new MojoExecutionException(
+                "Some files are not valid, see previous logs."
+            );
         }
     }
 
     @Override
     public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
-        return new PrettyPrintValidationResults.PluginLogger(getLog()::info, getLog()::warn, getLog()::error);
+        return new PrettyPrintValidationResults.PluginLogger(
+            getLog()::info,
+            getLog()::warn,
+            getLog()::error
+        );
     }
 
     @Override
@@ -99,10 +109,12 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
     }
 
     void loadProjectClasspath() {
-        List<String> classpath = project.getArtifacts().stream()
-                .map(Artifact::getFile)
-                .map(File::getAbsolutePath)
-                .collect(Collectors.toList());
+        List<String> classpath = project
+            .getArtifacts()
+            .stream()
+            .map(Artifact::getFile)
+            .map(File::getAbsolutePath)
+            .collect(Collectors.toList());
 
         loadProjectClasspath(classpath);
     }

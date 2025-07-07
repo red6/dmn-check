@@ -15,8 +15,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ValidatorLoader {
 
-    private static final String VALIDATOR_PACKAGE = "de.redsix.dmncheck.validators";
-    private static final String VALIDATOR_CORE_PACKAGE = "de.redsix.dmncheck.validators.core";
+    private static final String VALIDATOR_PACKAGE =
+        "de.redsix.dmncheck.validators";
+    private static final String VALIDATOR_CORE_PACKAGE =
+        "de.redsix.dmncheck.validators.core";
 
     private static int inputParameterHash;
     private static @MonotonicNonNull List<Validator> validators;
@@ -27,42 +29,75 @@ public class ValidatorLoader {
         return getValidators(null, null);
     }
 
-    public static List<Validator> getValidators(final String @Nullable [] packages, final String @Nullable [] classes) {
-        if (inputParameterHash == Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes))
-                && validators != null) {
+    public static List<Validator> getValidators(
+        final String@Nullable [] packages,
+        final String@Nullable [] classes
+    ) {
+        if (
+            inputParameterHash ==
+                Objects.hash(
+                    Arrays.hashCode(packages),
+                    Arrays.hashCode(classes)
+                ) &&
+            validators != null
+        ) {
             return validators;
         }
 
-        inputParameterHash = Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes));
+        inputParameterHash = Objects.hash(
+            Arrays.hashCode(packages),
+            Arrays.hashCode(classes)
+        );
 
-        try (ScanResult scanResult = new ClassGraph()
+        try (
+            ScanResult scanResult = new ClassGraph()
                 .acceptClasses(Validator.class.getName())
                 .acceptPackages(VALIDATOR_CORE_PACKAGE)
                 .acceptPackagesNonRecursive(
-                        packages == null ? new String[] {VALIDATOR_PACKAGE, VALIDATOR_CORE_PACKAGE} : packages)
+                    packages == null
+                        ? new String[] {
+                            VALIDATOR_PACKAGE,
+                            VALIDATOR_CORE_PACKAGE,
+                        }
+                        : packages
+                )
                 .acceptClasses(classes == null ? new String[] {} : classes)
-                .scan()) {
+                .scan();
+        ) {
+            final ClassInfoList allValidatorClasses =
+                scanResult.getClassesImplementing(Validator.class.getName());
 
-            final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
-
-            validators = allValidatorClasses.loadClasses(Validator.class).stream()
-                    .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
-                    .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
-                    .map(ValidatorLoader::instantiateValidator)
-                    .collect(Collectors.toList());
+            validators = allValidatorClasses
+                .loadClasses(Validator.class)
+                .stream()
+                .filter(validatorClass ->
+                    !Modifier.isAbstract(validatorClass.getModifiers())
+                )
+                .filter(validatorClass ->
+                    !Modifier.isInterface(validatorClass.getModifiers())
+                )
+                .map(ValidatorLoader::instantiateValidator)
+                .collect(Collectors.toList());
 
             return validators;
         }
     }
 
-    private static Validator instantiateValidator(final Class<? extends Validator> validator) {
+    private static Validator instantiateValidator(
+        final Class<? extends Validator> validator
+    ) {
         try {
             return validator.getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException
-                | InstantiationException
-                | NoSuchMethodException
-                | InvocationTargetException e) {
-            throw new RuntimeException("Failed to load validator " + validator, e);
+        } catch (
+            IllegalAccessException
+            | InstantiationException
+            | NoSuchMethodException
+            | InvocationTargetException e
+        ) {
+            throw new RuntimeException(
+                "Failed to load validator " + validator,
+                e
+            );
         }
     }
 }
