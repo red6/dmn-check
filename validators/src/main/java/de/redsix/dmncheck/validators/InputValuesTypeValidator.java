@@ -48,7 +48,7 @@ public class InputValuesTypeValidator extends TypeValidator<Input> {
                         toplevelExpressionLanguage::toExpression
                     ),
                     Stream.of(inputType)
-                ).collect(Collectors.toList())
+                ).toList()
         );
     }
 

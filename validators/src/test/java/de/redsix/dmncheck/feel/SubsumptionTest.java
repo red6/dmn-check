@@ -12,7 +12,7 @@ class SubsumptionTest {
     @ParameterizedTest
     @CsvSource({ "1", "\"a\"", "[1..2]", "<3", "not(3)" })
     void emptySubsumesEverything(final String input) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
         final FeelExpression emptyExpression = new FeelExpression.Empty();
 
         assertEquals(
@@ -24,7 +24,7 @@ class SubsumptionTest {
     @ParameterizedTest
     @CsvSource({ "1", "\"a\"", "[1..2]", "<3", "not(3)" })
     void nothingSubsumesEmptyExceptEmpty(final String input) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
         final FeelExpression emptyExpression = new FeelExpression.Empty();
 
         assertEquals(
@@ -57,7 +57,7 @@ class SubsumptionTest {
 
     @Test
     void identicalStringsSubsumeEachOther() {
-        final FeelExpression stringExpression = FeelParser.PARSER.parse(
+        final FeelExpression stringExpression = FeelParser.parser.parse(
             "\"somestring\""
         );
         assertEquals(
@@ -72,10 +72,10 @@ class SubsumptionTest {
 
     @Test
     void differentStringsDoNotSubsumeEachOther() {
-        final FeelExpression stringExpression = FeelParser.PARSER.parse(
+        final FeelExpression stringExpression = FeelParser.parser.parse(
             "\"somestring\""
         );
-        final FeelExpression otherStringExpression = FeelParser.PARSER.parse(
+        final FeelExpression otherStringExpression = FeelParser.parser.parse(
             "\"otherstring\""
         );
         assertEquals(
@@ -264,10 +264,10 @@ class SubsumptionTest {
         String subsumingInput,
         String subsumedInput
     ) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(
+        final FeelExpression subsumingExpression = FeelParser.parser.parse(
             subsumingInput
         );
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(
+        final FeelExpression subsumedExpression = FeelParser.parser.parse(
             subsumedInput
         );
 
@@ -285,10 +285,10 @@ class SubsumptionTest {
         String subsumingInput,
         String subsumedInput
     ) {
-        final FeelExpression subsumingExpression = FeelParser.PARSER.parse(
+        final FeelExpression subsumingExpression = FeelParser.parser.parse(
             subsumingInput
         );
-        final FeelExpression subsumedExpression = FeelParser.PARSER.parse(
+        final FeelExpression subsumedExpression = FeelParser.parser.parse(
             subsumedInput
         );
 

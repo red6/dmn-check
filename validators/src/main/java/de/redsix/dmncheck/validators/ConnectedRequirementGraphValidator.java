@@ -53,7 +53,7 @@ public class ConnectedRequirementGraphValidator
                         drg.getEdgeTarget(edge)
                     ).stream()
                 )
-                .collect(Collectors.toList());
+                .toList();
         } else if (connectivityInspector.connectedSets().isEmpty()) {
             // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of
             // another validator
@@ -198,7 +198,7 @@ public class ConnectedRequirementGraphValidator
                         .element(connectedSetOfSizeOne.iterator().next())
                         .build()
                 )
-                .collect(Collectors.toList());
+                .toList();
         }
     }
 }

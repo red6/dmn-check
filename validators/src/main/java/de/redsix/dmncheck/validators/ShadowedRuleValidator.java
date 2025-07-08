@@ -64,7 +64,7 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
             (n, rule) -> identifySubsumedRules(n, rule, rules)
         )
             .flatMap(Function.identity())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private Stream<ValidationResult> identifySubsumedRules(

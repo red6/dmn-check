@@ -41,7 +41,7 @@ public class DuplicateColumnLabelValidator
                 decisionTable.getOutputs(),
                 Output::getLabel
             ).stream()
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private <T> List<ValidationResult> validateColumn(
@@ -66,7 +66,7 @@ public class DuplicateColumnLabelValidator
                     .element(decisionTable)
                     .build()
             )
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

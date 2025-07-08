@@ -54,7 +54,7 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement>
                         validationResult.element(expression).build()
                     ),
                 type -> {
-                    if (new ExpressionType.TOP().equals(type)) {
+                    if (new ExpressionType.Top().equals(type)) {
                         return Collections.singletonList(
                             ValidationResult.init
                                 .message(

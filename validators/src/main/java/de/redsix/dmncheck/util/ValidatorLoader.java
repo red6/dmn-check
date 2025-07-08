@@ -77,7 +77,7 @@ public class ValidatorLoader {
                     !Modifier.isInterface(validatorClass.getModifiers())
                 )
                 .map(ValidatorLoader::instantiateValidator)
-                .collect(Collectors.toList());
+                .toList();
 
             return validators;
         }

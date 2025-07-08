@@ -48,7 +48,7 @@ public class OutputValuesTypeValidator extends TypeValidator<Output> {
                         toplevelExpressionLanguage::toExpression
                     ),
                     Stream.of(inputType)
-                ).collect(Collectors.toList())
+                ).toList()
         );
     }
 

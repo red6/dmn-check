@@ -41,7 +41,7 @@ public class ItemDefinitionAllowedValuesTypeValidator
                 .filter(
                     itemComponent -> itemComponent.getAllowedValues() != null
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         if (itemDefinition.getAllowedValues() != null) {
             itemDefinitionsAndComponents.add(itemDefinition);
@@ -85,7 +85,7 @@ public class ItemDefinitionAllowedValuesTypeValidator
                     );
                 }
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

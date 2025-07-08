@@ -86,7 +86,7 @@ public abstract class GenericValidator<
             .filter(element -> isApplicable(element, validationContext))
             .flatMap(this::getElementsUnderValidation)
             .flatMap(element -> validate(element, validationContext).stream())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private Stream<T> getElementsUnderValidation(final S element) {

@@ -39,7 +39,7 @@ public interface PluginBase {
         final List<Path> searchPathObjects = getSearchPathList()
             .stream()
             .map(Paths::get)
-            .collect(Collectors.toList());
+            .toList();
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(
             searchPathObjects
         );
@@ -101,7 +101,7 @@ public interface PluginBase {
         return getValidators()
             .stream()
             .flatMap(validator -> validator.apply(dmnModelInstance).stream())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     default List<File> fetchFilesToTestFromSearchPaths(
@@ -119,7 +119,7 @@ public interface PluginBase {
                     return true;
                 }
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     default List<Path> getFileNames(final List<Path> dirs) {
@@ -141,7 +141,7 @@ public interface PluginBase {
                     );
                 }
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     default List<Validator> getValidators() {

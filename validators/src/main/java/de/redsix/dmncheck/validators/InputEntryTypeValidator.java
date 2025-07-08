@@ -76,7 +76,7 @@ public class InputEntryTypeValidator extends TypeValidator<DecisionTable> {
                         )
                 );
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

@@ -77,7 +77,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                     .element(rules.first())
                     .build()
             )
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private static List<String> extractInputEntriesTextContent(Rule rule) {
@@ -85,7 +85,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
             .getInputEntries()
             .stream()
             .map(ModelElementInstance::getTextContent)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private static String extractInputAndOutputEntriesTextContent(Rule rule) {

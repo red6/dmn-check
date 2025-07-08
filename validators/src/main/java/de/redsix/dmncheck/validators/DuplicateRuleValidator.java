@@ -44,7 +44,7 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
                 rule.getOutputEntries().stream()
             )
                 .map(ModelElementInstance::getTextContent)
-                .collect(Collectors.toList());
+                .toList();
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {

@@ -86,7 +86,7 @@ class PluginBaseTest {
             .stream()
             .map(Path::toAbsolutePath)
             .map(Path::toString)
-            .collect(Collectors.toList());
+            .toList();
 
         MatcherAssert.assertThat(
             result,

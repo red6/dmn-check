@@ -28,25 +28,25 @@ public final class FeelTypecheck {
     > typecheck(final Context context, final FeelExpression expression) {
         return switch (expression) {
             case FeelExpression.Empty() -> new Either.Right<>(
-                new ExpressionType.TOP()
+                new ExpressionType.Top()
             );
             case FeelExpression.Null() -> new Either.Right<>(
-                new ExpressionType.TOP()
+                new ExpressionType.Top()
             );
             case FeelExpression.BooleanLiteral(var bool) -> new Either.Right<>(
-                new ExpressionType.BOOLEAN()
+                new ExpressionType.Boolean()
             );
             case FeelExpression.DateLiteral(var dateTime) -> new Either.Right<>(
-                new ExpressionType.DATE()
+                new ExpressionType.Date()
             );
             case FeelExpression.DoubleLiteral(
                 var aDouble
-            ) -> new Either.Right<>(new ExpressionType.DOUBLE());
+            ) -> new Either.Right<>(new ExpressionType.Double());
             case FeelExpression.IntegerLiteral(
                 var integer
-            ) -> new Either.Right<>(new ExpressionType.INTEGER());
+            ) -> new Either.Right<>(new ExpressionType.Integer());
             case FeelExpression.StringLiteral(var string) -> new Either.Right<>(
-                new ExpressionType.STRING()
+                new ExpressionType.String()
             );
             case FeelExpression.VariableLiteral(var name) -> {
                 if (context.containsKey(name)) {
@@ -155,7 +155,7 @@ public final class FeelTypecheck {
                 "Operator " + operator + " expects numeric type but got " + type
             ).orElse(new Either.Right<>(type));
             case OR, AND -> check(
-                new ExpressionType.BOOLEAN().equals(type),
+                new ExpressionType.Boolean().equals(type),
                 "Operator " + operator + " expects boolean but got " + type
             ).orElse(new Either.Right<>(type));
             case NOT -> new Either.Right<>(type);
@@ -171,10 +171,10 @@ public final class FeelTypecheck {
         final FeelExpression upperBound
     ) {
         final List<ExpressionType> allowedTypes = Arrays.asList(
-            new ExpressionType.INTEGER(),
-            new ExpressionType.DOUBLE(),
-            new ExpressionType.LONG(),
-            new ExpressionType.DATE()
+            new ExpressionType.Integer(),
+            new ExpressionType.Double(),
+            new ExpressionType.Long(),
+            new ExpressionType.Date()
         );
         return typecheck(context, lowerBound).bind(lowerBoundType ->
                 typecheck(context, upperBound).bind(upperBoundType ->

@@ -18,9 +18,9 @@ public final class ExpressionTypeParser {
 
     private ExpressionTypeParser() {}
 
-    private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
+    private static final Parser<Void> ignored = Scanners.WHITESPACES.skipMany();
 
-    private static Parser<?> TOKENIZER(
+    private static Parser<?> tokenizer(
         Collection<ItemDefinition> itemDefinitions
     ) {
         final Parser<?> itemDefinitionTokenizer = itemDefinitions
@@ -68,32 +68,36 @@ public final class ExpressionTypeParser {
         );
     }
 
-    private static final Parser<ExpressionType> STRING = Terminals.fragment(
-        "stringfragment"
-    ).map(__ -> new ExpressionType.STRING());
-    private static final Parser<ExpressionType> BOOLEAN = Terminals.fragment(
-        "booleanfragment"
-    ).map(__ -> new ExpressionType.BOOLEAN());
-    private static final Parser<ExpressionType> INTEGER = Terminals.fragment(
-        "integerfragment"
-    ).map(__ -> new ExpressionType.INTEGER());
-    private static final Parser<ExpressionType> LONG = Terminals.fragment(
+    private static final Parser<ExpressionType> stringParser =
+        Terminals.fragment("stringfragment").map(__ ->
+            new ExpressionType.String()
+        );
+    private static final Parser<ExpressionType> booleanParser =
+        Terminals.fragment("booleanfragment").map(__ ->
+            new ExpressionType.Boolean()
+        );
+    private static final Parser<ExpressionType> integerParser =
+        Terminals.fragment("integerfragment").map(__ ->
+            new ExpressionType.Integer()
+        );
+    private static final Parser<ExpressionType> longParser = Terminals.fragment(
         "longfragment"
-    ).map(__ -> new ExpressionType.LONG());
-    private static final Parser<ExpressionType> DOUBLE = Terminals.fragment(
-        "doublefragment"
-    ).map(__ -> new ExpressionType.DOUBLE());
-    private static final Parser<ExpressionType> DATE = Terminals.fragment(
+    ).map(__ -> new ExpressionType.Long());
+    private static final Parser<ExpressionType> doubleParser =
+        Terminals.fragment("doublefragment").map(__ ->
+            new ExpressionType.Double()
+        );
+    private static final Parser<ExpressionType> dateParser = Terminals.fragment(
         "datefragment"
-    ).map(__ -> new ExpressionType.DATE());
-    private static final Parser<ExpressionType> ENUM = Terminals.fragment(
+    ).map(__ -> new ExpressionType.Date());
+    private static final Parser<ExpressionType> enumParser = Terminals.fragment(
         "enumfragment"
-    ).map(ExpressionType.ENUM::new);
-    private static final Parser<ExpressionType> TOP = Parsers.EOF.map(__ ->
-        new ExpressionType.TOP()
+    ).map(ExpressionType.Enum::new);
+    private static final Parser<ExpressionType> topParser = Parsers.EOF.map(
+        __ -> new ExpressionType.Top()
     );
 
-    private static Parser<ExpressionType> ITEMDEFINITION(
+    private static Parser<ExpressionType> itemDefinitionParser(
         Collection<ItemDefinition> itemDefinitions
     ) {
         return Terminals.fragment("itemDefinitionFragment").map(name -> {
@@ -106,24 +110,24 @@ public final class ExpressionTypeParser {
                     .orElseThrow(() ->
                         new IllegalStateException("ItemDefinitions are broken.")
                     );
-                return new ExpressionType.ITEMDEFINITION(matchedItemDefinition);
+                return new ExpressionType.ItemDefintion(matchedItemDefinition);
             });
     }
 
-    static Parser<ExpressionType> PARSER(
+    static Parser<ExpressionType> parser(
         Collection<ItemDefinition> itemDefinitions
     ) {
         return Parsers.or(
-            STRING,
-            BOOLEAN,
-            INTEGER,
-            LONG,
-            DOUBLE,
-            DATE,
-            ITEMDEFINITION(itemDefinitions),
-            ENUM,
-            TOP
-        ).from(TOKENIZER(itemDefinitions), IGNORED);
+            stringParser,
+            booleanParser,
+            integerParser,
+            longParser,
+            doubleParser,
+            dateParser,
+            itemDefinitionParser(itemDefinitions),
+            enumParser,
+            topParser
+        ).from(tokenizer(itemDefinitions), ignored);
     }
 
     public static Either<
@@ -136,8 +140,8 @@ public final class ExpressionTypeParser {
         try {
             return new Either.Right<>(
                 charSequence != null
-                    ? PARSER(itemDefinitions).parse(charSequence)
-                    : new ExpressionType.TOP()
+                    ? parser(itemDefinitions).parse(charSequence)
+                    : new ExpressionType.Top()
             );
         } catch (final ParserException e) {
             return new Either.Left<>(

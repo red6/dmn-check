@@ -15,11 +15,11 @@ class ExpressionTypeParserTest {
     void shouldParseEmpty() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("");
 
-        final ExpressionType expectedType = new ExpressionType.TOP();
+        final ExpressionType expectedType = new ExpressionType.Top();
 
         assertEquals(expectedType, type);
     }
@@ -28,11 +28,11 @@ class ExpressionTypeParserTest {
     void shouldParseBool() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("boolean");
 
-        final ExpressionType expectedType = new ExpressionType.BOOLEAN();
+        final ExpressionType expectedType = new ExpressionType.Boolean();
 
         assertEquals(expectedType, type);
     }
@@ -41,11 +41,11 @@ class ExpressionTypeParserTest {
     void shouldParseInteger() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("integer");
 
-        final ExpressionType expectedType = new ExpressionType.INTEGER();
+        final ExpressionType expectedType = new ExpressionType.Integer();
 
         assertEquals(expectedType, type);
     }
@@ -54,11 +54,11 @@ class ExpressionTypeParserTest {
     void shouldParseString() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("string");
 
-        final ExpressionType expectedType = new ExpressionType.STRING();
+        final ExpressionType expectedType = new ExpressionType.String();
 
         assertEquals(expectedType, type);
     }
@@ -67,11 +67,11 @@ class ExpressionTypeParserTest {
     void shouldParseDouble() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("double");
 
-        final ExpressionType expectedType = new ExpressionType.DOUBLE();
+        final ExpressionType expectedType = new ExpressionType.Double();
 
         assertEquals(expectedType, type);
     }
@@ -80,11 +80,11 @@ class ExpressionTypeParserTest {
     void shouldParseDate() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("date");
 
-        final ExpressionType expectedType = new ExpressionType.DATE();
+        final ExpressionType expectedType = new ExpressionType.Date();
 
         assertEquals(expectedType, type);
     }
@@ -93,11 +93,11 @@ class ExpressionTypeParserTest {
     void shouldParseEnum() {
         final List<ItemDefinition> itemDefinitions = Collections.emptyList();
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse(TestEnum.class.getCanonicalName());
 
-        final ExpressionType expectedType = new ExpressionType.ENUM(
+        final ExpressionType expectedType = new ExpressionType.Enum(
             TestEnum.class.getCanonicalName()
         );
 
@@ -114,11 +114,11 @@ class ExpressionTypeParserTest {
             itemDefinition
         );
 
-        final ExpressionType type = ExpressionTypeParser.PARSER(
+        final ExpressionType type = ExpressionTypeParser.parser(
             itemDefinitions
         ).parse("myItemDefinition");
 
-        final ExpressionType expectedType = new ExpressionType.ITEMDEFINITION(
+        final ExpressionType expectedType = new ExpressionType.ItemDefintion(
             itemDefinition
         );
 

@@ -68,7 +68,7 @@ public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
                         )
                 )
             )
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

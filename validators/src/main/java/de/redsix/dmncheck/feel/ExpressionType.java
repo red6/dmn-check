@@ -4,29 +4,29 @@ import java.util.Arrays;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
 public sealed interface ExpressionType {
-    record TOP() implements ExpressionType {}
+    record Top() implements ExpressionType {}
 
-    record STRING() implements ExpressionType {}
+    record String() implements ExpressionType {}
 
-    record BOOLEAN() implements ExpressionType {}
+    record Boolean() implements ExpressionType {}
 
-    record INTEGER() implements ExpressionType {}
+    record Integer() implements ExpressionType {}
 
-    record LONG() implements ExpressionType {}
+    record Long() implements ExpressionType {}
 
-    record DOUBLE() implements ExpressionType {}
+    record Double() implements ExpressionType {}
 
-    record DATE() implements ExpressionType {}
+    record Date() implements ExpressionType {}
 
-    record ENUM(String className) implements ExpressionType {}
+    record Enum(java.lang.String className) implements ExpressionType {}
 
-    record ITEMDEFINITION(ItemDefinition itemDefinition) implements
+    record ItemDefintion(ItemDefinition itemDefinition) implements
         ExpressionType {}
 
     static boolean isNumeric(final ExpressionType givenType) {
         return (
-            !new TOP().equals(givenType) &&
-            Arrays.asList(new INTEGER(), new LONG(), new DOUBLE()).contains(
+            !new Top().equals(givenType) &&
+            Arrays.asList(new Integer(), new Long(), new Double()).contains(
                 givenType
             )
         );
@@ -49,20 +49,20 @@ public sealed interface ExpressionType {
     }
 
     private boolean TOPisTopElement(final ExpressionType supertype) {
-        return new TOP().equals(supertype);
+        return new Top().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfLONG(
         final ExpressionType subtype,
         final ExpressionType supertype
     ) {
-        return new INTEGER().equals(subtype) && new LONG().equals(supertype);
+        return new Integer().equals(subtype) && new Long().equals(supertype);
     }
 
     private boolean INTEGERsubtypeOfDOUBLE(
         final ExpressionType subtype,
         final ExpressionType supertype
     ) {
-        return new INTEGER().equals(subtype) && new DOUBLE().equals(supertype);
+        return new Integer().equals(subtype) && new Double().equals(supertype);
     }
 }

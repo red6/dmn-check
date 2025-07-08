@@ -98,7 +98,7 @@ public class ValidationServer {
         return ValidatorLoader.getValidators()
             .stream()
             .flatMap(validator -> validator.apply(dmnModelInstance).stream())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private JSONObject validationResultsToJson(
@@ -120,7 +120,7 @@ public class ValidationServer {
                             .put("message", vr.getMessage())
                             .put("severity", vr.getSeverity().toString())
                     )
-                    .collect(Collectors.toList())
+                    .toList()
             );
     }
 

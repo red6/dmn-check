@@ -14,30 +14,30 @@ class FeelTypecheckTest {
 
     @Test
     void emptyHasTypeTop() {
-        final FeelExpression expression = FeelParser.PARSER.parse("");
+        final FeelExpression expression = FeelParser.parser.parse("");
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.TOP()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Top()), type);
     }
 
     @ParameterizedTest
     @CsvSource({ "42", "3+4", "<3,>8", "[3..42]" })
     void hasTypeInteger(final String input) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.INTEGER()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Integer()), type);
     }
 
     @Test
     void doubleHasTypeDouble() {
-        final FeelExpression expression = FeelParser.PARSER.parse(
+        final FeelExpression expression = FeelParser.parser.parse(
             "3.14159265359"
         );
         final Either<
@@ -45,25 +45,25 @@ class FeelTypecheckTest {
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.DOUBLE()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Double()), type);
     }
 
     @Test
     void stringHasTypeString() {
-        final FeelExpression expression = FeelParser.PARSER.parse("\"Steak\"");
+        final FeelExpression expression = FeelParser.parser.parse("\"Steak\"");
 
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.STRING()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.String()), type);
     }
 
     @ParameterizedTest
     @CsvSource({ "true, BOOLEAN", "false, BOOLEAN" })
     void trueHasTypeBoolean(String input, String expectedType) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
 
         final Either<
             ValidationResult.Builder.ElementStep,
@@ -78,7 +78,7 @@ class FeelTypecheckTest {
 
     @Test
     void dateHasTypeDate() {
-        final FeelExpression expression = FeelParser.PARSER.parse(
+        final FeelExpression expression = FeelParser.parser.parse(
             "date and time(\"2015-11-30T12:00:00\")"
         );
 
@@ -87,26 +87,26 @@ class FeelTypecheckTest {
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.DATE()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Date()), type);
     }
 
     @Test
     void boundVariableHasType() {
-        final FeelExpression expression = FeelParser.PARSER.parse("x");
+        final FeelExpression expression = FeelParser.parser.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
-        context.put("x", new ExpressionType.INTEGER());
+        context.put("x", new ExpressionType.Integer());
 
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
         > type = FeelTypecheck.typecheck(context, expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.INTEGER()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Integer()), type);
     }
 
     @Test
     void unboundVariableHasNoType() {
-        final FeelExpression expression = FeelParser.PARSER.parse("x");
+        final FeelExpression expression = FeelParser.parser.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
         final Either<
             ValidationResult.Builder.ElementStep,
@@ -123,7 +123,7 @@ class FeelTypecheckTest {
     @ParameterizedTest
     @CsvSource({ "<5, INTEGER", "<5.2, DOUBLE", "-1, INTEGER" })
     void lessThanExpressionHasNumericType(String input, String expectedType) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
@@ -146,7 +146,7 @@ class FeelTypecheckTest {
         }
     )
     void isNotTypeable(final String input, final String errorMessage) {
-        final FeelExpression expression = FeelParser.PARSER.parse(input);
+        final FeelExpression expression = FeelParser.parser.parse(input);
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
@@ -161,18 +161,18 @@ class FeelTypecheckTest {
 
     @Test
     void notExpressionContainingTrueIsTypable() {
-        final FeelExpression expression = FeelParser.PARSER.parse("not(true)");
+        final FeelExpression expression = FeelParser.parser.parse("not(true)");
         final Either<
             ValidationResult.Builder.ElementStep,
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.BOOLEAN()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.Boolean()), type);
     }
 
     @Test
     void notExpressionContainingDisjunctionWithStringsIsTypable() {
-        final FeelExpression expression = FeelParser.PARSER.parse(
+        final FeelExpression expression = FeelParser.parser.parse(
             "not(\"foo\", \"bar\")"
         );
         final Either<
@@ -180,6 +180,6 @@ class FeelTypecheckTest {
             ExpressionType
         > type = FeelTypecheck.typecheck(expression);
 
-        assertEquals(new Either.Right<>(new ExpressionType.STRING()), type);
+        assertEquals(new Either.Right<>(new ExpressionType.String()), type);
     }
 }

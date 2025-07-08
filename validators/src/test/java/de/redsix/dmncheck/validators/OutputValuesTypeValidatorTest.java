@@ -32,11 +32,11 @@ class OutputValuesTypeValidatorTest extends WithDecisionTable {
     @Test
     void shouldAcceptOutputValuesWithCorrectType() {
         final Output output = modelInstance.newInstance(Output.class);
-        final OutputValues OutputValues = modelInstance.newInstance(
+        final OutputValues outputValues = modelInstance.newInstance(
             OutputValues.class
         );
-        OutputValues.setTextContent("\"foo\",\"bar\"");
-        output.setOutputValues(OutputValues);
+        outputValues.setTextContent("\"foo\",\"bar\"");
+        output.setOutputValues(outputValues);
         output.setTypeRef("string");
 
         decisionTable.getOutputs().add(output);
@@ -51,11 +51,11 @@ class OutputValuesTypeValidatorTest extends WithDecisionTable {
     @Test
     void shouldDetectThatOutputValuesHaveWrongType() {
         final Output output = modelInstance.newInstance(Output.class);
-        final OutputValues OutputValues = modelInstance.newInstance(
+        final OutputValues outputValues = modelInstance.newInstance(
             OutputValues.class
         );
-        OutputValues.setTextContent("1,2,3");
-        output.setOutputValues(OutputValues);
+        outputValues.setTextContent("1,2,3");
+        output.setOutputValues(outputValues);
         output.setTypeRef("string");
 
         decisionTable.getOutputs().add(output);

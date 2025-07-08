@@ -91,7 +91,7 @@ public abstract class TypeValidator<T extends ModelElementInstance>
             )
             .map(type -> {
                 if (
-                    type.isSubtypeOf(new ExpressionType.STRING()) &&
+                    type.isSubtypeOf(new ExpressionType.String()) &&
                     extractClassName(expectedType).isPresent()
                 ) {
                     return checkEnumValue(
@@ -100,7 +100,7 @@ public abstract class TypeValidator<T extends ModelElementInstance>
                     );
                 } else if (
                     type.isSubtypeOf(expectedType) ||
-                    new ExpressionType.TOP().equals(type)
+                    new ExpressionType.Top().equals(type)
                 ) {
                     return Optional.<
                             ValidationResult.Builder.ElementStep
@@ -120,7 +120,7 @@ public abstract class TypeValidator<T extends ModelElementInstance>
         final ExpressionType expressionType
     ) {
         return switch (expressionType) {
-            case ExpressionType.ENUM(var className) -> Optional.of(className);
+            case ExpressionType.Enum(var className) -> Optional.of(className);
             default -> Optional.empty();
         };
     }
@@ -149,7 +149,7 @@ public abstract class TypeValidator<T extends ModelElementInstance>
         final List<String> enumConstantNames = Arrays.stream(
             enumConstants == null ? new Enum<?>[] {} : enumConstants
         )
-            .map(Enum::name)
+            .map(java.lang.Enum::name)
             .toList();
         final String value = stringValue.substring(1, stringValue.length() - 1);
 

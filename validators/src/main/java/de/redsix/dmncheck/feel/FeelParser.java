@@ -20,7 +20,7 @@ public final class FeelParser {
 
     private FeelParser() {}
 
-    private static final Terminals OPERATORS = Terminals.operators(
+    private static final Terminals operators = Terminals.operators(
         "+",
         "-",
         "*",
@@ -43,7 +43,7 @@ public final class FeelParser {
         "\")"
     );
 
-    private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
+    private static final Parser<Void> ignored = Scanners.WHITESPACES.skipMany();
 
     private static final Parser<?> TOKENIZER = Parsers.or(
         Patterns.regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
@@ -54,7 +54,7 @@ public final class FeelParser {
             .toScanner("empty")
             .source()
             .map(s -> Tokens.fragment(s, "emptyfragment")),
-        OPERATORS.tokenizer(),
+        operators.tokenizer(),
         Patterns.regex("\"[^\"]*\"")
             .toScanner("string")
             .source()
@@ -112,11 +112,11 @@ public final class FeelParser {
     ).map(__ -> new FeelExpression.Null());
 
     private static final Parser<FeelExpression> DATE = Parsers.between(
-        OPERATORS.token("date and time(\""),
+        operators.token("date and time(\""),
         Terminals.fragment("datefragment")
             .map(LocalDateTime::parse)
             .map(FeelExpression.DateLiteral::new),
-        OPERATORS.token("\")")
+        operators.token("\")")
     );
 
     private static Parser<FeelExpression> parseRangeExpression(
@@ -127,7 +127,7 @@ public final class FeelParser {
         return Parsers.sequence(
             leftBound,
             expression,
-            OPERATORS.token("..").skipTimes(1),
+            operators.token("..").skipTimes(1),
             expression,
             rightBound,
             (isLeftInclusive, lowerBound, __, upperBound, isRightInclusive) ->
@@ -199,73 +199,73 @@ public final class FeelParser {
             .infixr(op(",", FeelExpression.DisjunctionExpression::new), 0)
             .prefix(
                 op("<", v ->
-                    new FeelExpression.UnaryExpression(Operator.LT, v)
+                    new FeelExpression.UnaryExpression(operators.LT, v)
                 ),
                 5
             )
             .prefix(
                 op(">", v ->
-                    new FeelExpression.UnaryExpression(Operator.GT, v)
+                    new FeelExpression.UnaryExpression(operators.GT, v)
                 ),
                 5
             )
             .prefix(
                 op("<=", v ->
-                    new FeelExpression.UnaryExpression(Operator.LE, v)
+                    new FeelExpression.UnaryExpression(operators.LE, v)
                 ),
                 5
             )
             .prefix(
                 op(">=", v ->
-                    new FeelExpression.UnaryExpression(Operator.GE, v)
+                    new FeelExpression.UnaryExpression(operators.GE, v)
                 ),
                 5
             )
             .infixl(
                 op("or", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.OR, r)
+                    new FeelExpression.BinaryExpression(l, operators.OR, r)
                 ),
                 8
             )
             .infixl(
                 op("and", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.AND, r)
+                    new FeelExpression.BinaryExpression(l, operators.AND, r)
                 ),
                 8
             )
             .infixl(
                 op("+", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.ADD, r)
+                    new FeelExpression.BinaryExpression(l, operators.ADD, r)
                 ),
                 10
             )
             .infixl(
                 op("-", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.SUB, r)
+                    new FeelExpression.BinaryExpression(l, operators.SUB, r)
                 ),
                 10
             )
             .infixl(
                 op("*", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.MUL, r)
+                    new FeelExpression.BinaryExpression(l, operators.MUL, r)
                 ),
                 20
             )
             .infixl(
                 op("**", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.EXP, r)
+                    new FeelExpression.BinaryExpression(l, operators.EXP, r)
                 ),
                 20
             )
             .infixl(
                 op("/", (l, r) ->
-                    new FeelExpression.BinaryExpression(l, Operator.DIV, r)
+                    new FeelExpression.BinaryExpression(l, operators.DIV, r)
                 ),
                 20
             )
             .prefix(
                 op("-", v ->
-                    new FeelExpression.UnaryExpression(Operator.SUB, v)
+                    new FeelExpression.UnaryExpression(operators.SUB, v)
                 ),
                 30
             )
@@ -276,9 +276,9 @@ public final class FeelParser {
         Parser<FeelExpression> feelParserReference
     ) {
         return Parsers.between(
-            OPERATORS.token("not("),
+            operators.token("not("),
             feelParserReference,
-            OPERATORS.token(")")
+            operators.token(")")
         ).map(expression -> {
                 if (expression.containsNot()) {
                     // TODO: How can this constraint be expressed in the grammar?
@@ -287,7 +287,7 @@ public final class FeelParser {
                     );
                 } else {
                     return new FeelExpression.UnaryExpression(
-                        Operator.NOT,
+                        operators.NOT,
                         expression
                     );
                 }
@@ -303,7 +303,7 @@ public final class FeelParser {
     }
 
     private static <T> Parser<T> op(final String name, final T value) {
-        return OPERATORS.token(name).retn(value);
+        return operators.token(name).retn(value);
     }
 
     private static Parser<FeelExpression> feelExpressionParser() {
@@ -354,9 +354,9 @@ public final class FeelParser {
         );
     }
 
-    static final Parser<FeelExpression> PARSER = feelExpressionParser().from(
+    static final Parser<FeelExpression> parser = feelExpressionParser().from(
         TOKENIZER,
-        IGNORED
+        ignored
     );
 
     public static Either<
@@ -364,7 +364,7 @@ public final class FeelParser {
         FeelExpression
     > parse(final CharSequence charSequence) {
         try {
-            return new Either.Right<>(PARSER.parse(charSequence));
+            return new Either.Right<>(parser.parse(charSequence));
         } catch (final ParserException e) {
             return new Either.Left<>(
                 ValidationResult.init.message(
