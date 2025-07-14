@@ -20,16 +20,18 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
     private final ShadowedRuleValidator testee = new ShadowedRuleValidator();
 
     @ParameterizedTest
-    @EnumSource(
-            value = HitPolicy.class,
-            names = {"UNIQUE", "FIRST", "ANY"})
+    @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY" })
     void ruleIsShadowedByFirstRule(final HitPolicy hitPolicy) {
         decisionTable.setHitPolicy(hitPolicy);
 
-        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         catchAllInputEntry.setTextContent("");
 
-        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         shadowedInputEntry.setTextContent("");
 
         final Rule catchAllRule = modelInstance.newInstance(Rule.class);
@@ -41,33 +43,48 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(catchAllRule);
         decisionTable.getRules().add(shadowedRule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("Rule is shadowed by rule " + catchAllRule.getId(), validationResult.getMessage()),
-                () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Rule is shadowed by rule " + catchAllRule.getId(),
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(shadowedRule, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @ParameterizedTest
-    @EnumSource(
-            value = HitPolicy.class,
-            names = {"UNIQUE", "FIRST", "ANY"})
-    void ruleIsNotShadowedByFirstRuleBecauseOfSecondInput(final HitPolicy hitPolicy) {
+    @EnumSource(value = HitPolicy.class, names = { "UNIQUE", "FIRST", "ANY" })
+    void ruleIsNotShadowedByFirstRuleBecauseOfSecondInput(
+        final HitPolicy hitPolicy
+    ) {
         decisionTable.setHitPolicy(hitPolicy);
 
-        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         catchAllInputEntry.setTextContent("");
 
-        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         shadowedInputEntry.setTextContent("");
 
-        final InputEntry textInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry textInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         textInputEntry.setTextContent("\"foo\"");
 
-        final InputEntry differentTextInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry differentTextInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         differentTextInputEntry.setTextContent("\"bar\"");
 
         final Rule rule = modelInstance.newInstance(Rule.class);
@@ -81,7 +98,9 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(rule);
         decisionTable.getRules().add(otherRule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }
@@ -92,10 +111,14 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
 
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
 
-        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         catchAllInputEntry.setTextContent(invalidText);
 
-        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         shadowedInputEntry.setTextContent(invalidText);
 
         final Rule catchAllRule = modelInstance.newInstance(Rule.class);
@@ -107,14 +130,20 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(catchAllRule);
         decisionTable.getRules().add(shadowedRule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertTrue(validationResult.getMessage().contains("Could not parse")),
-                () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertTrue(
+                    validationResult.getMessage().contains("Could not parse")
+                ),
+            () -> assertEquals(shadowedRule, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -123,11 +152,15 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
 
         decisionTable.setHitPolicy(HitPolicy.UNIQUE);
 
-        final InputEntry catchAllInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry catchAllInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         catchAllInputEntry.setTextContent(text);
         catchAllInputEntry.setExpressionLanguage("javascript");
 
-        final InputEntry shadowedInputEntry = modelInstance.newInstance(InputEntry.class);
+        final InputEntry shadowedInputEntry = modelInstance.newInstance(
+            InputEntry.class
+        );
         shadowedInputEntry.setTextContent(text);
         shadowedInputEntry.setExpressionLanguage("javascript");
 
@@ -140,14 +173,23 @@ class ShadowedRuleValidatorTest extends WithDecisionTable {
         decisionTable.getRules().add(catchAllRule);
         decisionTable.getRules().add(shadowedRule);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertTrue(
-                        validationResult.getMessage().contains("Expression language 'javascript' not supported")),
-                () -> assertEquals(shadowedRule, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertTrue(
+                    validationResult
+                        .getMessage()
+                        .contains(
+                            "Expression language 'javascript' not supported"
+                        )
+                ),
+            () -> assertEquals(shadowedRule, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 }

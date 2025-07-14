@@ -5,6 +5,7 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.junit.jupiter.api.BeforeEach;
 
 public class WithDecisionTable extends WithDefinitions {
+
     protected Decision decision;
     protected DecisionTable decisionTable;
 

@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 
 class InputDataIdAndNameValidatorTest extends WithDecisionTable {
 
-    private final InputDataIdAndNameValidator testee = new InputDataIdAndNameValidator();
+    private final InputDataIdAndNameValidator testee =
+        new InputDataIdAndNameValidator();
 
     @Test
     void shouldErrorIfInputDataHasNoId() {
@@ -30,14 +31,21 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         inputData.setId(null);
         inputData.setName("Test");
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("A input has no id.", validationResult.getMessage()),
-                () -> assertEquals(inputData, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "A input has no id.",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(inputData, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -55,14 +63,21 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         inputData.setId("1");
         inputData.setName(null);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("A input has no name.", validationResult.getMessage()),
-                () -> assertEquals(inputData, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "A input has no name.",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(inputData, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -80,7 +95,9 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         inputData.setId("1");
         inputData.setName("Test");
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }

@@ -18,14 +18,16 @@ public final class PrettyPrintValidationResults {
     private PrettyPrintValidationResults() {}
 
     public static class PluginLogger {
+
         protected final Consumer<CharSequence> info;
         protected final Consumer<CharSequence> warn;
         protected final Consumer<CharSequence> error;
 
         public PluginLogger(
-                final Consumer<CharSequence> info,
-                final Consumer<CharSequence> warn,
-                final Consumer<CharSequence> error) {
+            final Consumer<CharSequence> info,
+            final Consumer<CharSequence> warn,
+            final Consumer<CharSequence> error
+        ) {
             this.info = info;
             this.warn = warn;
             this.error = error;
@@ -33,17 +35,31 @@ public final class PrettyPrintValidationResults {
     }
 
     public static void logPrettified(
-            final File file, final List<ValidationResult> validationResults, final PluginLogger log) {
-        log.info.accept("Validation results for file " + file.getAbsolutePath());
+        final File file,
+        final List<ValidationResult> validationResults,
+        final PluginLogger log
+    ) {
+        log.info.accept(
+            "Validation results for file " + file.getAbsolutePath()
+        );
 
         validationResults.sort(
-                Comparator.comparing(ValidationResult::getSeverity).reversed());
+            Comparator.comparing(ValidationResult::getSeverity).reversed()
+        );
 
         for (ValidationResult validationResult : validationResults) {
-            final String errorMessage = "Element '" + delegate(validationResult.getElement()) + "'" + " of type '"
-                    + validationResult.getElement().getElementType().getTypeName() + "'"
-                    + " has the following validation result: " + validationResult.getMessage();
-            getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
+            final String errorMessage =
+                "Element '" +
+                delegate(validationResult.getElement()) +
+                "'" +
+                " of type '" +
+                validationResult.getElement().getElementType().getTypeName() +
+                "'" +
+                " has the following validation result: " +
+                validationResult.getMessage();
+            getLoggingMethod(validationResult.getSeverity(), log).accept(
+                errorMessage
+            );
         }
     }
 
@@ -57,12 +73,15 @@ public final class PrettyPrintValidationResults {
 
     private static String prettify(final Rule rule) {
         return Stream.concat(
-                        rule.getInputEntries().stream().map(InputEntry::getTextContent),
-                        rule.getOutputEntries().stream().map(OutputEntry::getTextContent))
-                .collect(Collectors.joining(","));
+            rule.getInputEntries().stream().map(InputEntry::getTextContent),
+            rule.getOutputEntries().stream().map(OutputEntry::getTextContent)
+        ).collect(Collectors.joining(","));
     }
 
-    private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {
+    private static Consumer<CharSequence> getLoggingMethod(
+        final Severity severity,
+        final PluginLogger logger
+    ) {
         if (severity == Severity.WARNING) {
             return logger.warn;
         }

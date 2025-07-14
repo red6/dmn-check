@@ -12,11 +12,14 @@ import org.junit.jupiter.api.Test;
 
 class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
 
-    private final RequirementGraphLeafValidator testee = new RequirementGraphLeafValidator();
+    private final RequirementGraphLeafValidator testee =
+        new RequirementGraphLeafValidator();
 
     @Test
     void shouldAcceptEmptyGraph() {
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }
@@ -26,7 +29,9 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
         final Decision decision = modelInstance.newInstance(Decision.class);
         definitions.addChildElement(decision);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }
@@ -41,7 +46,9 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
 
         connect(decision1, decision2);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }
@@ -60,7 +67,9 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
         connect(decision1, decision3);
         connect(decision2, decision3);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(0, validationResults.size());
     }
@@ -79,13 +88,20 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
         connect(decision1, decision2);
         connect(decision1, decision3);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("Requirement graphs may only contain one leaf node", validationResult.getMessage()),
-                () -> assertEquals(definitions, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "Requirement graphs may only contain one leaf node",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(definitions, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 }

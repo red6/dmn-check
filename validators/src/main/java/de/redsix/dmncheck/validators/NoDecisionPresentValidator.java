@@ -12,18 +12,26 @@ import org.camunda.bpm.model.dmn.instance.Definitions;
 public class NoDecisionPresentValidator extends SimpleValidator<Definitions> {
 
     @Override
-    public boolean isApplicable(Definitions definitions, ValidationContext validationContext) {
+    public boolean isApplicable(
+        Definitions definitions,
+        ValidationContext validationContext
+    ) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(Definitions definitions, ValidationContext validationContext) {
+    public List<ValidationResult> validate(
+        Definitions definitions,
+        ValidationContext validationContext
+    ) {
         if (definitions.getChildElementsByType(Decision.class).isEmpty()) {
-            return Collections.singletonList(ValidationResult.init
+            return Collections.singletonList(
+                ValidationResult.init
                     .message("No decisions found")
                     .severity(Severity.WARNING)
                     .element(definitions)
-                    .build());
+                    .build()
+            );
         } else {
             return Collections.emptyList();
         }

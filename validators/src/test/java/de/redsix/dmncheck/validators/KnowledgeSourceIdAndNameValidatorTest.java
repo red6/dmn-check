@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
 
-    private final KnowledgeSourceIdAndNameValidator testee = new KnowledgeSourceIdAndNameValidator();
+    private final KnowledgeSourceIdAndNameValidator testee =
+        new KnowledgeSourceIdAndNameValidator();
 
     private KnowledgeSource knowledgeSource;
 
@@ -27,14 +28,21 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
         knowledgeSource.setId(null);
         knowledgeSource.setName("Test");
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("A knowledge source has no id.", validationResult.getMessage()),
-                () -> assertEquals(knowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "A knowledge source has no id.",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(knowledgeSource, validationResult.getElement()),
+            () -> assertEquals(Severity.ERROR, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -42,14 +50,21 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
         knowledgeSource.setId("1");
         knowledgeSource.setName(null);
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertEquals(1, validationResults.size());
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
-                () -> assertEquals("A knowledge source has no name.", validationResult.getMessage()),
-                () -> assertEquals(knowledgeSource, validationResult.getElement()),
-                () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
+            () ->
+                assertEquals(
+                    "A knowledge source has no name.",
+                    validationResult.getMessage()
+                ),
+            () -> assertEquals(knowledgeSource, validationResult.getElement()),
+            () -> assertEquals(Severity.WARNING, validationResult.getSeverity())
+        );
     }
 
     @Test
@@ -57,7 +72,9 @@ class KnowledgeSourceIdAndNameValidatorTest extends WithDecisionTable {
         knowledgeSource.setId("1");
         knowledgeSource.setName("Test");
 
-        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+        final List<ValidationResult> validationResults = testee.apply(
+            modelInstance
+        );
 
         assertTrue(validationResults.isEmpty());
     }

@@ -13,18 +13,30 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 public class AggregationValidator extends SimpleValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
         return !HitPolicy.COLLECT.equals(decisionTable.getHitPolicy());
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
-        final BuiltinAggregator builtinAggregator = decisionTable.getAggregation();
+    public List<ValidationResult> validate(
+        DecisionTable decisionTable,
+        ValidationContext validationContext
+    ) {
+        final BuiltinAggregator builtinAggregator =
+            decisionTable.getAggregation();
         if (Objects.nonNull(builtinAggregator)) {
-            return Collections.singletonList(ValidationResult.init
-                    .message("Aggregations are only valid with HitPolicy " + HitPolicy.COLLECT)
+            return Collections.singletonList(
+                ValidationResult.init
+                    .message(
+                        "Aggregations are only valid with HitPolicy " +
+                        HitPolicy.COLLECT
+                    )
                     .element(decisionTable)
-                    .build());
+                    .build()
+            );
         } else {
             return Collections.emptyList();
         }

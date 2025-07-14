@@ -14,39 +14,30 @@ import picocli.CommandLine.Option;
 
 @Command(mixinStandardHelpOptions = true)
 public class Main implements PluginBase, Callable<Integer> {
+
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    @Option(
-            names = {"--excludeList"},
-            split = ",")
+    @Option(names = { "--excludeList" }, split = ",")
     @SuppressWarnings("nullness")
     private List<String> excludeList;
 
-    @Option(
-            names = {"--searchPath"},
-            split = ",")
+    @Option(names = { "--searchPath" }, split = ",")
     @SuppressWarnings("nullness")
     private List<String> searchPath;
 
-    @Option(
-            names = {"--validatorPackages"},
-            split = ",")
+    @Option(names = { "--validatorPackages" }, split = ",")
     @SuppressWarnings("nullness")
     private String[] validatorPackages;
 
-    @Option(
-            names = {"--validatorClasses"},
-            split = ",")
+    @Option(names = { "--validatorClasses" }, split = ",")
     @SuppressWarnings("nullness")
     private String[] validatorClasses;
 
-    @Option(names = {"--failOnWarning"})
+    @Option(names = { "--failOnWarning" })
     @SuppressWarnings("nullness")
     private boolean failOnWarning;
 
-    @Option(
-            names = {"--projectClasspath"},
-            split = ":")
+    @Option(names = { "--projectClasspath" }, split = ":")
     @SuppressWarnings("nullness")
     private List<String> projectClasspath;
 
@@ -58,7 +49,10 @@ public class Main implements PluginBase, Callable<Integer> {
     @Override
     public PrettyPrintValidationResults.PluginLogger getPluginLogger() {
         return new PrettyPrintValidationResults.PluginLogger(
-                (t) -> logger.info(t.toString()), (t) -> logger.warn(t.toString()), (t) -> logger.error(t.toString()));
+            t -> logger.info(t.toString()),
+            t -> logger.warn(t.toString()),
+            t -> logger.error(t.toString())
+        );
     }
 
     @Override

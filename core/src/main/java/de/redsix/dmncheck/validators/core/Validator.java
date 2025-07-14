@@ -10,7 +10,6 @@ import org.camunda.bpm.model.dmn.DmnModelInstance;
  * <p>Every validation for dmn-check has to implement this interface.
  */
 public interface Validator {
-
     /**
      * Validates the given DMN model instance and returns the validation results as a list.
      *

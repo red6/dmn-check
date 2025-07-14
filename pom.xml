@@ -20,7 +20,9 @@
 
     <name>dmn-check</name>
     <url>https://github.com/red6/dmn-check</url>
-    <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect bugs</description>
+    <description>A Maven plugin which performs various static analyses on Decision Model Notation (DMN) files to detect
+        bugs
+    </description>
 
     <organization>
         <name>red6 enterprise software GmbH</name>
@@ -105,27 +107,32 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- Plugin fails with com.palantir.javaformat.java.FormatterException: 33:49: error: expected token: 'var'; generated bool instead -->
-            <!-- <plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>2.44.5</version>
                 <configuration>
-                    <java>
-                        <palantirJavaFormat>
-                            <version>2.57.0</version>
-                            <style>PALANTIR</style>
-                            <formatJavadoc>true</formatJavadoc>
-                        </palantirJavaFormat>
-                        <importOrder/>
-                        <removeUnusedImports/>
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
-                        <excludes>
-                            <exclude>**/target/**/*.java</exclude>
-                        </excludes>
-                    </java>
+                    <formats>
+                        <!-- prettier with java-plugin -->
+                        <format>
+                            <includes>
+                                <include>src/*/java/**/*.java</include>
+                            </includes>
+
+                            <prettier>
+                                <devDependencies>
+                                    <prettier>3.6.2</prettier>
+                                    <prettier-plugin-java>2.7.1</prettier-plugin-java>
+                                </devDependencies>
+                                <config>
+                                    <tabWidth>4</tabWidth>
+                                    <parser>java</parser>
+                                    <plugins>prettier-plugin-java
+                                    </plugins><!-- this is only for prettier 3.0.0 and above: an additional 'plugins' config element is required -->
+                                </config>
+                            </prettier>
+                        </format>
+                    </formats>
                 </configuration>
                 <executions>
                     <execution>
@@ -134,7 +141,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -260,7 +267,8 @@
                                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
                                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
                                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+                                        </arg>
                                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
                                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
                                         <arg>-Astubs=checkerframework/stubs</arg>

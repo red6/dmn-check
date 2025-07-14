@@ -2,7 +2,8 @@ package de.redsix.dmncheck.validators;
 
 import org.camunda.bpm.model.dmn.instance.Output;
 
-public class OutputTypeDeclarationValidator extends ElementTypeDeclarationValidator<Output> {
+public class OutputTypeDeclarationValidator
+    extends ElementTypeDeclarationValidator<Output> {
 
     @Override
     public String getTypeRef(Output output) {

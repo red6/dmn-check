@@ -14,7 +14,9 @@ class RequirementGraphTest {
         final DmnModelInstance emptyModel = Dmn.createEmptyModel();
 
         // Act
-        final RequirementGraph requirementGraph = RequirementGraph.from(emptyModel);
+        final RequirementGraph requirementGraph = RequirementGraph.from(
+            emptyModel
+        );
 
         // Assert
         assertTrue(requirementGraph.vertexSet().isEmpty());

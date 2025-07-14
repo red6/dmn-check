@@ -57,7 +57,10 @@ class MainTest {
 
         cmd.execute("--validatorPackages=com.red6.dmn");
         Main main = cmd.getCommand();
-        assertArrayEquals(List.of("com.red6.dmn").toArray(new String[0]), main.getValidatorPackages());
+        assertArrayEquals(
+            List.of("com.red6.dmn").toArray(new String[0]),
+            main.getValidatorPackages()
+        );
     }
 
     @Test
@@ -68,7 +71,9 @@ class MainTest {
         cmd.execute("--validatorClasses=FancyValidator,DreamValidator");
         Main main = cmd.getCommand();
         assertArrayEquals(
-                List.of("FancyValidator", "DreamValidator").toArray(new String[0]), main.getValidatorClasses());
+            List.of("FancyValidator", "DreamValidator").toArray(new String[0]),
+            main.getValidatorClasses()
+        );
     }
 
     @Test

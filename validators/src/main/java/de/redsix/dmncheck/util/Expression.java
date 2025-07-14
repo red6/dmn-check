@@ -11,22 +11,37 @@ public class Expression {
     public final String textContent;
     public final String expressionLanguage;
 
-    public Expression(final UnaryTests unaryTests, final @Nullable String toplevelExpressionLanguage) {
+    public Expression(
+        final UnaryTests unaryTests,
+        final @Nullable String toplevelExpressionLanguage
+    ) {
         this.textContent = unaryTests.getTextContent();
-        this.expressionLanguage =
-                decideExpressionLanguage(unaryTests.getExpressionLanguage(), toplevelExpressionLanguage);
+        this.expressionLanguage = decideExpressionLanguage(
+            unaryTests.getExpressionLanguage(),
+            toplevelExpressionLanguage
+        );
     }
 
-    public Expression(final LiteralExpression literalExpression, final @Nullable String toplevelExpressionLanguage) {
+    public Expression(
+        final LiteralExpression literalExpression,
+        final @Nullable String toplevelExpressionLanguage
+    ) {
         this.textContent = literalExpression.getTextContent();
-        this.expressionLanguage =
-                decideExpressionLanguage(literalExpression.getExpressionLanguage(), toplevelExpressionLanguage);
+        this.expressionLanguage = decideExpressionLanguage(
+            literalExpression.getExpressionLanguage(),
+            toplevelExpressionLanguage
+        );
     }
 
     private static String decideExpressionLanguage(
-            final String localExpressionLanguage, final @Nullable String toplevelExpressionLanguage) {
-        return Objects.requireNonNullElseGet(
-                localExpressionLanguage,
-                () -> Objects.requireNonNullElse(toplevelExpressionLanguage, DmnModelConstants.FEEL_NS));
+        final String localExpressionLanguage,
+        final @Nullable String toplevelExpressionLanguage
+    ) {
+        return Objects.requireNonNullElseGet(localExpressionLanguage, () ->
+            Objects.requireNonNullElse(
+                toplevelExpressionLanguage,
+                DmnModelConstants.FEEL_NS
+            )
+        );
     }
 }

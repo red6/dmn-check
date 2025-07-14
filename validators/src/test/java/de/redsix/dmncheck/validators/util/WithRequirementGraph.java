@@ -8,6 +8,7 @@ import org.camunda.bpm.model.dmn.instance.InformationRequirement;
 import org.junit.jupiter.api.BeforeEach;
 
 public class WithRequirementGraph {
+
     protected DmnModelInstance modelInstance;
     protected Definitions definitions;
 
@@ -20,7 +21,8 @@ public class WithRequirementGraph {
     }
 
     protected void connect(Decision decision1, Decision decision2) {
-        final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
+        final InformationRequirement informationRequirement =
+            modelInstance.newInstance(InformationRequirement.class);
         informationRequirement.setRequiredDecision(decision1);
         decision2.addChildElement(informationRequirement);
     }

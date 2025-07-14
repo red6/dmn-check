@@ -39,35 +39,56 @@ class CheckerMainTest {
         @Test
         void shouldSkipFileIfItsExcluded() {
             final String ignoredFilename = "empty-as-well.dmn";
-            testee.excludes = new String[] {ignoredFilename};
+            testee.excludes = new String[] { ignoredFilename };
             final List<File> filesToTest =
-                    testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("")));
+                testee.fetchFilesToTestFromSearchPaths(
+                    Collections.singletonList(Paths.get(""))
+                );
 
             Assertions.assertTrue(
-                    filesToTest.stream().noneMatch(file -> file.getName().equals(ignoredFilename)));
+                filesToTest
+                    .stream()
+                    .noneMatch(file -> file.getName().equals(ignoredFilename))
+            );
         }
 
         @Test
         void shouldSkipFileIfIsNotOnSearchPath() {
             final List<File> filesToTest =
-                    testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("src/main/java")));
+                testee.fetchFilesToTestFromSearchPaths(
+                    Collections.singletonList(Paths.get("src/main/java"))
+                );
             Assertions.assertTrue(filesToTest.isEmpty());
         }
 
         @Test
         void shouldDetectIfFileIsOnSearchPath() {
-            testee.searchPaths = new String[] {"src/"};
+            testee.searchPaths = new String[] { "src/" };
             final MojoExecutionException assertionError =
-                    Assertions.assertThrows(MojoExecutionException.class, testee::execute);
-            Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+                Assertions.assertThrows(
+                    MojoExecutionException.class,
+                    testee::execute
+                );
+            Assertions.assertTrue(
+                assertionError
+                    .getMessage()
+                    .contains("Some files are not valid, see previous logs.")
+            );
         }
 
         @Test
         void shouldDetectIfFileIsOnSearchPathWithMultiplePaths() {
-            testee.searchPaths = new String[] {"src/main/java", "src/"};
+            testee.searchPaths = new String[] { "src/main/java", "src/" };
             final MojoExecutionException assertionError =
-                    Assertions.assertThrows(MojoExecutionException.class, testee::execute);
-            Assertions.assertTrue(assertionError.getMessage().contains("Some files are not valid, see previous logs."));
+                Assertions.assertThrows(
+                    MojoExecutionException.class,
+                    testee::execute
+                );
+            Assertions.assertTrue(
+                assertionError
+                    .getMessage()
+                    .contains("Some files are not valid, see previous logs.")
+            );
         }
     }
 
@@ -75,21 +96,28 @@ class CheckerMainTest {
     Path tempDir;
 
     @Test
-    void shouldAddArtifactsFromProjectToProjectClassloader() throws IOException {
+    void shouldAddArtifactsFromProjectToProjectClassloader()
+        throws IOException {
         final MavenProject mavenProject = new MavenProject();
 
         final Artifact artifact = Mockito.mock(Artifact.class);
 
-        final Path artifactFile = Files.createFile(tempDir.resolve("artifact-file"));
+        final Path artifactFile = Files.createFile(
+            tempDir.resolve("artifact-file")
+        );
 
         when(artifact.getFile()).thenReturn(artifactFile.toFile());
 
         mavenProject.setArtifacts(Collections.singleton(artifact));
         testee.project = mavenProject;
 
-        Assertions.assertDoesNotThrow((Executable) testee::loadProjectClasspath);
+        Assertions.assertDoesNotThrow(
+            (Executable) testee::loadProjectClasspath
+        );
 
         Assertions.assertEquals(
-                artifactFile.toUri().toURL(), ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
+            artifactFile.toUri().toURL(),
+            ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]
+        );
     }
 }
