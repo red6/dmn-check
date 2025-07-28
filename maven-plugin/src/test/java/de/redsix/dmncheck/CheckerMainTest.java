@@ -89,6 +89,7 @@ class CheckerMainTest {
 
         Assertions.assertDoesNotThrow((Executable) testee::loadProjectClasspath);
 
+        Assertions.assertNotNull(ProjectClassLoader.INSTANCE.classLoader);
         Assertions.assertEquals(
                 artifactFile.toUri().toURL(), ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
     }

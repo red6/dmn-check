@@ -161,8 +161,9 @@ class PluginBaseTest {
 
         Assertions.assertDoesNotThrow(() -> testee.loadProjectClasspath(Collections.singletonList(filename)));
 
-        Assertions.assertEquals(
-                new URL("file:/foo.jar"), ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0]);
+        Assertions.assertNotNull(ProjectClassLoader.INSTANCE.classLoader);
+        Assertions.assertEquals("/foo.jar",
+                ((URLClassLoader) ProjectClassLoader.INSTANCE.classLoader).getURLs()[0].getFile());
     }
 
     private File getFile(final String filename) {
