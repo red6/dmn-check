@@ -104,8 +104,8 @@ might not work for different DMN implementations.
 
 ## Integrated in dmnmgr
 
-dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams.
-It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+Dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams.
+It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. you need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
 
 ## As a Docker container
 
@@ -184,7 +184,7 @@ Conflicting rules are somewhat similar to duplicate rules. Consider the followin
 |  3  | "Spring"      | [5..8]                | "Steak"     |
 |  4  | "Winter"      | <= 8                  | "Stew"      |
 
-We look again a rule two and four. This time, all their inputs are identical, but they differ in the output. This is arguably worse than a
+We look again at rules two and four. This time, all their inputs are identical, but they differ in the output. This is arguably worse than a
 duplicate rule, since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
 does not detect those inconsistencies.
 

@@ -19,7 +19,7 @@ Misc:
 
 Features:
 
- - Allow to specify the classpath for enum resolution explicitly.
+ - Allow specifying the classpath for enum resolution explicitly.
 
 ## 1.2.3 (2022-04-18)
 
@@ -50,7 +50,7 @@ Features:
     Modeler. A demo version is live at https://dmn-check.pascal-wittmann.de/demo/.
   - A Gradle plugin that allows you to use dmn-check in your Gradle projects.
   - A maven module plugin-base that provides common functionality for build system plugins.
-  - Adds failOnWarning flag to support failing validation on Warning severity (#18), thank you, Krzysztof Barczynski.
+  - Adds a failOnWarning flag to support failing validation on Warning severity (#18), thank you, Krzysztof Barczynski.
 
 Bugfixes:
 
