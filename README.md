@@ -16,7 +16,7 @@ You can use `dmn-check` in six ways.
 * Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
   [dmn-check-validators](https://search.maven.org/search?q=a:dmn-check-validators).
 * As a standalone CLI tool.
-* As a [Docker image](https://github.com/red6/dmn-check/pkgs/container/dmn-check) (e.g. in you CI pipeline).
+* As a [Docker image](https://github.com/red6/dmn-check/pkgs/container/dmn-check) (e.g. in your CI pipeline).
 * Integrated in [dmnmgr](https://github.com/davidibl/dmnmgr-client).
 
 Currently, dmn-check checks among others for the following:
@@ -31,8 +31,8 @@ Currently, dmn-check checks among others for the following:
 In section [validations](#validations), you find a complete list with detailed descriptions of what they do.
 
 Most properties and invariants that are validated by `dmn-check` are described informally in
-the [DMN specification](https://www.omg.org/spec/DMN). In case you have questions about a validations it might be worth
-to skim the specification.
+the [DMN specification](https://www.omg.org/spec/DMN). In case you have questions about a validation, it might be worth
+skimming the specification.
 
 ## Maven Plugin
 
@@ -67,7 +67,7 @@ Using this configuration, the plugin will search all folders of the current proj
 available validators. It is possible to provide a set of search paths instead, as well as to ignore certain files and specify the validators
 that should be executed. The following example shows how you can make use of these options by restricting the search path to the
 folders `src/` and `model/`, as well as ignoring file `test.dmn`. The configuration further specifies that only
-the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators, you have to use the fully-qualified name.
+the [`ShadowedRuleValidator`](#shadowed-rules) should be executed. To specify validators, you have to use the fully qualified name.
 
                 <configuration>
                     <searchPaths>
@@ -104,11 +104,12 @@ might not work for different DMN implementations.
 
 ## Integrated in dmnmgr
 
-dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN based applications in cross-functional teams._ It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams.
+It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
 
 ## As a Docker container
 
-A Docker image containing `dmn-check` is available from the GitHub Container Registry and you can pull the latest version by executing
+A Docker image containing `dmn-check` is available from the GitHub Container Registry, and you can pull the latest version by executing
 
     docker pull ghcr.io/red6/dmn-check:latest
 
@@ -117,8 +118,8 @@ the container and set the search path appropriately, e.g.
 
     docker run -v ~/dmn-files:/dmn-files ghcr.io/red6/dmn-check:latest --searchPath=/dmn-files
 
-If you want to use the Docker image in a Gitlab pipeline you have to overwrite the entrypoint and call `dmn-check` directly.
-In the following example of a Gitlab Pipeline, we specify the project classpath as well, to make the enum validation possible.
+If you want to use the Docker image in a Gitlab pipeline, you have to overwrite the entrypoint and call `dmn-check` directly.
+In the following example of a Gitlab Pipeline, we specify the project classpath as well to make the enum validation possible.
 
     variables:
     MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
@@ -165,7 +166,7 @@ Consider the following DMN decision table with hit policy `UNIQUE`:
 |  3  | "Spring"      | [5..8]                | "Steak"     |
 |  4  | "Winter"      | <= 8                  | "Roastbeef" |
 
-It is pretty obvious that rule number two is a duplicate of rule number four. This is not allowed by the `UNIQUE` hit policy
+It is pretty clear that rule number two is a duplicate of rule number four. This is not allowed by the `UNIQUE` hit policy
 and thus an error.
 
 **Definition**: A rule is a duplicate of another rule if and only if all inputs and outputs of those rules are identical.
@@ -235,8 +236,8 @@ Of course the type declaration is validated as well.
 
 ### Correct use of Enumerations
 
-Decision-making often involves a fixed set of values (e.g. a list of supported currencies) and therefore those values are used in DMN
-decision tables. Those values are often implemented in form of Java enums. `dmn-check` also to specify the fully-qualified class name of an
+Decision-making often involves a fixed set of values (e.g., a list of supported currencies), and therefore those values are used in DMN
+decision tables. Those values are often implemented in the form of Java enums. `dmn-check` also to specify the fully qualified class name of an
 enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
 By default `dmn-check` uses the project dependencies to resolve the enums. As this is not possible in the Maven 
@@ -246,14 +247,14 @@ standalone mode, you can specify the classpath that is used to resolve the enums
 
 ### Correctly Connected Requirement Graphs
 
-The DMN standard also provides a way to connect decisions tables with each other and to model inputs and knowledge sources. The resulting
+The DMN standard also provides a way to connect decision tables with each other and to model inputs and knowledge sources. The resulting
 graphs are called [Decision Requirement Graphs (DRG)](https://docs.camunda.org/manual/latest/reference/dmn/drg/).
 
 `dmn-check` verifies that a Decision Requirement Graph
 - is [connected](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) 
 - is [acyclic and directed](https://en.wikipedia.org/wiki/Directed_acyclic_graph)  
 - ensures compatibility of in- and outputs
-- has only one leaf node (i.e. exactly one node determines the output)
+- has only one leaf node (i.e., exactly one node determines the output)
 - has no (self-) loops
 
 In the following example, decision table `Dish` has `Season` and `How many guests` as inputs, but instead of the input `Season` there is an
@@ -277,8 +278,8 @@ aggregations are only used when hit policy collect is used.
 
 ### Missing Ids and Names
 
-Usually you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring it
-might happen that an id or a name is lost. Those errors usually stay unnoticed for a long time. Depending on the scenario
+Usually you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring, it
+might happen that an id or a name is lost. Those errors usually stay unnoticed for a long time. Depending on the scenario, 
 missing ids or names might break your decision model or make error analysis tricky.
 
 `dmn-check` validates that the following DMN elements always have an id and a name:
@@ -296,7 +297,7 @@ values are allowed. Currently, we only validate if the expressions from an `Item
 ## Related work
 
 When we started to work on `dmn-check` we were not are of analysis tools for DMN files that suited our needs and worked in our Camunda flavored
-environment. Since then DMN became more popular and other tools started provide some analysis capabilities as well. If you want to know how
+environment. Since then DMN became more popular, and other tools started to provide some analysis capabilities as well. If you want to know how
 `dmn-check` compares to other tools, you can read a comparision in [GCD](#GCD).
 
 ### A Tool for the Analysis of DMN Decision Tables
