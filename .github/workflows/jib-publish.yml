@@ -17,7 +17,7 @@ jobs:
           egress-policy: audit
 
       - name: JIB container build and publish
-        uses: pSub/jib-container-publish.yml@d64facd6bb7eddd82d09eafb66df866c392b9e88 # main
+        uses: pSub/jib-container-publish.yml@d17484db0ed18b01f03148021672496d5ea8187e # main
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           java-version: 21
