@@ -48,8 +48,10 @@ jobs:
       - id: install-secret-key
         name: Install gpg secret key
         run: |
-          cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+          cat <(echo -e "$GPG_SECRET_KEY") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
+        env:
+          GPG_SECRET_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
 
       - name: Publish package
         run: |
@@ -58,10 +60,11 @@ jobs:
             --update-snapshots \
             --activate-profiles release \
             -DstagingRepositoryId=${{ needs.create_staging_repository.outputs.repository_id }} \
-            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+            -Dgpg.passphrase="GPG_SECRET_KEY_PASSWORD"
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          GPG_SECRET_KEY_PASSWORD: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
 
   publish-gradle-plugin:
     runs-on: ubuntu-latest
