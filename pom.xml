@@ -73,7 +73,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 
-        <checker.framework.version>3.52.1</checker.framework.version>
+        <checker.framework.version>3.53.0</checker.framework.version>
 
         <junit.version>6.0.1</junit.version>
         <mockito.version>5.21.0</mockito.version>
