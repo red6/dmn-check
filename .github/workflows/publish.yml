@@ -1,4 +1,8 @@
 name: Publish packages to the Maven Central Repository
+
+permissions:
+  contents: read
+
 on:
   push:
     tags:

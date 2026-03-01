@@ -1,5 +1,8 @@
 name: Deploy Javadoc
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:

@@ -1,5 +1,8 @@
 name: JIB container publish
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
