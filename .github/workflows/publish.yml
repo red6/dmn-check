@@ -1,14 +1,13 @@
 name: Publish packages to the Maven Central Repository
 
-permissions:
-  contents: read
-
 on:
   push:
     tags:
       - '*'
 jobs:
   create_staging_repository:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     name: Create staging repository
     outputs:
@@ -30,6 +29,8 @@ jobs:
           description: Created by Github Action
 
   publish-dmn-check:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: create_staging_repository
     steps:
@@ -71,6 +72,8 @@ jobs:
           GPG_SECRET_KEY_PASSWORD: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
 
   publish-gradle-plugin:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: publish-dmn-check
     steps:
@@ -97,6 +100,8 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY_NEW }}
 
   finalize:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: [create_staging_repository, publish-dmn-check, publish-gradle-plugin]
     if: ${{ always() && needs.create_staging_repository.result == 'success' }}
