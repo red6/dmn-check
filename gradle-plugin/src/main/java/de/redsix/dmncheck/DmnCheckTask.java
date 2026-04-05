@@ -16,6 +16,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.*;
 
+@CacheableTask
 public class DmnCheckTask extends DefaultTask implements PluginBase, VerificationTask {
 
     public static final String MSG_FAILED_TO_CONSTRUCT_PROJECT_CLASS_LOADER =
