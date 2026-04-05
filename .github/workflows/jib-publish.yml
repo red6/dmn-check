@@ -2,6 +2,7 @@ name: JIB container publish
 
 permissions:
   contents: read
+  packages: write
 
 on:
   push:
