@@ -1,3 +1,7 @@
+## 1.4.0 (2026-04-06)
+
+This is a maintenance release, containing dependency updates, hardening and code cleanup.
+
 ## 1.3.1 (2024-08-02)
 
 This is a maintenance release, containing dependency updates, hardening and code cleanup.
