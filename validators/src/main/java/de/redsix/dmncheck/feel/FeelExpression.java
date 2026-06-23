@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.feel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -13,7 +14,10 @@ public sealed interface FeelExpression {
     record BooleanLiteral(Boolean aBoolean) implements FeelExpression {
     }
 
-    record DateLiteral(LocalDateTime dateTime) implements FeelExpression {
+    record DateLiteral(LocalDate dateTime) implements FeelExpression {
+    }
+
+    record DateTimeLiteral(LocalDateTime dateTime) implements FeelExpression {
     }
 
     record DoubleLiteral(Double aDouble) implements FeelExpression {
@@ -51,6 +55,7 @@ public sealed interface FeelExpression {
             case Null() -> false;
             case BooleanLiteral(var __) -> false;
             case DateLiteral(var __) -> false;
+            case DateTimeLiteral(var __) -> false;
             case DoubleLiteral(var __) -> false;
             case IntegerLiteral(var __) -> false;
             case StringLiteral(var __) -> false;
@@ -69,6 +74,7 @@ public sealed interface FeelExpression {
         return switch (this) {
             case BooleanLiteral(var __) -> true;
             case DateLiteral(var __) -> true;
+            case DateTimeLiteral(var __) -> true;
             case DoubleLiteral(var __) -> true;
             case IntegerLiteral(var __) -> true;
             case VariableLiteral(var __) -> true;
@@ -82,6 +88,7 @@ public sealed interface FeelExpression {
             case Null() -> false;
             case BooleanLiteral(var __) -> false;
             case DateLiteral(var __) -> false;
+            case DateTimeLiteral(var __) -> false;
             case DoubleLiteral(var __) -> false;
             case IntegerLiteral(var __) -> false;
             case StringLiteral(var __) -> false;

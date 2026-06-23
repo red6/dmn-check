@@ -1,5 +1,7 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
+import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -31,11 +33,18 @@ final class Subsumption {
                 default -> Optional.of(false);
             };
 
-            case FeelExpression.DateLiteral(var dateTime) -> switch (otherExpression) {
-                case FeelExpression.DateLiteral(var anOtherDateTime) ->
+            case DateLiteral(var dateTime) -> switch (otherExpression) {
+                case DateLiteral(var anOtherDate) ->
+                    Optional.of(comparison.test(dateTime, anOtherDate));
+                default -> Optional.of(false);
+            };
+
+            case DateTimeLiteral(var dateTime) -> switch (otherExpression) {
+                case DateTimeLiteral(var anOtherDateTime) ->
                         Optional.of(comparison.test(dateTime, anOtherDateTime));
                 default -> Optional.of(false);
             };
+
             case FeelExpression.DoubleLiteral(
                     var aDouble
             ) -> switch (otherExpression) {

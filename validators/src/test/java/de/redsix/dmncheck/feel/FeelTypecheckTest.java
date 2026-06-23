@@ -1,15 +1,14 @@
 package de.redsix.dmncheck.feel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FeelTypecheckTest {
 
@@ -59,6 +58,15 @@ class FeelTypecheckTest {
 
     @Test
     void dateHasTypeDate() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(\"2015-11-30\")");
+
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);
+
+        assertEquals(new Either.Right<>(new ExpressionType.DATE()), type);
+    }
+
+    @Test
+    void dateTimeHasTypeDate() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
         final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(expression);

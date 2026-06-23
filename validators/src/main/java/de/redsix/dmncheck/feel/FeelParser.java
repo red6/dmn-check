@@ -1,9 +1,12 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
+import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
@@ -40,12 +43,17 @@ public final class FeelParser {
             "<=",
             ">=",
             "date and time(\"",
+            "date(\"",
             "\")");
 
     private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
 
     private static final Parser<?> TOKENIZER = Parsers.or(
-            Patterns.regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
+        Patterns.regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
+                    .toScanner("date_time")
+                    .source()
+                    .map(s -> Tokens.fragment(s, "datetimefragment")),
+            Patterns.regex("\\d{4}-\\d{2}-\\d{2}")
                     .toScanner("date")
                     .source()
                     .map(s -> Tokens.fragment(s, "datefragment")),
@@ -87,10 +95,16 @@ public final class FeelParser {
     private static final Parser<FeelExpression> NULL =
             Terminals.fragment("nullfragment").map(__ -> new FeelExpression.Null());
 
-    private static final Parser<FeelExpression> DATE = Parsers.between(
+    private static final Parser<FeelExpression> DATE_TIME = Parsers.between(
             OPERATORS.token("date and time(\""),
-            Terminals.fragment("datefragment").map(LocalDateTime::parse).map(FeelExpression.DateLiteral::new),
+            Terminals.fragment("datetimefragment").map(LocalDateTime::parse).map(DateTimeLiteral::new),
             OPERATORS.token("\")"));
+
+    private static final Parser<FeelExpression> DATE = Parsers.between(
+        OPERATORS.token("date(\""),
+        Terminals.fragment("datefragment").map(LocalDate::parse).map(DateLiteral::new),
+        OPERATORS.token("\")"));
+
 
     private static Parser<FeelExpression> parseRangeExpression(
             final Parser<Boolean> leftBound,
@@ -163,7 +177,7 @@ public final class FeelParser {
     private static Parser<FeelExpression> feelExpressionParser() {
         final Parser.Reference<FeelExpression> feelParserReference = Parser.newReference();
 
-        final Parser<FeelExpression> literalParser = Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE);
+        final Parser<FeelExpression> literalParser = Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE, DATE_TIME);
 
         final Parser<FeelExpression> parseRangeExpression = createRangeExpressionParser(literalParser);
 

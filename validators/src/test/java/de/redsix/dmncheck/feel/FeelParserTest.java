@@ -1,8 +1,11 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
+import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
+import java.time.LocalDate;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.LiteralExpression;
 import org.jparsec.error.ParserException;
@@ -298,21 +301,42 @@ class FeelParserTest {
 
     @Test
     void shouldParseDateExpression() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(\"2015-11-30\")");
+
+        final FeelExpression expectedExpression = new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30));
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateTimeExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
-        final FeelExpression expectedExpression = new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0));
+        final FeelExpression expectedExpression = new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0));
         assertEquals(expectedExpression, expression);
     }
 
     @Test
     void shouldParseDateExpressionsInRange() {
         final FeelExpression expression = FeelParser.PARSER.parse(
+            "[date(\"2015-11-30\")..date(\"2015-12-01\")]");
+
+        final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
+            true,
+            new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)),
+            new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)),
+            true);
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateTimeExpressionsInRange() {
+        final FeelExpression expression = FeelParser.PARSER.parse(
                 "[date and time(\"2015-11-30T12:00:00\")..date and time(\"2015-12-01T12:00:00\")]");
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
                 true,
-                new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)),
-                new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)),
+                new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)),
+                new DateTimeLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)),
                 true);
         assertEquals(expectedExpression, expression);
     }
@@ -322,7 +346,7 @@ class FeelParserTest {
         final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
-                + "INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment or date and time(\" expected, EOF encountered.";
+                + "INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, date(\" or date and time(\" expected, EOF encountered.";
 
         assertTrue(result.getLeft().isPresent());
         assertEquals(expectedErrorMessage, result.getLeft().get().getMessage());

@@ -1,5 +1,7 @@
 package de.redsix.dmncheck.feel;
 
+import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
+import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
@@ -29,7 +31,8 @@ public final class FeelTypecheck {
             case FeelExpression.Empty() -> new Either.Right<>(new ExpressionType.TOP());
             case FeelExpression.Null() -> new Either.Right<>(new ExpressionType.TOP());
             case FeelExpression.BooleanLiteral(var bool) -> new Either.Right<>(new ExpressionType.BOOLEAN());
-            case FeelExpression.DateLiteral(var dateTime) -> new Either.Right<>(new ExpressionType.DATE());
+            case DateLiteral(var date) -> new Either.Right<>(new ExpressionType.DATE());
+            case DateTimeLiteral(var dateTime) -> new Either.Right<>(new ExpressionType.DATE());
             case FeelExpression.DoubleLiteral(var aDouble) -> new Either.Right<>(new ExpressionType.DOUBLE());
             case FeelExpression.IntegerLiteral(var integer) -> new Either.Right<>(new ExpressionType.INTEGER());
             case FeelExpression.StringLiteral(var string) -> new Either.Right<>(new ExpressionType.STRING());

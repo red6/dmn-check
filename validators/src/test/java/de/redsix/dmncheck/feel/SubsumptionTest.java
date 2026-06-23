@@ -76,11 +76,17 @@ class SubsumptionTest {
         "<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1",
         "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
         "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")",
-                "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
-                ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
-                ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
-                "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"
+        "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
+        ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+        ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+        ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+        "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")",
+        "<=date(\"2015-11-30\"), <date(\"2015-11-30\")",
+        "<=date(\"2015-11-30\"), <=date(\"2015-11-30\")",
+        ">=date(\"2015-11-30\"), >date(\"2015-11-30\")",
+        ">=date(\"2015-11-30\"), >=date(\"2015-11-30\")",
+        ">date(\"2014-11-30\"), >date(\"2015-11-30\")",
+        "<date(\"2015-11-30\"), <date(\"2014-11-30\")"
     })
     void comparisonExpressionsThatSubsumesComparisonExpression(
             final String subsumingInput, final String subsumedInput) {
@@ -92,9 +98,13 @@ class SubsumptionTest {
         "<5, <=5", ">5, >=5", ">5, >1", "<1, <5",
         "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
         "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")",
-                "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"
+        ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+        ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")",
+        "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")",
+        "<date(\"2015-11-30\"), <=date(\"2015-11-30\")",
+        ">date(\"2015-11-30\"), >=date(\"2015-11-30\")",
+        ">date(\"2015-11-30\"), >date(\"2014-11-30\")",
+        "<date(\"2014-11-30\"), <date(\"2015-11-30\")",
     })
     void comparisonExpressionsThatDoNotSubsumesComparisonExpression(
             final String subsumingInput, final String subsumedInput) {
