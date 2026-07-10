@@ -106,7 +106,7 @@ class PluginBaseTest {
 
     @Test
     void shouldAcceptDishDecisionExample() {
-        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn"))));
+        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("RegelwerkEmailErmittlung_BDV_DE.dmn"))));
     }
 
     @Test

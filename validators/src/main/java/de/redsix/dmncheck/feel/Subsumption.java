@@ -2,6 +2,7 @@ package de.redsix.dmncheck.feel;
 
 import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -67,8 +68,8 @@ final class Subsumption {
             case FeelExpression.VariableLiteral(var name) -> subsumesVariableLiteral(name, otherExpression, comparison);
             case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
                     subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression);
-            case FeelExpression.UnaryExpression(var operator, var operand) ->
-                    subsumesUnaryExpression(operator, operand, otherExpression);
+            case FeelExpression.NaryExpression(var operator, var operands) ->
+                    subsumesNaryExpression(operator, operands, otherExpression);
             default -> Optional.empty();
         };
     }
@@ -77,14 +78,26 @@ final class Subsumption {
             String name, FeelExpression otherExpression, Comparison comparison) {
         return switch (otherExpression) {
             case FeelExpression.VariableLiteral(var otherName) -> Optional.of(comparison.test(name, otherName));
-            case FeelExpression.UnaryExpression(var operator, var operand) ->
-                    Operator.NOT.equals(operator) ? subsumesVariableLiteral(name, operand, nq) : Optional.of(true);
+            case FeelExpression.NaryExpression(var operator, var operands) -> {
+                if (operands.size() != 1) {
+                    yield Optional.of(false);
+                } else {
+                    var operand = operands.getFirst();
+                    yield Operator.NOT.equals(operator) ? subsumesVariableLiteral(name, operand, nq) : Optional.of(true);
+                }
+            }
             default -> (Optional.of(true));
         };
     }
 
-    private static Optional<Boolean> subsumesUnaryExpression(
-            Operator operator, FeelExpression operand, FeelExpression otherExpression) {
+    private static Optional<Boolean> subsumesNaryExpression(
+            Operator operator, List<FeelExpression> operands, FeelExpression otherExpression) {
+        if (operands.size() != 1) {
+            return Optional.of(false);
+        }
+
+        var operand = operands.getFirst();
+
         return switch (otherExpression) {
             case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
                     switch (operator) {
@@ -94,14 +107,22 @@ final class Subsumption {
                         case GE -> subsumes(operand, lowerBound, leftInc ? le : lt);
                         default -> Optional.of(false);
                     };
-            case FeelExpression.UnaryExpression(var otherOperator, var otherOperand) -> {
+            case FeelExpression.NaryExpression(var otherOperator, var otherOperands) -> {
+                if (otherOperands.size() != 1) {
+                    yield Optional.of(false);
+                }
+                var otherOperand = otherOperands.getFirst();
                 if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
                     yield Optional.of(true);
                 }
 
                 if (operator.isGreaterThan() && otherOperator.isGreaterThan()
                         || operator.isLessThan() && otherOperator.isLessThan()) {
-                    yield subsumes(otherOperand, operand, fromOperator(operator));
+                    if (operand.isDate() && otherOperand.isDate()) {
+                        yield subsumes(otherOperand.extractDateExpression(), operand.extractDateExpression(), fromOperator(operator));
+                    } else {
+                        yield subsumes(otherOperand, operand, fromOperator(operator));
+                    }
                 } else {
                     yield Optional.of(false);
                 }

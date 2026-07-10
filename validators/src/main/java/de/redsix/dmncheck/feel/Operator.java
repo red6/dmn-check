@@ -11,8 +11,10 @@ public enum Operator {
     LE("<="),
     GE(">="),
     NOT("NOT"),
-    OR("or"),
-    AND("and");
+    OR("OR"),
+    AND("AND"),
+    DATE("DATE"),
+    DATE_AND_TIME("DATE AND TIME");
 
     private final String name;
 
@@ -25,11 +27,19 @@ public enum Operator {
         return name;
     }
 
+    public static Operator fromString(final String name) {
+        return Operator.valueOf(name.toUpperCase().replace(" ", "_"));
+    }
+
     public boolean isLessThan() {
         return this.equals(LT) || this.equals(LE);
     }
 
     public boolean isGreaterThan() {
         return this.equals(GT) || this.equals(GE);
+    }
+
+    public boolean isDate() {
+        return this.equals(DATE) || this.equals(DATE_AND_TIME);
     }
 }

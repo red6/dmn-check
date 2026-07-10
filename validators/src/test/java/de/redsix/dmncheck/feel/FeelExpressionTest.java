@@ -72,27 +72,27 @@ class FeelExpressionTest {
 
     @Test
     void unaryContainsVariable() {
-        assertTrue(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("x"))
+        assertTrue(FeelExpression.unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("x"))
                 .containsVariable("x"));
     }
 
     @Test
     void unaryDoesNotContainVariable() {
-        assertFalse(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"))
+        assertFalse(FeelExpression.unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"))
                 .containsVariable("x"));
     }
 
     @Test
     void binaryContainsVariable() {
-        assertTrue(new FeelExpression.BinaryExpression(
-                        new FeelExpression.Empty(), Operator.GT, new FeelExpression.VariableLiteral("x"))
+        assertTrue(FeelExpression.binaryExpression(Operator.GT,
+                        new FeelExpression.Empty(), new FeelExpression.VariableLiteral("x"))
                 .containsVariable("x"));
     }
 
     @Test
     void binaryDosNotContainVariable() {
-        assertFalse(new FeelExpression.BinaryExpression(
-                        new FeelExpression.Empty(), Operator.GT, new FeelExpression.VariableLiteral("y"))
+        assertFalse(FeelExpression.binaryExpression(Operator.GT,
+                        new FeelExpression.Empty(), new FeelExpression.VariableLiteral("y"))
                 .containsVariable("x"));
     }
 

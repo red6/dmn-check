@@ -110,8 +110,8 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({
-        "<\"Steak\", Operator < expects numeric type but got STRING[]",
-        "2+\"foo\", Types of left and right operand do not match.",
+        "<\"Steak\", Operator < expects numeric type but got [STRING[]]",
+        "2+\"foo\", 'Operator + expects numeric type but got [INTEGER[], STRING[]]'",
         "'<3,\"foo\"', Types of head and tail do not match.",
         "[1..1.5], Types of lower and upper bound do not match.",
         "[\"A\"..\"Z\"], Type is unsupported for RangeExpressions."
