@@ -3,6 +3,7 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.NaryExpression;
+import de.redsix.dmncheck.feel.FeelExpression.QuestionMark;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
@@ -19,7 +20,7 @@ import org.mockito.Mockito;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import static de.redsix.dmncheck.feel.FeelExpression.unaryExpression;
+import static de.redsix.dmncheck.feel.FeelExpression.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -304,6 +305,28 @@ class FeelParserTest {
     }
 
     @Test
+    void shouldParseDateComparisonWithQuestionmarkOnLeftHandSide() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(?) > date(\"2026-06-23\")");
+
+        final FeelExpression expectedExpression = binaryExpression(Operator.GT,
+            unaryExpression(Operator.DATE, new QuestionMark()),
+            unaryExpression(Operator.DATE, new DateLiteral(LocalDate.of(2026, Month.JUNE, 23)))
+        );
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateComparisonWithQuestionmarkOnRightHandSide() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(\"2026-06-23\") > date(?)");
+
+        final FeelExpression expectedExpression = binaryExpression(Operator.GT,
+            unaryExpression(Operator.DATE, new DateLiteral(LocalDate.of(2026, Month.JUNE, 23))),
+            unaryExpression(Operator.DATE, new QuestionMark())
+        );
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
     void shouldParseDateTimeExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
@@ -319,6 +342,19 @@ class FeelParserTest {
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
             true,
             new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)))),
+            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
+            true);
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateExpressionsInRangeWithQuestionmark() {
+        final FeelExpression expression = FeelParser.PARSER.parse(
+            "[date(?)..date(\"2015-12-01\")]");
+
+        final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
+            true,
+            new NaryExpression(Operator.DATE, Collections.singletonList(new QuestionMark())),
             new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
             true);
         assertEquals(expectedExpression, expression);
@@ -342,7 +378,7 @@ class FeelParserTest {
         final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
-                + "<, >, <=, >=, -, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, datetimefragment, datefragment, nullfragment, builtinfragment, [, ] or ( expected, EOF encountered.";
+                + "<, >, <=, >=, -, questionmarkfragment, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, datetimefragment, datefragment, nullfragment, builtinfragment, [, ] or ( expected, EOF encountered.";
 
         assertTrue(result.getLeft().isPresent());
         assertEquals(expectedErrorMessage, result.getLeft().get().getMessage());

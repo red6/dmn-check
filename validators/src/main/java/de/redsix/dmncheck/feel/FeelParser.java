@@ -3,6 +3,7 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.NaryExpression;
+import de.redsix.dmncheck.feel.FeelExpression.QuestionMark;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
@@ -42,7 +43,8 @@ public final class FeelParser {
             "<",
             ">",
             "<=",
-            ">=");
+            ">=",
+            "?");
 
     private static final Terminals BUILTINS = Terminals.operators(
         "date and time",
@@ -53,6 +55,10 @@ public final class FeelParser {
     private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
 
     private static final Parser<?> TOKENIZER = Parsers.or(
+        Patterns.string("?")
+                    .toScanner("questionmark")
+                    .source()
+                    .map(s -> Tokens.fragment(s, "questionmarkfragment")),
         Patterns.regex("\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\"")
                     .toScanner("date_time")
                     .source()
@@ -106,6 +112,8 @@ public final class FeelParser {
 
     private static final Parser<FeelExpression> DATE = Terminals.fragment("datefragment").map(LocalDate::parse).map(DateLiteral::new);
 
+    private static final Parser<FeelExpression> QUESTIONMARK = Terminals.fragment("questionmarkfragment").map(__ -> new QuestionMark());
+
     private static Parser<FeelExpression> parseRangeExpression(
             final Parser<Boolean> leftBound,
             final Parser<FeelExpression> expression,
@@ -148,6 +156,10 @@ public final class FeelParser {
                 .infixl(op("*", (l, r) -> FeelExpression.binaryExpression(Operator.MUL, l, r)), 20)
                 .infixl(op("**", (l, r) -> FeelExpression.binaryExpression(Operator.EXP, l, r)), 20)
                 .infixl(op("/", (l, r) -> FeelExpression.binaryExpression(Operator.DIV, l, r)), 20)
+                .infixl(op(">", (l, r) -> FeelExpression.binaryExpression(Operator.GT, l, r)), 20)
+                .infixl(op(">=", (l, r) -> FeelExpression.binaryExpression(Operator.GE, l, r)), 20)
+                .infixl(op("<", (l, r) -> FeelExpression.binaryExpression(Operator.LT, l, r)), 20)
+                .infixl(op("<=", (l, r) -> FeelExpression.binaryExpression(Operator.LE, l, r)), 20)
                 .prefix(op("-", v -> FeelExpression.unaryExpression(Operator.SUB, v)), 30)
                 .build(feelExpressionParser);
     }
@@ -174,9 +186,7 @@ public final class FeelParser {
     private static Parser<FeelExpression> feelExpressionParser() {
         final Parser.Reference<FeelExpression> feelParserReference = Parser.newReference();
 
-        final Parser<FeelExpression> literalParser = Parsers.or(INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE_TIME, DATE);
-
-        //final Parser<FeelExpression> parseRangeExpression = ;
+        final Parser<FeelExpression> literalParser = Parsers.or(QUESTIONMARK, INTEGER, DOUBLE, BOOLEAN, VARIABLE, STRING, DATE_TIME, DATE);
 
         final Parser<FeelExpression> feelExpressionParserWithoutBinaryExpressions =
             Parsers.or(literalParser, NULL, parseBuiltins(feelParserReference.lazy()), createRangeExpressionParser(feelParserReference.lazy()));

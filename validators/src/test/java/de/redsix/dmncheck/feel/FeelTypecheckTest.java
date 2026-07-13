@@ -2,6 +2,8 @@ package de.redsix.dmncheck.feel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.redsix.dmncheck.feel.ExpressionType.DATE;
+import de.redsix.dmncheck.feel.ExpressionType.INTEGER;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import java.util.Collections;
@@ -75,6 +77,17 @@ class FeelTypecheckTest {
     }
 
     @Test
+    void dateTimeHasTypeDate2() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(?) > date(\"2015-11-30\")");
+        final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        context.put("someVariable", new DATE());
+
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type = FeelTypecheck.typecheck(context, expression);
+
+        assertEquals(new Either.Right<>(new ExpressionType.DATE()), type);
+    }
+
+    @Test
     void boundVariableHasType() {
         final FeelExpression expression = FeelParser.PARSER.parse("x");
         final FeelTypecheck.Context context = new FeelTypecheck.Context();
@@ -99,6 +112,59 @@ class FeelTypecheckTest {
                 type.getLeft().orElseThrow(AssertionError::new).getMessage());
     }
 
+    @Test
+    void questionMarkIsBoundIfAndOnlyIfThereIsOneVariableInTheContext() {
+        final FeelExpression expression = FeelParser.PARSER.parse("?");
+        final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        context.put("someVariable", new ExpressionType.INTEGER());
+
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+            FeelTypecheck.typecheck(context, expression);
+
+        assertEquals(new Either.Right<>(new ExpressionType.INTEGER()), type);
+    }
+
+    @Test
+    void questionMarkIsBoundIfTheOnlyVariableInContextIsNamedQuestionmark() {
+        final FeelExpression expression = FeelParser.PARSER.parse("?");
+        final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        context.put("?", new ExpressionType.INTEGER());
+
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+            FeelTypecheck.typecheck(context, expression);
+
+        assertEquals(new Either.Right<>(new ExpressionType.INTEGER()), type);
+    }
+
+    @Test
+    void questionMarkIsUnboundIfTheContextIsEmpty() {
+        final FeelExpression expression = FeelParser.PARSER.parse("?");
+        final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+            FeelTypecheck.typecheck(context, expression);
+
+        assertEquals(Optional.empty(), type.getRight());
+        assertEquals(
+            "Question mark can only be used if there is a variable in context.",
+            type.getLeft().orElseThrow(AssertionError::new).getMessage());
+    }
+
+    @Test
+    void questionMarkIsUnboundIfTheContextointainsMoreThanOneEntry() {
+        final FeelExpression expression = FeelParser.PARSER.parse("?");
+        final FeelTypecheck.Context context = new FeelTypecheck.Context();
+        context.put("x", new INTEGER());
+        context.put("y", new DATE());
+        final Either<ValidationResult.Builder.ElementStep, ExpressionType> type =
+            FeelTypecheck.typecheck(context, expression);
+
+        assertEquals(Optional.empty(), type.getRight());
+        assertEquals(
+            "There is more than one variable in context. Question mark is ambiguous.",
+            type.getLeft().orElseThrow(AssertionError::new).getMessage());
+    }
+
+
     @ParameterizedTest
     @CsvSource({"<5, INTEGER", "<5.2, DOUBLE", "-1, INTEGER"})
     void lessThanExpressionHasNumericType(String input, String expectedType) {
@@ -110,7 +176,7 @@ class FeelTypecheckTest {
 
     @ParameterizedTest
     @CsvSource({
-        "<\"Steak\", Operator < expects numeric type but got [STRING[]]",
+        "<\"Steak\", Operator < expects comparable type but got [STRING[]]",
         "2+\"foo\", 'Operator + expects numeric type but got [INTEGER[], STRING[]]'",
         "'<3,\"foo\"', Types of head and tail do not match.",
         "[1..1.5], Types of lower and upper bound do not match.",

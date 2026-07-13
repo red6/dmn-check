@@ -12,6 +12,9 @@ public sealed interface FeelExpression {
     record Null() implements FeelExpression {
     }
 
+    record QuestionMark() implements FeelExpression {
+    }
+
     record BooleanLiteral(Boolean aBoolean) implements FeelExpression {
     }
 
@@ -51,6 +54,7 @@ public sealed interface FeelExpression {
         return switch (this) {
             case Empty() -> false;
             case Null() -> false;
+            case QuestionMark() -> true;
             case BooleanLiteral(var __) -> false;
             case DateLiteral(var __) -> false;
             case DateTimeLiteral(var __) -> false;
@@ -68,6 +72,7 @@ public sealed interface FeelExpression {
 
     default boolean isLiteral() {
         return switch (this) {
+            case QuestionMark() -> true;
             case BooleanLiteral(var __) -> true;
             case DateLiteral(var __) -> true;
             case DateTimeLiteral(var __) -> true;

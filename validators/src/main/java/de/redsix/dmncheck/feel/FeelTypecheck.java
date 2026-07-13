@@ -16,6 +16,7 @@ import de.redsix.dmncheck.feel.FeelExpression.Empty;
 import de.redsix.dmncheck.feel.FeelExpression.IntegerLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.NaryExpression;
 import de.redsix.dmncheck.feel.FeelExpression.Null;
+import de.redsix.dmncheck.feel.FeelExpression.QuestionMark;
 import de.redsix.dmncheck.feel.FeelExpression.RangeExpression;
 import de.redsix.dmncheck.feel.FeelExpression.StringLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.VariableLiteral;
@@ -51,6 +52,23 @@ public final class FeelTypecheck {
         return switch (expression) {
             case Empty() -> new Right<>(new TOP());
             case Null() -> new Right<>(new TOP());
+            case QuestionMark() -> {
+                if (context.size() == 1) {
+                    yield new Right<>(context.values().iterator().next());
+                } else if (context.isEmpty()) {
+                    yield new Left<>(
+                            ValidationResult.init
+                                    .message("Question mark can only be used if there is a variable in context.")
+                                    .severity(Severity.ERROR)
+                    );
+                } else {
+                    yield new Left<>(
+                        ValidationResult.init
+                            .message("There is more than one variable in context. Question mark is ambiguous.")
+                            .severity(Severity.ERROR)
+                    );
+                }
+            }
             case BooleanLiteral(var bool) -> new Right<>(new BOOLEAN());
             case DateLiteral(var date) -> new Right<>(new DATE());
             case DateTimeLiteral(var dateTime) -> new Right<>(new DATE());
@@ -84,8 +102,6 @@ public final class FeelTypecheck {
 
     private static Either<ElementStep, ExpressionType> typecheckNaryExpression(
             final Context context, final Operator operator, final List<FeelExpression> operands) {
-        //final Stream<Operator> allowedOperators =
-        //        Stream.of(Operator.GT, Operator.GE, Operator.LT, Operator.LE, Operator.NOT, Operator.SUB);
         return operands.stream().map(operand -> typecheck(context, operand)).collect(Either.reduce())
                 .bind(types -> checkOperatorCompatibility(types, operator));
     }
@@ -93,17 +109,27 @@ public final class FeelTypecheck {
     private static Either<ElementStep, ExpressionType> checkOperatorCompatibility(
             final List<ExpressionType> types, final Operator operator) {
         return switch (operator) {
-            case GE, GT, LE, LT, DIV, EXP, MUL, ADD, SUB -> check(
+            case DIV, EXP, MUL, ADD, SUB -> check(
                     types.stream().allMatch(ExpressionType::isNumeric),
                     "Operator " + operator + " expects numeric type but got " + types)
+                    .orElse(new Right<>(types.getFirst()));
+            case GE, GT, LE, LT -> check(
+                    types.stream().allMatch(ExpressionType::isComparable),
+                    "Operator " + operator + " expects comparable type but got " + types)
                     .orElse(new Right<>(types.getFirst()));
             case OR, AND -> check(
                     types.stream().allMatch(type -> new BOOLEAN().equals(type)),
                     "Operator " + operator + " expects boolean but got " + types)
                     .orElse(new Right<>(types.getFirst()));
-            case NOT, DATE, DATE_AND_TIME ->  check(
+            case NOT -> check(
                 types.size() == 1,
                 "Operator " + operator + " exactly one argument, but got " + types)
+                .orElse(new Right<>(types.getFirst()));
+            case DATE, DATE_AND_TIME -> check(
+                types.size() == 1,
+                "Operator " + operator + " exactly one argument, but got " + types)
+                .or(() -> check(types.stream().allMatch(type -> new DATE().equals(type)),
+                    "Operator " + operator + " expects date but got " + types))
                 .orElse(new Right<>(types.getFirst()));
         };
     }
@@ -113,10 +139,9 @@ public final class FeelTypecheck {
         final List<ExpressionType> allowedTypes = Arrays.asList(
                 new INTEGER(), new DOUBLE(), new LONG(), new DATE());
         return typecheck(context, lowerBound)
-                .bind(lowerBoundType -> typecheck(context, upperBound).bind(upperBoundType -> check(
-                        lowerBoundType.equals(upperBoundType), "Types of lower and upper bound do not match.")
-                        .or(() -> check(
-                                allowedTypes.contains(lowerBoundType), "Type is unsupported for RangeExpressions."))
+                .bind(lowerBoundType -> typecheck(context, upperBound)
+                .bind(upperBoundType -> check(lowerBoundType.equals(upperBoundType), "Types of lower and upper bound do not match.")
+                        .or(() -> check(allowedTypes.contains(lowerBoundType), "Type is unsupported for RangeExpressions."))
                         .orElse(new Right<>(lowerBoundType))));
     }
 
