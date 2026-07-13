@@ -34,8 +34,8 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
     }
 
     @Override
-    public List<ValidationResult> validate(RequirementGraph drg) {
-        ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
+    public List<ValidationResult> validate(final RequirementGraph drg) {
+        final ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(drg);
 
         if (connectivityInspector.isConnected()) {
             return drg.edgeSet().stream()
@@ -50,8 +50,8 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         }
     }
 
-    private List<ValidationResult> checkInAndOuputs(DrgElement sourceElement, DrgElement targetElement) {
-        if (sourceElement instanceof Decision sourceDecision && targetElement instanceof Decision targetDecision) {
+    private List<ValidationResult> checkInAndOuputs(final DrgElement sourceElement, final DrgElement targetElement) {
+        if (sourceElement instanceof final Decision sourceDecision && targetElement instanceof final Decision targetDecision) {
             return checkInAndOutputs(sourceDecision, targetDecision);
         } else {
             // We only validate in- and outputs for decisions as they are the only elements
@@ -60,7 +60,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         }
     }
 
-    private List<ValidationResult> checkInAndOutputs(Decision sourceDecision, Decision targetDecision) {
+    private List<ValidationResult> checkInAndOutputs(final Decision sourceDecision, final Decision targetDecision) {
         return applyOnDecisionTable(
                 sourceDecision,
                 sourceDecisionTable -> applyOnDecisionTable(targetDecision, targetDecisionTable -> {
@@ -71,7 +71,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                                     .map(FeelParser::parse)
                                     .collect(Either.reduce());
 
-                    Either<ValidationResult.Builder.ElementStep, Boolean> doInAndOutputsMatch =
+                    final Either<ValidationResult.Builder.ElementStep, Boolean> doInAndOutputsMatch =
                             eitherInputExpressions.map(inputExpressions -> {
                                 final Set<String> outputIds = sourceDecisionTable.getOutputs().stream()
                                         .map(OutputClause::getName)
@@ -98,7 +98,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
     }
 
     private List<ValidationResult> applyOnDecisionTable(
-            Decision decision, Function<DecisionTable, List<ValidationResult>> validate) {
+            final Decision decision, final Function<DecisionTable, List<ValidationResult>> validate) {
         final Collection<DecisionTable> decisionTables = decision.getChildElementsByType(DecisionTable.class);
 
         if (decisionTables.size() == 1) {
@@ -112,7 +112,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
     }
 
     private List<ValidationResult> reportUnconnectedComponents(
-            RequirementGraph drg, ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector) {
+            final RequirementGraph drg, final ConnectivityInspector<DrgElement, DefaultEdge> connectivityInspector) {
         final List<Set<DrgElement>> connectedSetsOfSizeOne = connectivityInspector.connectedSets().stream()
                 .filter(connectedSet -> connectedSet.size() == 1)
                 .toList();

@@ -55,17 +55,17 @@ public sealed interface FeelExpression {
             case Empty() -> false;
             case Null() -> false;
             case QuestionMark() -> true;
-            case BooleanLiteral(var __) -> false;
-            case DateLiteral(var __) -> false;
-            case DateTimeLiteral(var __) -> false;
-            case DoubleLiteral(var __) -> false;
-            case IntegerLiteral(var __) -> false;
-            case StringLiteral(var __) -> false;
-            case VariableLiteral(var variableName) -> variableName.equals(name);
-            case RangeExpression(var __, var lowerBound, var upperBound, var ___) ->
+            case BooleanLiteral(final var __) -> false;
+            case DateLiteral(final var __) -> false;
+            case DateTimeLiteral(final var __) -> false;
+            case DoubleLiteral(final var __) -> false;
+            case IntegerLiteral(final var __) -> false;
+            case StringLiteral(final var __) -> false;
+            case VariableLiteral(final var variableName) -> variableName.equals(name);
+            case RangeExpression(final var __, final var lowerBound, final var upperBound, final var ___) ->
                     lowerBound.containsVariable(name) || upperBound.containsVariable(name);
-            case NaryExpression(var __, var operands) -> operands.stream().anyMatch(operand -> operand.containsVariable(name));
-            case DisjunctionExpression(var head, var tail) ->
+            case NaryExpression(final var __, final var operands) -> operands.stream().anyMatch(operand -> operand.containsVariable(name));
+            case DisjunctionExpression(final var head, final var tail) ->
                     head.containsVariable(name) || tail.containsVariable(name);
         };
     }
@@ -73,35 +73,35 @@ public sealed interface FeelExpression {
     default boolean isLiteral() {
         return switch (this) {
             case QuestionMark() -> true;
-            case BooleanLiteral(var __) -> true;
-            case DateLiteral(var __) -> true;
-            case DateTimeLiteral(var __) -> true;
-            case DoubleLiteral(var __) -> true;
-            case IntegerLiteral(var __) -> true;
-            case VariableLiteral(var __) -> true;
+            case BooleanLiteral(final var __) -> true;
+            case DateLiteral(final var __) -> true;
+            case DateTimeLiteral(final var __) -> true;
+            case DoubleLiteral(final var __) -> true;
+            case IntegerLiteral(final var __) -> true;
+            case VariableLiteral(final var __) -> true;
             default -> false;
         };
     }
 
     default boolean isDate() {
         return switch (this) {
-            case NaryExpression(var operator, var operands) -> operator.isDate() && operands.size() == 1;
+            case NaryExpression(final var operator, final var operands) -> operator.isDate() && operands.size() == 1;
             default -> false;
         };
     }
 
     default FeelExpression extractDateExpression() {
         return switch (this) {
-            case NaryExpression(var operator, var operands) -> operator.isDate() ? operands.getFirst() : this;
+            case NaryExpression(final var operator, final var operands) -> operator.isDate() ? operands.getFirst() : this;
             default -> this;
         };
     }
 
-    static FeelExpression unaryExpression(Operator operator, FeelExpression operand) {
+    static FeelExpression unaryExpression(final Operator operator, final FeelExpression operand) {
         return new NaryExpression(operator, List.of(operand));
     }
 
-    static FeelExpression binaryExpression(Operator operator, FeelExpression operand, FeelExpression otherOperand) {
+    static FeelExpression binaryExpression(final Operator operator, final FeelExpression operand, final FeelExpression otherOperand) {
         return new NaryExpression(operator, List.of(operand, otherOperand));
     }
 }

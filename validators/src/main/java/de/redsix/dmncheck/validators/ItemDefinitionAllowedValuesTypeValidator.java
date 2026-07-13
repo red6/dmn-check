@@ -13,14 +13,14 @@ import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<ItemDefinition> {
 
     @Override
-    public boolean isApplicable(ItemDefinition itemDefinition, ValidationContext validationContext) {
+    public boolean isApplicable(final ItemDefinition itemDefinition, final ValidationContext validationContext) {
         return itemDefinition.getAllowedValues() != null
                 || itemDefinition.getItemComponents().stream()
                         .anyMatch(itemComponent -> itemComponent.getAllowedValues() != null);
     }
 
     @Override
-    public List<ValidationResult> validate(ItemDefinition itemDefinition, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final ItemDefinition itemDefinition, final ValidationContext validationContext) {
 
         final Collection<ItemDefinition> itemDefinitionsAndComponents = itemDefinition.getItemComponents().stream()
                 .filter(itemComponent -> itemComponent.getAllowedValues() != null)
@@ -34,7 +34,7 @@ public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<Item
                 .flatMap(itemDefinitionOrComponent -> {
                     if (itemDefinitionOrComponent.getTypeRef() == null) {
                         return Stream.of(ValidationResult.init
-                                .message("ItemDefintion uses AllowedValues without a type declaration")
+                                .message("ItemDefinition uses AllowedValues without a type declaration")
                                 .severity(Severity.WARNING)
                                 .element(itemDefinitionOrComponent)
                                 .build());

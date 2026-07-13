@@ -18,14 +18,14 @@ import org.camunda.bpm.model.dmn.instance.Output;
 public class AggregationOutputTypeValidator extends GenericValidator<DecisionTable, Output> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return Objects.nonNull(decisionTable.getAggregation())
                 && Arrays.asList(BuiltinAggregator.MAX, BuiltinAggregator.MIN, BuiltinAggregator.SUM)
                         .contains(decisionTable.getAggregation());
     }
 
     @Override
-    public List<ValidationResult> validate(Output output, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final Output output, final ValidationContext validationContext) {
         if (output.getTypeRef() == null) {
             return Collections.singletonList(ValidationResult.init
                     .message("An aggregation is used but no output type is defined")

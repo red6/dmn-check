@@ -22,17 +22,17 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final DecisionTable decisionTable, final ValidationContext validationContext) {
         final Collection<Rule> rules = decisionTable.getRules();
         final List<List<String>> expressions = new ArrayList<>();
         final List<ValidationResult> result = new ArrayList<>();
 
-        for (Rule rule : rules) {
+        for (final Rule rule : rules) {
             final List<String> rowElements = Stream.concat(
                             rule.getInputEntries().stream(), rule.getOutputEntries().stream())
                     .map(ModelElementInstance::getTextContent)

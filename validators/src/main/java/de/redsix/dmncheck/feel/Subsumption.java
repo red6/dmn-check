@@ -28,61 +28,61 @@ final class Subsumption {
                 default -> Optional.of(false);
             };
             case FeelExpression.BooleanLiteral(
-                    var aBool
+                final var aBool
             ) -> switch (otherExpression) {
-                case FeelExpression.BooleanLiteral(var anOtherBool) -> Optional.of(comparison.test(aBool, anOtherBool));
+                case FeelExpression.BooleanLiteral(final var anOtherBool) -> Optional.of(comparison.test(aBool, anOtherBool));
                 default -> Optional.of(false);
             };
 
-            case DateLiteral(var dateTime) -> switch (otherExpression) {
-                case DateLiteral(var anOtherDate) ->
+            case DateLiteral(final var dateTime) -> switch (otherExpression) {
+                case DateLiteral(final var anOtherDate) ->
                     Optional.of(comparison.test(dateTime, anOtherDate));
                 default -> Optional.of(false);
             };
 
-            case DateTimeLiteral(var dateTime) -> switch (otherExpression) {
-                case DateTimeLiteral(var anOtherDateTime) ->
+            case DateTimeLiteral(final var dateTime) -> switch (otherExpression) {
+                case DateTimeLiteral(final var anOtherDateTime) ->
                         Optional.of(comparison.test(dateTime, anOtherDateTime));
                 default -> Optional.of(false);
             };
 
             case FeelExpression.DoubleLiteral(
-                    var aDouble
+                final var aDouble
             ) -> switch (otherExpression) {
-                case FeelExpression.DoubleLiteral(var anOtherDouble) ->
+                case FeelExpression.DoubleLiteral(final var anOtherDouble) ->
                         Optional.of(comparison.test(aDouble, anOtherDouble));
                 default -> Optional.of(false);
             };
-            case FeelExpression.IntegerLiteral(var anInteger) -> switch (otherExpression) {
-                case FeelExpression.IntegerLiteral(var anOtherInteger) ->
+            case FeelExpression.IntegerLiteral(final var anInteger) -> switch (otherExpression) {
+                case FeelExpression.IntegerLiteral(final var anOtherInteger) ->
                         Optional.of(comparison.test(anInteger, anOtherInteger));
                 default -> Optional.of(false);
             };
             case FeelExpression.StringLiteral(
-                    var aString
+                final var aString
             ) -> switch (otherExpression) {
-                case FeelExpression.StringLiteral(var anOtherString) ->
+                case FeelExpression.StringLiteral(final var anOtherString) ->
                         Optional.of(comparison.test(aString, anOtherString));
                 default -> Optional.of(false);
             };
-            case FeelExpression.VariableLiteral(var name) -> subsumesVariableLiteral(name, otherExpression, comparison);
-            case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
+            case FeelExpression.VariableLiteral(final var name) -> subsumesVariableLiteral(name, otherExpression, comparison);
+            case FeelExpression.RangeExpression(final var leftInc, final var lowerBound, final var upperBound, final var rightInc) ->
                     subsumesRangeExpression(leftInc, lowerBound, upperBound, rightInc, otherExpression);
-            case FeelExpression.NaryExpression(var operator, var operands) ->
+            case FeelExpression.NaryExpression(final var operator, final var operands) ->
                     subsumesNaryExpression(operator, operands, otherExpression);
             default -> Optional.empty();
         };
     }
 
     private static Optional<Boolean> subsumesVariableLiteral(
-            String name, FeelExpression otherExpression, Comparison comparison) {
+            final String name, final FeelExpression otherExpression, final Comparison comparison) {
         return switch (otherExpression) {
-            case FeelExpression.VariableLiteral(var otherName) -> Optional.of(comparison.test(name, otherName));
-            case FeelExpression.NaryExpression(var operator, var operands) -> {
+            case FeelExpression.VariableLiteral(final var otherName) -> Optional.of(comparison.test(name, otherName));
+            case FeelExpression.NaryExpression(final var operator, final var operands) -> {
                 if (operands.size() != 1) {
                     yield Optional.of(false);
                 } else {
-                    var operand = operands.getFirst();
+                    final var operand = operands.getFirst();
                     yield Operator.NOT.equals(operator) ? subsumesVariableLiteral(name, operand, nq) : Optional.of(true);
                 }
             }
@@ -91,15 +91,15 @@ final class Subsumption {
     }
 
     private static Optional<Boolean> subsumesNaryExpression(
-            Operator operator, List<FeelExpression> operands, FeelExpression otherExpression) {
+            final Operator operator, final List<FeelExpression> operands, final FeelExpression otherExpression) {
         if (operands.size() != 1) {
             return Optional.of(false);
         }
 
-        var operand = operands.getFirst();
+        final var operand = operands.getFirst();
 
         return switch (otherExpression) {
-            case FeelExpression.RangeExpression(var leftInc, var lowerBound, var upperBound, var rightInc) ->
+            case FeelExpression.RangeExpression(final var leftInc, final var lowerBound, final var upperBound, final var rightInc) ->
                     switch (operator) {
                         case LT -> subsumes(upperBound, operand, rightInc ? lt : le);
                         case GT -> subsumes(operand, lowerBound, leftInc ? lt : le);
@@ -107,11 +107,11 @@ final class Subsumption {
                         case GE -> subsumes(operand, lowerBound, leftInc ? le : lt);
                         default -> Optional.of(false);
                     };
-            case FeelExpression.NaryExpression(var otherOperator, var otherOperands) -> {
+            case FeelExpression.NaryExpression(final var otherOperator, final var otherOperands) -> {
                 if (otherOperands.size() != 1) {
                     yield Optional.of(false);
                 }
-                var otherOperand = otherOperands.getFirst();
+                final var otherOperand = otherOperands.getFirst();
                 if (operator.equals(otherOperator) && operand.equals(otherOperand)) {
                     yield Optional.of(true);
                 }
@@ -138,14 +138,14 @@ final class Subsumption {
     }
 
     private static Optional<Boolean> subsumesRangeExpression(
-            boolean leftInc,
-            FeelExpression lowerBound,
-            FeelExpression upperBound,
-            boolean rightInc,
-            FeelExpression otherExpression) {
+            final boolean leftInc,
+            final FeelExpression lowerBound,
+            final FeelExpression upperBound,
+            final boolean rightInc,
+            final FeelExpression otherExpression) {
         return switch (otherExpression) {
             case FeelExpression.RangeExpression(
-                    var __, var otherLowerBound, var otherUpperBound, var ___
+                final var __, final var otherLowerBound, final var otherUpperBound, final var ___
             ) -> subsumes(
                     lowerBound, otherLowerBound, leftInc ? le : lt)
                     .flatMap(subsumesLowerBound -> subsumes(otherUpperBound, upperBound, rightInc ? le : lt)
@@ -165,10 +165,10 @@ final class Subsumption {
     }
 
     private static <R extends Comparable> Optional<Boolean> compareLiterals(
-            R value,
-            Function<FeelExpression, Optional<R>> extractOtherValue,
-            FeelExpression otherExpression,
-            Comparison comparison) {
+            final R value,
+            final Function<FeelExpression, Optional<R>> extractOtherValue,
+            final FeelExpression otherExpression,
+            final Comparison comparison) {
         return Optional.of(extractOtherValue.apply(otherExpression)
                 .map(otherValue -> comparison.test(value, otherValue))
                 .orElse(false));

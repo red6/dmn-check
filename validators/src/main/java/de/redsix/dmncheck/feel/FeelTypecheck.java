@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public final class FeelTypecheck {
 
@@ -69,13 +68,13 @@ public final class FeelTypecheck {
                     );
                 }
             }
-            case BooleanLiteral(var bool) -> new Right<>(new BOOLEAN());
-            case DateLiteral(var date) -> new Right<>(new DATE());
-            case DateTimeLiteral(var dateTime) -> new Right<>(new DATE());
-            case DoubleLiteral(var aDouble) -> new Right<>(new DOUBLE());
-            case IntegerLiteral(var integer) -> new Right<>(new INTEGER());
-            case StringLiteral(var string) -> new Right<>(new STRING());
-            case VariableLiteral(var name) -> {
+            case BooleanLiteral(final var bool) -> new Right<>(new BOOLEAN());
+            case DateLiteral(final var date) -> new Right<>(new DATE());
+            case DateTimeLiteral(final var dateTime) -> new Right<>(new DATE());
+            case DoubleLiteral(final var aDouble) -> new Right<>(new DOUBLE());
+            case IntegerLiteral(final var integer) -> new Right<>(new INTEGER());
+            case StringLiteral(final var string) -> new Right<>(new STRING());
+            case VariableLiteral(final var name) -> {
                 if (context.containsKey(name)) {
                     yield new Right<>(context.get(name));
                 } else {
@@ -86,10 +85,10 @@ public final class FeelTypecheck {
                     );
                 }
             }
-            case RangeExpression(var __, var lowerBound, var upperBound, var ___) ->
+            case RangeExpression(final var __, final var lowerBound, final var upperBound, final var ___) ->
                     typecheckRangeExpression(context, lowerBound, upperBound);
-            case NaryExpression(var operator, var operands) -> typecheckNaryExpression(context, operator, operands);
-            case DisjunctionExpression(var head, var tail) -> typecheckDisjunctionExpression(context, head, tail);
+            case NaryExpression(final var operator, final var operands) -> typecheckNaryExpression(context, operator, operands);
+            case DisjunctionExpression(final var head, final var tail) -> typecheckDisjunctionExpression(context, head, tail);
         };
     }
 

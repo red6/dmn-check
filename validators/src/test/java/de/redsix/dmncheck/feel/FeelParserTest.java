@@ -1,9 +1,5 @@
 package de.redsix.dmncheck.feel;
 
-import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
-import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
-import de.redsix.dmncheck.feel.FeelExpression.NaryExpression;
-import de.redsix.dmncheck.feel.FeelExpression.QuestionMark;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
@@ -73,7 +69,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldParseBooleanLiteral(String input, boolean expectedValue) {
+    void shouldParseBooleanLiteral(final String input, final boolean expectedValue) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = new FeelExpression.BooleanLiteral(expectedValue);
@@ -136,7 +132,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"2*3, MUL", "2+3, ADD", "2-3, SUB", "2**3, EXP", "2/3, DIV"})
-    void shouldParseArithmeticExpressions(String input, Operator expectedOperator) {
+    void shouldParseArithmeticExpressions(final String input, final Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = FeelExpression.binaryExpression(expectedOperator,
@@ -147,7 +143,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"true and false, AND", "true or false, OR"})
-    void shouldParseConjunctionAndDisjunction(String input, Operator expectedOperator) {
+    void shouldParseConjunctionAndDisjunction(final String input, final Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = FeelExpression.binaryExpression(expectedOperator,
@@ -168,7 +164,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"<3, LT, 3", "< 3, LT, 3", "<=4, LE, 4", ">5, GT, 5", ">=6, GE, 6"})
-    void shouldParseComparisonExpressions(String input, Operator operator, int number) {
+    void shouldParseComparisonExpressions(final String input, final Operator operator, final int number) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = unaryExpression(operator, new FeelExpression.IntegerLiteral(number));
@@ -198,7 +194,7 @@ class FeelParserTest {
             "(1..2[, false, 1, 2, false"
     })
     void shouldParseRangeExpression(
-            String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) {
+            final String input, final boolean isLeftInclusive, final int lowerBound, final int upperBound, final boolean isRightInclusive) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(

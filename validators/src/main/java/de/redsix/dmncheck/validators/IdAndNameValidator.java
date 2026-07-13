@@ -15,12 +15,12 @@ public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> ex
     protected abstract String getName();
 
     @Override
-    public boolean isApplicable(T element, ValidationContext validationContext) {
+    public boolean isApplicable(final T element, final ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(T element, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final T element, final ValidationContext validationContext) {
         final List<ValidationResult> validationResults = new ArrayList<>();
 
         if (Objects.isNull(element.getId())) {

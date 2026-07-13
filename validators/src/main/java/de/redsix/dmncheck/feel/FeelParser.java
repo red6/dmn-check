@@ -17,7 +17,6 @@ import org.jparsec.Parser;
 import org.jparsec.Parsers;
 import org.jparsec.Scanners;
 import org.jparsec.Terminals;
-import org.jparsec.Terminals.Identifier;
 import org.jparsec.Tokens;
 import org.jparsec.error.ParserException;
 import org.jparsec.pattern.Patterns;

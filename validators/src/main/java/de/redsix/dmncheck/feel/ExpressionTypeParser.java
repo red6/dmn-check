@@ -21,7 +21,7 @@ public final class ExpressionTypeParser {
 
     private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
 
-    private static Parser<?> TOKENIZER(Collection<ItemDefinition> itemDefinitions) {
+    private static Parser<?> TOKENIZER(final Collection<ItemDefinition> itemDefinitions) {
         final Parser<?> itemDefinitionTokenizer = itemDefinitions.stream()
                 .map(NamedElement::getName)
                 .filter(Objects::nonNull)
@@ -79,7 +79,7 @@ public final class ExpressionTypeParser {
             Terminals.fragment("enumfragment").map(ExpressionType.ENUM::new);
     private static final Parser<ExpressionType> TOP = Parsers.EOF.map((__) -> new ExpressionType.TOP());
 
-    private static Parser<ExpressionType> ITEMDEFINITION(Collection<ItemDefinition> itemDefinitions) {
+    private static Parser<ExpressionType> ITEMDEFINITION(final Collection<ItemDefinition> itemDefinitions) {
         return Terminals.fragment("itemDefinitionFragment").map(name -> {
             final ItemDefinition matchedItemDefinition = itemDefinitions.stream()
                     .filter(itemDefinition -> name.equals(itemDefinition.getName()))
@@ -89,13 +89,13 @@ public final class ExpressionTypeParser {
         });
     }
 
-    static Parser<ExpressionType> PARSER(Collection<ItemDefinition> itemDefinitions) {
+    static Parser<ExpressionType> PARSER(final Collection<ItemDefinition> itemDefinitions) {
         return Parsers.or(STRING, BOOLEAN, INTEGER, LONG, DOUBLE, DATE, ITEMDEFINITION(itemDefinitions), ENUM, TOP)
                 .from(TOKENIZER(itemDefinitions), IGNORED);
     }
 
     public static Either<ValidationResult.Builder.ElementStep, ExpressionType> parse(
-            final CharSequence charSequence, Collection<ItemDefinition> itemDefinitions) {
+            final CharSequence charSequence, final Collection<ItemDefinition> itemDefinitions) {
         try {
             return new Either.Right<>(
                     charSequence != null ? PARSER(itemDefinitions).parse(charSequence) : new ExpressionType.TOP());

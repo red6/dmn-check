@@ -14,7 +14,7 @@ import org.camunda.bpm.model.dmn.instance.OutputClause;
 public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return decisionTable.getOutputs().stream().allMatch(output -> {
             final String expressionType = output.getTypeRef();
             return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
@@ -23,7 +23,7 @@ public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final DecisionTable decisionTable, final ValidationContext validationContext) {
         final Either<ValidationResult.Builder.ElementStep, List<ExpressionType>> eitherOutputTypes =
                 decisionTable.getOutputs().stream()
                         .map(OutputClause::getTypeRef)

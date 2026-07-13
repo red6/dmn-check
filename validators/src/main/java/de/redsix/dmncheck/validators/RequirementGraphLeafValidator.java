@@ -12,7 +12,7 @@ import org.jgrapht.traverse.DepthFirstIterator;
 public class RequirementGraphLeafValidator extends RequirementGraphValidator {
 
     @Override
-    public List<ValidationResult> validate(RequirementGraph drg) {
+    public List<ValidationResult> validate(final RequirementGraph drg) {
         final DepthFirstIterator<DrgElement, DefaultEdge> iterator = new DepthFirstIterator<>(drg);
 
         int numberLeafNodes = 0;
