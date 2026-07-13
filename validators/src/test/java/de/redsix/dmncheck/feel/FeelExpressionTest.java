@@ -1,8 +1,10 @@
 package de.redsix.dmncheck.feel;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
+import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +20,15 @@ class FeelExpressionTest {
         assertFalse(new FeelExpression.BooleanLiteral(true).containsVariable("x"));
     }
 
+
     @Test
     void dateNeverContainsVariable() {
-        assertFalse(new FeelExpression.DateLiteral(LocalDateTime.MIN).containsVariable("x"));
+        assertFalse(new DateLiteral(LocalDate.MIN).containsVariable("x"));
+    }
+
+    @Test
+    void datetimeNeverContainsVariable() {
+        assertFalse(new DateTimeLiteral(LocalDateTime.MIN).containsVariable("x"));
     }
 
     @Test
@@ -64,27 +72,27 @@ class FeelExpressionTest {
 
     @Test
     void unaryContainsVariable() {
-        assertTrue(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("x"))
+        assertTrue(FeelExpression.unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("x"))
                 .containsVariable("x"));
     }
 
     @Test
     void unaryDoesNotContainVariable() {
-        assertFalse(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"))
+        assertFalse(FeelExpression.unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"))
                 .containsVariable("x"));
     }
 
     @Test
     void binaryContainsVariable() {
-        assertTrue(new FeelExpression.BinaryExpression(
-                        new FeelExpression.Empty(), Operator.GT, new FeelExpression.VariableLiteral("x"))
+        assertTrue(FeelExpression.binaryExpression(Operator.GT,
+                        new FeelExpression.Empty(), new FeelExpression.VariableLiteral("x"))
                 .containsVariable("x"));
     }
 
     @Test
     void binaryDosNotContainVariable() {
-        assertFalse(new FeelExpression.BinaryExpression(
-                        new FeelExpression.Empty(), Operator.GT, new FeelExpression.VariableLiteral("y"))
+        assertFalse(FeelExpression.binaryExpression(Operator.GT,
+                        new FeelExpression.Empty(), new FeelExpression.VariableLiteral("y"))
                 .containsVariable("x"));
     }
 

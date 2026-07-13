@@ -42,14 +42,14 @@ class SubsumptionTest {
 
     @Test
     void identicalStringsSubsumeEachOther() {
-        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"somestring\"");
+        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"some-string\"");
         assertEquals(Optional.of(true), Subsumption.subsumes(stringExpression, stringExpression, Subsumption.eq));
     }
 
     @Test
     void differentStringsDoNotSubsumeEachOther() {
-        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"somestring\"");
-        final FeelExpression otherStringExpression = FeelParser.PARSER.parse("\"otherstring\"");
+        final FeelExpression stringExpression = FeelParser.PARSER.parse("\"some-string\"");
+        final FeelExpression otherStringExpression = FeelParser.PARSER.parse("\"other-string\"");
         assertEquals(Optional.of(false), Subsumption.subsumes(stringExpression, otherStringExpression, Subsumption.eq));
     }
 
@@ -76,11 +76,17 @@ class SubsumptionTest {
         "<=5, <5", "<=5, <=5", ">=5, >5", ">=5, >=5", ">1, >5", "<5, <1",
         "<=5.0, <5.0", "<=5.0, <=5.0", ">=5.0, >5.0", ">=5.0, >=5.0", ">1.0, >5.0", "<5.0, <1.0",
         "<=date and time(\"2015-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")",
-                "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
-                ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
-                ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
-                "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")"
+        "<=date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
+        ">=date and time(\"2015-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+        ">=date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+        ">date and time(\"2014-11-30T12:00:00\"), >date and time(\"2015-11-30T12:00:00\")",
+        "<date and time(\"2015-11-30T12:00:00\"), <date and time(\"2014-11-30T12:00:00\")",
+        "<=date(\"2015-11-30\"), <date(\"2015-11-30\")",
+        "<=date(\"2015-11-30\"), <=date(\"2015-11-30\")",
+        ">=date(\"2015-11-30\"), >date(\"2015-11-30\")",
+        ">=date(\"2015-11-30\"), >=date(\"2015-11-30\")",
+        ">date(\"2014-11-30\"), >date(\"2015-11-30\")",
+        "<date(\"2015-11-30\"), <date(\"2014-11-30\")"
     })
     void comparisonExpressionsThatSubsumesComparisonExpression(
             final String subsumingInput, final String subsumedInput) {
@@ -92,9 +98,13 @@ class SubsumptionTest {
         "<5, <=5", ">5, >=5", ">5, >1", "<1, <5",
         "<5.0, <=5.0", ">5.0, >=5.0", ">5.0, >1.0", "<1.0, <5.0",
         "<date and time(\"2015-11-30T12:00:00\"), <=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
-                ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")",
-                "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")"
+        ">date and time(\"2015-11-30T12:00:00\"), >=date and time(\"2015-11-30T12:00:00\")",
+        ">date and time(\"2015-11-30T12:00:00\"), >date and time(\"2014-11-30T12:00:00\")",
+        "<date and time(\"2014-11-30T12:00:00\"), <date and time(\"2015-11-30T12:00:00\")",
+        "<date(\"2015-11-30\"), <=date(\"2015-11-30\")",
+        ">date(\"2015-11-30\"), >=date(\"2015-11-30\")",
+        ">date(\"2015-11-30\"), >date(\"2014-11-30\")",
+        "<date(\"2014-11-30\"), <date(\"2015-11-30\")",
     })
     void comparisonExpressionsThatDoNotSubsumesComparisonExpression(
             final String subsumingInput, final String subsumedInput) {
@@ -148,14 +158,14 @@ class SubsumptionTest {
         assertLeftIsNotSubsumedByRight(subsumingInput, subsumedInput);
     }
 
-    private static void assertLeftIsSubsumedByRight(String subsumingInput, String subsumedInput) {
+    private static void assertLeftIsSubsumedByRight(final String subsumingInput, final String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 
         assertEquals(Optional.of(true), Subsumption.subsumes(subsumingExpression, subsumedExpression, Subsumption.eq));
     }
 
-    private static void assertLeftIsNotSubsumedByRight(String subsumingInput, String subsumedInput) {
+    private static void assertLeftIsNotSubsumedByRight(final String subsumingInput, final String subsumedInput) {
         final FeelExpression subsumingExpression = FeelParser.PARSER.parse(subsumingInput);
         final FeelExpression subsumedExpression = FeelParser.PARSER.parse(subsumedInput);
 

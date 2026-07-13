@@ -17,18 +17,18 @@ public sealed interface Either<A, B> {
 
     }
 
-    default <X> X match(Function<A, X> f, Function<B, X> g) {
+    default <X> X match(final Function<A, X> f, final Function<B, X> g) {
         return switch (this) {
-            case Left(var left) -> f.apply(left);
-            case Right(var right) -> g.apply(right);
+            case Left(final var left) -> f.apply(left);
+            case Right(final var right) -> g.apply(right);
         };
     }
 
-    default <C> Either<A, C> bind(Function<B, Either<A, C>> function) {
+    default <C> Either<A, C> bind(final Function<B, Either<A, C>> function) {
         return this.match(Either.Left::new, function);
     }
 
-    default <C> Either<A, C> map(Function<B, C> function) {
+    default <C> Either<A, C> map(final Function<B, C> function) {
         return this.match(Either.Left::new, right -> new Either.Right<>(function.apply(right)));
     }
 
@@ -38,7 +38,7 @@ public sealed interface Either<A, B> {
                         either.bind(a -> eithers.bind(listOfA -> new Either.Right<>(appendAll(a, listOfA)))));
     }
 
-    private static <A> List<A> appendAll(List<A> list1, List<A> list2) {
+    private static <A> List<A> appendAll(final List<A> list1, final List<A> list2) {
         list1.addAll(list2);
         return list1;
     }

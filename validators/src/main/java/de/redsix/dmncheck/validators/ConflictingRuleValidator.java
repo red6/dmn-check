@@ -23,12 +23,12 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return decisionTable.getRules().stream()
                 .collect(Collectors.groupingBy(ConflictingRuleValidator::extractInputEntriesTextContent))
                 .values()
@@ -51,13 +51,13 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                 .collect(Collectors.toList());
     }
 
-    private static List<String> extractInputEntriesTextContent(Rule rule) {
+    private static List<String> extractInputEntriesTextContent(final Rule rule) {
         return rule.getInputEntries().stream()
                 .map(ModelElementInstance::getTextContent)
                 .collect(Collectors.toList());
     }
 
-    private static String extractInputAndOutputEntriesTextContent(Rule rule) {
+    private static String extractInputAndOutputEntriesTextContent(final Rule rule) {
         return Stream.concat(rule.getInputEntries().stream(), rule.getOutputEntries().stream())
                 .map(ModelElementInstance::getTextContent)
                 .collect(Collectors.joining());

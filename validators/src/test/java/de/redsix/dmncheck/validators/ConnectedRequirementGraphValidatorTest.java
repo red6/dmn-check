@@ -287,9 +287,9 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
     @Test
     void shouldAcceptFileWithNoDecisions() {
-        DmnModelInstance emptyModel = Dmn.createEmptyModel();
+        final DmnModelInstance emptyModel = Dmn.createEmptyModel();
 
-        Definitions emptyListOfDefinitions = emptyModel.newInstance(Definitions.class);
+        final Definitions emptyListOfDefinitions = emptyModel.newInstance(Definitions.class);
         emptyModel.setDefinitions(emptyListOfDefinitions);
 
         final List<ValidationResult> validationResults = testee.apply(emptyModel);

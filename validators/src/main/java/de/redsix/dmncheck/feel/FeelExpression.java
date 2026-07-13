@@ -1,6 +1,8 @@
 package de.redsix.dmncheck.feel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public sealed interface FeelExpression {
@@ -10,10 +12,16 @@ public sealed interface FeelExpression {
     record Null() implements FeelExpression {
     }
 
+    record QuestionMark() implements FeelExpression {
+    }
+
     record BooleanLiteral(Boolean aBoolean) implements FeelExpression {
     }
 
-    record DateLiteral(LocalDateTime dateTime) implements FeelExpression {
+    record DateLiteral(LocalDate dateTime) implements FeelExpression {
+    }
+
+    record DateTimeLiteral(LocalDateTime dateTime) implements FeelExpression {
     }
 
     record DoubleLiteral(Double aDouble) implements FeelExpression {
@@ -32,10 +40,7 @@ public sealed interface FeelExpression {
                            boolean isRightInclusive) implements FeelExpression {
     }
 
-    record UnaryExpression(Operator operator, FeelExpression expression) implements FeelExpression {
-    }
-
-    record BinaryExpression(FeelExpression left, Operator operator, FeelExpression right) implements FeelExpression {
+    record NaryExpression(Operator operator, List<FeelExpression> arguments) implements FeelExpression {
     }
 
     record DisjunctionExpression(FeelExpression head, FeelExpression tail) implements FeelExpression {
@@ -49,48 +54,54 @@ public sealed interface FeelExpression {
         return switch (this) {
             case Empty() -> false;
             case Null() -> false;
-            case BooleanLiteral(var __) -> false;
-            case DateLiteral(var __) -> false;
-            case DoubleLiteral(var __) -> false;
-            case IntegerLiteral(var __) -> false;
-            case StringLiteral(var __) -> false;
-            case VariableLiteral(var variableName) -> variableName.equals(name);
-            case RangeExpression(var __, var lowerBound, var upperBound, var ___) ->
+            case QuestionMark() -> true;
+            case BooleanLiteral(final var __) -> false;
+            case DateLiteral(final var __) -> false;
+            case DateTimeLiteral(final var __) -> false;
+            case DoubleLiteral(final var __) -> false;
+            case IntegerLiteral(final var __) -> false;
+            case StringLiteral(final var __) -> false;
+            case VariableLiteral(final var variableName) -> variableName.equals(name);
+            case RangeExpression(final var __, final var lowerBound, final var upperBound, final var ___) ->
                     lowerBound.containsVariable(name) || upperBound.containsVariable(name);
-            case UnaryExpression(var __, var expression) -> expression.containsVariable(name);
-            case BinaryExpression(var left, var __, var right) ->
-                    left.containsVariable(name) || right.containsVariable(name);
-            case DisjunctionExpression(var head, var tail) ->
+            case NaryExpression(final var __, final var operands) -> operands.stream().anyMatch(operand -> operand.containsVariable(name));
+            case DisjunctionExpression(final var head, final var tail) ->
                     head.containsVariable(name) || tail.containsVariable(name);
         };
     }
 
     default boolean isLiteral() {
         return switch (this) {
-            case BooleanLiteral(var __) -> true;
-            case DateLiteral(var __) -> true;
-            case DoubleLiteral(var __) -> true;
-            case IntegerLiteral(var __) -> true;
-            case VariableLiteral(var __) -> true;
+            case QuestionMark() -> true;
+            case BooleanLiteral(final var __) -> true;
+            case DateLiteral(final var __) -> true;
+            case DateTimeLiteral(final var __) -> true;
+            case DoubleLiteral(final var __) -> true;
+            case IntegerLiteral(final var __) -> true;
+            case VariableLiteral(final var __) -> true;
             default -> false;
         };
     }
 
-    default boolean containsNot() {
+    default boolean isDate() {
         return switch (this) {
-            case Empty() -> false;
-            case Null() -> false;
-            case BooleanLiteral(var __) -> false;
-            case DateLiteral(var __) -> false;
-            case DoubleLiteral(var __) -> false;
-            case IntegerLiteral(var __) -> false;
-            case StringLiteral(var __) -> false;
-            case VariableLiteral(var __) -> false;
-            case RangeExpression(var __, var lowerBound, var upperBound, var ___) ->
-                    lowerBound.containsNot() || upperBound.containsNot();
-            case UnaryExpression(var operator, var __) -> operator.equals(Operator.NOT);
-            case BinaryExpression(var left, var __, var right) -> left.containsNot() || right.containsNot();
-            case DisjunctionExpression(var head, var tail) -> head.containsNot() || tail.containsNot();
+            case NaryExpression(final var operator, final var operands) -> operator.isDate() && operands.size() == 1;
+            default -> false;
         };
+    }
+
+    default FeelExpression extractDateExpression() {
+        return switch (this) {
+            case NaryExpression(final var operator, final var operands) -> operator.isDate() ? operands.getFirst() : this;
+            default -> this;
+        };
+    }
+
+    static FeelExpression unaryExpression(final Operator operator, final FeelExpression operand) {
+        return new NaryExpression(operator, List.of(operand));
+    }
+
+    static FeelExpression binaryExpression(final Operator operator, final FeelExpression operand, final FeelExpression otherOperand) {
+        return new NaryExpression(operator, List.of(operand, otherOperand));
     }
 }

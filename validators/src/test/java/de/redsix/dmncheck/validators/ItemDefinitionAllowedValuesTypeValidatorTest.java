@@ -79,7 +79,7 @@ class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
-                        "ItemDefintion uses AllowedValues without a type declaration", validationResult.getMessage()),
+                        "ItemDefinition uses AllowedValues without a type declaration", validationResult.getMessage()),
                 () -> assertEquals(itemDefinition, validationResult.getElement()),
                 () -> assertEquals(Severity.WARNING, validationResult.getSeverity()));
     }

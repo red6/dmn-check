@@ -37,12 +37,12 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
     }
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final DecisionTable decisionTable, final ValidationContext validationContext) {
         final ArrayList<Rule> rules = new ArrayList<>(decisionTable.getRules());
         Collections.reverse(rules);
 

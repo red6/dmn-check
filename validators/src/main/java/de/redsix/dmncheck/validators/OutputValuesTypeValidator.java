@@ -12,7 +12,7 @@ import org.camunda.bpm.model.dmn.instance.Output;
 public class OutputValuesTypeValidator extends TypeValidator<Output> {
 
     @Override
-    public boolean isApplicable(final Output output, ValidationContext validationContext) {
+    public boolean isApplicable(final Output output, final ValidationContext validationContext) {
         final String expressionType = output.getTypeRef();
         return output.getOutputValues() != null
                 && ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
@@ -20,7 +20,7 @@ public class OutputValuesTypeValidator extends TypeValidator<Output> {
     }
 
     @Override
-    public List<ValidationResult> validate(final Output output, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final Output output, final ValidationContext validationContext) {
         final String expressionType = output.getTypeRef();
 
         return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())

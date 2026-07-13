@@ -16,11 +16,11 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
 
     abstract String getTypeRef(T expression);
 
-    public boolean isApplicable(T expression, ValidationContext validationContext) {
+    public boolean isApplicable(final T expression, final ValidationContext validationContext) {
         return true;
     }
 
-    public List<ValidationResult> validate(T expression, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final T expression, final ValidationContext validationContext) {
         final String expressionType = getTypeRef(expression);
         if (Objects.isNull(expressionType)) {
             return Collections.singletonList(ValidationResult.init

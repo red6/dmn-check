@@ -111,7 +111,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
 
         final Rule rule = modelInstance.newInstance(Rule.class);
         final InputEntry inputEntry = modelInstance.newInstance(InputEntry.class);
-        inputEntry.setTextContent("\"" + TestEnum.some.name() + "unkown\"");
+        inputEntry.setTextContent("\"" + TestEnum.some.name() + "unknown\"");
         rule.getInputEntries().add(inputEntry);
         decisionTable.getRules().add(rule);
 
@@ -123,7 +123,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
         final ValidationResult validationResult = validationResults.getFirst();
         assertAll(
                 () -> assertEquals(
-                        "Value \"" + TestEnum.some.name() + "unkown\" does not belong to "
+                        "Value \"" + TestEnum.some.name() + "unknown\" does not belong to "
                                 + TestEnum.class.getCanonicalName(),
                         validationResult.getMessage()),
                 () -> assertEquals(rule, validationResult.getElement()),
