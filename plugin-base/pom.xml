@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dmn-check-plugin-base</artifactId>
+    <name>dmn-check-plugin-base</name>
+
     <dependencies>
         <dependency>
             <groupId>de.redsix</groupId>
