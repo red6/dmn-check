@@ -19,7 +19,7 @@ public class WithRequirementGraph {
         modelInstance.setDefinitions(definitions);
     }
 
-    protected void connect(Decision decision1, Decision decision2) {
+    protected void connect(final Decision decision1, final Decision decision2) {
         final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
         informationRequirement.setRequiredDecision(decision1);
         decision2.addChildElement(informationRequirement);

@@ -17,12 +17,12 @@ import org.camunda.bpm.model.dmn.instance.Output;
 public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
 
     @Override
-    public boolean isApplicable(DecisionTable decisionTable, ValidationContext validationContext) {
+    public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return true;
     }
 
     @Override
-    public List<ValidationResult> validate(DecisionTable decisionTable, ValidationContext validationContext) {
+    public List<ValidationResult> validate(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return Stream.concat(
                         validateColumn(decisionTable, decisionTable.getInputs(), Input::getLabel).stream(),
                         validateColumn(decisionTable, decisionTable.getOutputs(), Output::getLabel).stream())
@@ -30,7 +30,7 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
     }
 
     private <T> List<ValidationResult> validateColumn(
-            DecisionTable decisionTable, Collection<T> columns, Function<T, String> getLabel) {
+            final DecisionTable decisionTable, final Collection<T> columns, final Function<T, String> getLabel) {
         final List<String> labels = columns.stream().map(getLabel).toList();
 
         return labels.stream()

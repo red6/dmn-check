@@ -37,6 +37,11 @@ public sealed interface ExpressionType {
                 && Arrays.asList(new INTEGER(), new LONG(), new DOUBLE()).contains(givenType);
     }
 
+    static boolean isComparable(final ExpressionType givenType) {
+        return !new TOP().equals(givenType)
+            && Arrays.asList(new INTEGER(), new LONG(), new DOUBLE(), new DATE()).contains(givenType);
+    }
+
     default boolean isSubtypeOf(final ExpressionType supertype) {
         return reflexivity(this, supertype)
                 || TOPisTopElement(supertype)

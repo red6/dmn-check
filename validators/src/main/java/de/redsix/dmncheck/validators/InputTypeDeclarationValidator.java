@@ -5,7 +5,7 @@ import org.camunda.bpm.model.dmn.instance.InputExpression;
 public class InputTypeDeclarationValidator extends ElementTypeDeclarationValidator<InputExpression> {
 
     @Override
-    public String getTypeRef(InputExpression inputExpression) {
+    public String getTypeRef(final InputExpression inputExpression) {
         return inputExpression.getTypeRef();
     }
 

@@ -3,6 +3,8 @@ package de.redsix.dmncheck.feel;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
+import java.time.LocalDate;
+import java.util.Collections;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.LiteralExpression;
 import org.jparsec.error.ParserException;
@@ -14,6 +16,7 @@ import org.mockito.Mockito;
 import java.time.LocalDateTime;
 import java.time.Month;
 
+import static de.redsix.dmncheck.feel.FeelExpression.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +69,7 @@ class FeelParserTest {
 
     @ParameterizedTest
     @CsvSource({"true, true", "false, false"})
-    void shouldParseBooleanLiteral(String input, boolean expectedValue) {
+    void shouldParseBooleanLiteral(final String input, final boolean expectedValue) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = new FeelExpression.BooleanLiteral(expectedValue);
@@ -106,7 +109,7 @@ class FeelParserTest {
     void shouldParseNegativeNumbers() {
         final FeelExpression expression = FeelParser.PARSER.parse("- 3");
 
-        final FeelExpression expectedExpression = new FeelExpression.UnaryExpression(Operator.SUB,
+        final FeelExpression expectedExpression = unaryExpression(Operator.SUB,
                 new FeelExpression.IntegerLiteral(3));
 
         assertEquals(expectedExpression, expression);
@@ -121,30 +124,30 @@ class FeelParserTest {
     void shouldHandleWhitespaceCorrectly() {
         final FeelExpression expression = FeelParser.PARSER.parse("2 * 3");
 
-        final FeelExpression expectedExpression = new FeelExpression.BinaryExpression(
-                new FeelExpression.IntegerLiteral(2), Operator.MUL, new FeelExpression.IntegerLiteral(3));
+        final FeelExpression expectedExpression = FeelExpression.binaryExpression(Operator.MUL,
+                new FeelExpression.IntegerLiteral(2), new FeelExpression.IntegerLiteral(3));
 
         assertEquals(expectedExpression, expression);
     }
 
     @ParameterizedTest
     @CsvSource({"2*3, MUL", "2+3, ADD", "2-3, SUB", "2**3, EXP", "2/3, DIV"})
-    void shouldParseArithmeticExpressions(String input, Operator expectedOperator) {
+    void shouldParseArithmeticExpressions(final String input, final Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = new FeelExpression.BinaryExpression(
-                new FeelExpression.IntegerLiteral(2), expectedOperator, new FeelExpression.IntegerLiteral(3));
+        final FeelExpression expectedExpression = FeelExpression.binaryExpression(expectedOperator,
+                new FeelExpression.IntegerLiteral(2), new FeelExpression.IntegerLiteral(3));
 
         assertEquals(expectedExpression, expression);
     }
 
     @ParameterizedTest
     @CsvSource({"true and false, AND", "true or false, OR"})
-    void shouldParseConjunctionAndDisjunction(String input, Operator expectedOperator) {
+    void shouldParseConjunctionAndDisjunction(final String input, final Operator expectedOperator) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = new FeelExpression.BinaryExpression(
-                new FeelExpression.BooleanLiteral(true), expectedOperator, new FeelExpression.BooleanLiteral(false));
+        final FeelExpression expectedExpression = FeelExpression.binaryExpression(expectedOperator,
+                new FeelExpression.BooleanLiteral(true), new FeelExpression.BooleanLiteral(false));
 
         assertEquals(expectedExpression, expression);
     }
@@ -153,18 +156,18 @@ class FeelParserTest {
     void shouldParseArithmeticExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("4 + x");
 
-        final FeelExpression expectedExpression = new FeelExpression.BinaryExpression(
-                new FeelExpression.IntegerLiteral(4), Operator.ADD, new FeelExpression.VariableLiteral("x"));
+        final FeelExpression expectedExpression = FeelExpression.binaryExpression(Operator.ADD,
+                new FeelExpression.IntegerLiteral(4), new FeelExpression.VariableLiteral("x"));
 
         assertEquals(expectedExpression, expression);
     }
 
     @ParameterizedTest
     @CsvSource({"<3, LT, 3", "< 3, LT, 3", "<=4, LE, 4", ">5, GT, 5", ">=6, GE, 6"})
-    void shouldParseComparisonExpressions(String input, Operator operator, int number) {
+    void shouldParseComparisonExpressions(final String input, final Operator operator, final int number) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
-        final FeelExpression expectedExpression = new FeelExpression.UnaryExpression(operator, new FeelExpression.IntegerLiteral(number));
+        final FeelExpression expectedExpression = unaryExpression(operator, new FeelExpression.IntegerLiteral(number));
 
         assertEquals(expectedExpression, expression);
     }
@@ -173,7 +176,7 @@ class FeelParserTest {
     void shouldParseComparisonExpressionWithVariable() {
         final FeelExpression expression = FeelParser.PARSER.parse("> y");
 
-        final FeelExpression expectedExpression = new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"));
+        final FeelExpression expectedExpression = unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("y"));
 
         assertEquals(expectedExpression, expression);
     }
@@ -191,7 +194,7 @@ class FeelParserTest {
             "(1..2[, false, 1, 2, false"
     })
     void shouldParseRangeExpression(
-            String input, boolean isLeftInclusive, int lowerBound, int upperBound, boolean isRightInclusive) {
+            final String input, final boolean isLeftInclusive, final int lowerBound, final int upperBound, final boolean isRightInclusive) {
         final FeelExpression expression = FeelParser.PARSER.parse(input);
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
@@ -223,8 +226,8 @@ class FeelParserTest {
         final FeelExpression expression = FeelParser.PARSER.parse("<3,>100,42");
 
         final FeelExpression expectedExpression = new FeelExpression.DisjunctionExpression(
-                new FeelExpression.UnaryExpression(Operator.LT, new FeelExpression.IntegerLiteral(3)),
-                new FeelExpression.DisjunctionExpression(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(100)), new FeelExpression.IntegerLiteral(42)));
+                unaryExpression(Operator.LT, new FeelExpression.IntegerLiteral(3)),
+                new FeelExpression.DisjunctionExpression(unaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(100)), new FeelExpression.IntegerLiteral(42)));
 
         assertEquals(expectedExpression, expression);
     }
@@ -244,8 +247,8 @@ class FeelParserTest {
         final FeelExpression expression = FeelParser.PARSER.parse(">customer.age,>21");
 
         final FeelExpression expectedExpression = new FeelExpression.DisjunctionExpression(
-                new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.VariableLiteral("customer.age")),
-                new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(21)));
+                unaryExpression(Operator.GT, new FeelExpression.VariableLiteral("customer.age")),
+                unaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(21)));
 
         assertEquals(expectedExpression, expression);
     }
@@ -271,7 +274,7 @@ class FeelParserTest {
                 new FeelExpression.IntegerLiteral(10),
                 new FeelExpression.DisjunctionExpression(
                         new FeelExpression.RangeExpression(true, new FeelExpression.IntegerLiteral(20), new FeelExpression.IntegerLiteral(30), true),
-                        new FeelExpression.DisjunctionExpression(new FeelExpression.UnaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(10)), new FeelExpression.IntegerLiteral(42))));
+                        new FeelExpression.DisjunctionExpression(unaryExpression(Operator.GT, new FeelExpression.IntegerLiteral(10)), new FeelExpression.IntegerLiteral(42))));
 
         assertEquals(expectedExpression, expression);
     }
@@ -280,7 +283,7 @@ class FeelParserTest {
     void shouldParseExpressionContainingNot() {
         final FeelExpression expression = FeelParser.PARSER.parse("not([1..4],[6..9])");
 
-        final FeelExpression expectedExpression = new FeelExpression.UnaryExpression(
+        final FeelExpression expectedExpression = unaryExpression(
                 Operator.NOT,
                 new FeelExpression.DisjunctionExpression(
                         new FeelExpression.RangeExpression(true, new FeelExpression.IntegerLiteral(1), new FeelExpression.IntegerLiteral(4), true),
@@ -290,29 +293,78 @@ class FeelParserTest {
     }
 
     @Test
-    void shouldNotParseNestedNegations() {
-        final Throwable throwable =
-                assertThrows(ParserException.class, () -> FeelParser.PARSER.parse("not(not(true))"));
-        assertEquals("Negations cannot be nested in FEEL expressions.\nline 1, column 15", throwable.getMessage());
+    void shouldParseDateExpression() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(\"2015-11-30\")");
+
+        final FeelExpression expectedExpression = unaryExpression(Operator.DATE, new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)));
+        assertEquals(expectedExpression, expression);
     }
 
     @Test
-    void shouldParseDateExpression() {
+    void shouldParseDateComparisonWithQuestionmarkOnLeftHandSide() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(?) > date(\"2026-06-23\")");
+
+        final FeelExpression expectedExpression = binaryExpression(Operator.GT,
+            unaryExpression(Operator.DATE, new QuestionMark()),
+            unaryExpression(Operator.DATE, new DateLiteral(LocalDate.of(2026, Month.JUNE, 23)))
+        );
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateComparisonWithQuestionmarkOnRightHandSide() {
+        final FeelExpression expression = FeelParser.PARSER.parse("date(\"2026-06-23\") > date(?)");
+
+        final FeelExpression expectedExpression = binaryExpression(Operator.GT,
+            unaryExpression(Operator.DATE, new DateLiteral(LocalDate.of(2026, Month.JUNE, 23))),
+            unaryExpression(Operator.DATE, new QuestionMark())
+        );
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateTimeExpression() {
         final FeelExpression expression = FeelParser.PARSER.parse("date and time(\"2015-11-30T12:00:00\")");
 
-        final FeelExpression expectedExpression = new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0));
+        final FeelExpression expectedExpression = unaryExpression(Operator.DATE_AND_TIME, new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)));
         assertEquals(expectedExpression, expression);
     }
 
     @Test
     void shouldParseDateExpressionsInRange() {
         final FeelExpression expression = FeelParser.PARSER.parse(
+            "[date(\"2015-11-30\")..date(\"2015-12-01\")]");
+
+        final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
+            true,
+            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)))),
+            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
+            true);
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateExpressionsInRangeWithQuestionmark() {
+        final FeelExpression expression = FeelParser.PARSER.parse(
+            "[date(?)..date(\"2015-12-01\")]");
+
+        final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
+            true,
+            new NaryExpression(Operator.DATE, Collections.singletonList(new QuestionMark())),
+            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
+            true);
+        assertEquals(expectedExpression, expression);
+    }
+
+    @Test
+    void shouldParseDateTimeExpressionsInRange() {
+        final FeelExpression expression = FeelParser.PARSER.parse(
                 "[date and time(\"2015-11-30T12:00:00\")..date and time(\"2015-12-01T12:00:00\")]");
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
                 true,
-                new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)),
-                new FeelExpression.DateLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)),
+                new NaryExpression(Operator.DATE_AND_TIME, Collections.singletonList(new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)))),
+                new NaryExpression(Operator.DATE_AND_TIME, Collections.singletonList(new DateTimeLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)))),
                 true);
         assertEquals(expectedExpression, expression);
     }
@@ -322,7 +374,7 @@ class FeelParserTest {
         final Either<ValidationResult.Builder.ElementStep, FeelExpression> result = FeelParser.parse("[1..");
 
         final String expectedErrorMessage = "Could not parse '[1..': line 1, column 5:\n"
-                + "INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment or date and time(\" expected, EOF encountered.";
+                + "<, >, <=, >=, -, questionmarkfragment, INTEGER, DECIMAL, booleanfragment, variablefragment, stringfragment, datetimefragment, datefragment, nullfragment, builtinfragment, [, ] or ( expected, EOF encountered.";
 
         assertTrue(result.getLeft().isPresent());
         assertEquals(expectedErrorMessage, result.getLeft().get().getMessage());

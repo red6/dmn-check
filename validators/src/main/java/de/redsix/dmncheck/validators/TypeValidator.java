@@ -62,7 +62,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     }
 
     private Optional<ValidationResult.Builder.ElementStep> typecheckExpression(
-            Expression expression, FeelTypecheck.Context context, ExpressionType expectedType) {
+            final Expression expression, final FeelTypecheck.Context context, final ExpressionType expectedType) {
         return FeelParser.parse(expression)
                 .bind(feelExpression -> FeelTypecheck.typecheck(context, feelExpression))
                 .map(type -> {
@@ -83,7 +83,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
 
     private Optional<String> extractClassName(final ExpressionType expressionType) {
         return switch (expressionType) {
-            case ExpressionType.ENUM(var className) -> Optional.of(className);
+            case ExpressionType.ENUM(final var className) -> Optional.of(className);
             default -> Optional.empty();
         };
     }
@@ -97,7 +97,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     }
 
     private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(
-            String className, String stringValue, Class<? extends Enum<?>> clazz) {
+            final String className, final String stringValue, final Class<? extends Enum<?>> clazz) {
         final Enum<?>[] enumConstants = clazz.getEnumConstants();
         final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants)
                 .map(Enum::name)
@@ -123,7 +123,7 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
         }
     }
 
-    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(Class<?> clazz) {
+    private Either<ValidationResult.Builder.ElementStep, Class<? extends Enum<?>>> isEnum(final Class<?> clazz) {
         if (clazz.isEnum()) {
             // checkerframework cannot figure out the types when using as clazz.asSubclass(Enum.class) because
             // asSubclass introduces

@@ -5,7 +5,7 @@ import org.camunda.bpm.model.dmn.instance.Output;
 public class OutputTypeDeclarationValidator extends ElementTypeDeclarationValidator<Output> {
 
     @Override
-    public String getTypeRef(Output output) {
+    public String getTypeRef(final Output output) {
         return output.getTypeRef();
     }
 
