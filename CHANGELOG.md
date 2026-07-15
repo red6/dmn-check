@@ -1,5 +1,10 @@
 ## 1.4.0 (2026-04-06)
 
+Features:
+
+ - Add better date and time validation
+ - Add support for the question-mark operator
+
 This is a maintenance release, containing dependency updates, hardening and code cleanup.
 
 ## 1.3.1 (2024-08-02)
