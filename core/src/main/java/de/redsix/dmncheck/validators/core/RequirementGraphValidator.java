@@ -23,7 +23,7 @@ public abstract class RequirementGraphValidator implements Validator {
             final RequirementGraph requirementGraph = RequirementGraph.from(dmnModelInstance);
             return validate(requirementGraph);
         } catch (IllegalArgumentException exception) {
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message("Error while construction requirement graph: " + exception.getMessage())
                     .element(dmnModelInstance.getDefinitions())
                     .build());

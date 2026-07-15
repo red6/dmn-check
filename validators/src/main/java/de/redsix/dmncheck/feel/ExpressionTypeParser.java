@@ -33,32 +33,32 @@ public final class ExpressionTypeParser {
 
         return Parsers.or(
                 Patterns.stringCaseInsensitive("string")
-                        .toScanner("string")
+                        .toScanner("stringScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "stringfragment")),
                 Patterns.stringCaseInsensitive("boolean")
-                        .toScanner("boolean")
+                        .toScanner("booleanScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "booleanfragment")),
                 Patterns.stringCaseInsensitive("integer")
-                        .toScanner("boolean")
+                        .toScanner("integerScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "integerfragment")),
                 Patterns.stringCaseInsensitive("long")
-                        .toScanner("boolean")
+                        .toScanner("longScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "longfragment")),
                 Patterns.stringCaseInsensitive("double")
-                        .toScanner("boolean")
+                        .toScanner("doubleScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "doublefragment")),
                 Patterns.stringCaseInsensitive("date")
-                        .toScanner("boolean")
+                        .toScanner("dateScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "datefragment")),
                 itemDefinitionTokenizer,
                 Patterns.regex("([a-z][a-z_0-9]*\\.)*[A-Z_]($[A-Z_]|[\\w_])*")
-                        .toScanner("enum")
+                        .toScanner("enumScanner")
                         .source()
                         .map(s -> Tokens.fragment(s, "enumfragment")));
     }

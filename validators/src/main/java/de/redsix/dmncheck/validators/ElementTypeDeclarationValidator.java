@@ -23,7 +23,7 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
     public List<ValidationResult> validate(final T expression, final ValidationContext validationContext) {
         final String expressionType = getTypeRef(expression);
         if (Objects.isNull(expressionType)) {
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message(getClassUnderValidation().getSimpleName() + " has no type")
                     .severity(Severity.WARNING)
                     .element(expression)
@@ -32,11 +32,11 @@ public abstract class ElementTypeDeclarationValidator<T extends DmnElement> exte
             final Either<ValidationResult.Builder.ElementStep, ExpressionType> eitherType =
                     ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions());
             return eitherType.match(
-                    validationResult -> Collections.singletonList(
+                    validationResult -> List.of(
                             validationResult.element(expression).build()),
                     type -> {
                         if (new ExpressionType.TOP().equals(type)) {
-                            return Collections.singletonList(ValidationResult.init
+                            return List.of(ValidationResult.init
                                     .message("TOP is an internal type and cannot be used in declarations.")
                                     .severity(Severity.ERROR)
                                     .element(expression)

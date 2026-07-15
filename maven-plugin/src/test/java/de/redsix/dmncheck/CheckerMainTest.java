@@ -41,7 +41,7 @@ class CheckerMainTest {
             final String ignoredFilename = "empty-as-well.dmn";
             testee.excludes = new String[] {ignoredFilename};
             final List<File> filesToTest =
-                    testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("")));
+                    testee.fetchFilesToTestFromSearchPaths(List.of(Paths.get("")));
 
             Assertions.assertTrue(
                     filesToTest.stream().noneMatch(file -> file.getName().equals(ignoredFilename)));
@@ -50,7 +50,7 @@ class CheckerMainTest {
         @Test
         void shouldSkipFileIfIsNotOnSearchPath() {
             final List<File> filesToTest =
-                    testee.fetchFilesToTestFromSearchPaths(Collections.singletonList(Paths.get("src/main/java")));
+                    testee.fetchFilesToTestFromSearchPaths(List.of(Paths.get("src/main/java")));
             Assertions.assertTrue(filesToTest.isEmpty());
         }
 

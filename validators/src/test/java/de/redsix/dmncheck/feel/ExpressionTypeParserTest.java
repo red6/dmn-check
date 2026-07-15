@@ -94,7 +94,7 @@ class ExpressionTypeParserTest {
         final ItemDefinition itemDefinition = Dmn.createEmptyModel().newInstance(ItemDefinition.class);
         itemDefinition.setName("myItemDefinition");
 
-        final List<ItemDefinition> itemDefinitions = Collections.singletonList(itemDefinition);
+        final List<ItemDefinition> itemDefinitions = List.of(itemDefinition);
 
         final ExpressionType type = ExpressionTypeParser.PARSER(itemDefinitions).parse("myItemDefinition");
 

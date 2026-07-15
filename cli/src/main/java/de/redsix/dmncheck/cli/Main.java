@@ -73,7 +73,7 @@ public class Main implements PluginBase, Callable<Integer> {
     @Override
     public List<String> getSearchPathList() {
         if (Objects.isNull(searchPath) || searchPath.isEmpty()) {
-            return Collections.singletonList("");
+            return List.of("");
         } else {
             return searchPath;
         }

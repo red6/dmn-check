@@ -71,7 +71,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         if (searchPaths != null) {
             return Arrays.asList(searchPaths);
         } else {
-            return Collections.singletonList("");
+            return List.of("");
         }
     }
 

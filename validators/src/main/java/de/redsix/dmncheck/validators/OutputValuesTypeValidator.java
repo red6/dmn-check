@@ -25,7 +25,7 @@ public class OutputValuesTypeValidator extends TypeValidator<Output> {
 
         return ExpressionTypeParser.parse(expressionType, validationContext.getItemDefinitions())
                 .match(
-                        validationResult -> Collections.singletonList(
+                        validationResult -> List.of(
                                 validationResult.element(output).build()),
                         inputType -> typecheck(
                                         output,

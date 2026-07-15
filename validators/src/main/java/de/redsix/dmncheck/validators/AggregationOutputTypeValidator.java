@@ -27,7 +27,7 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     @Override
     public List<ValidationResult> validate(final Output output, final ValidationContext validationContext) {
         if (output.getTypeRef() == null) {
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message("An aggregation is used but no output type is defined")
                     .severity(Severity.WARNING)
                     .element(output)
@@ -36,11 +36,11 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
             final Either<ValidationResult.Builder.ElementStep, ExpressionType> eitherType =
                     ExpressionTypeParser.parse(output.getTypeRef(), validationContext.getItemDefinitions());
             return eitherType.match(
-                    validationResult -> Collections.singletonList(
+                    validationResult -> List.of(
                             validationResult.element(output).build()),
                     type -> {
                         if (!ExpressionType.isNumeric(type)) {
-                            return Collections.singletonList(ValidationResult.init
+                            return List.of(ValidationResult.init
                                     .message("Aggregations MAX, MIN, SUM are only valid with numeric output types")
                                     .element(output)
                                     .build());

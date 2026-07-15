@@ -73,7 +73,7 @@ class PluginBaseTest {
         // additional empty directory
         Files.createDirectory(folder1.resolve("folder1-0"));
 
-        final List<String> result = testee.getFileNames(Collections.singletonList(temporaryFolder)).stream()
+        final List<String> result = testee.getFileNames(List.of(temporaryFolder)).stream()
                 .map(Path::toAbsolutePath)
                 .map(Path::toString)
                 .collect(Collectors.toList());
@@ -83,47 +83,47 @@ class PluginBaseTest {
 
     @Test
     void shouldDetectSimpleDuplicateInFile() {
-        final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn")));
+        final boolean containsErrors = testee.testFiles(List.of(getFile("duplicate_unique.dmn")));
         Assertions.assertTrue(containsErrors);
     }
 
     @Test
     void shouldAcceptDishDecisionRequirementGraphExample() {
         Assertions.assertFalse(
-                testee.testFiles(Collections.singletonList(getFile("decision-requirement-diagram.dmn"))));
+                testee.testFiles(List.of(getFile("decision-requirement-diagram.dmn"))));
     }
 
     @Test
     void shouldDetectCyclesInRequirementGraphs() {
-        final boolean containsErrors = testee.testFiles(Collections.singletonList(getFile("cyclic-diagram.dmn")));
+        final boolean containsErrors = testee.testFiles(List.of(getFile("cyclic-diagram.dmn")));
         Assertions.assertTrue(containsErrors);
     }
 
     @Test
     void shouldSkipFileIfHitpolicyIsCollect() {
-        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("duplicate_collect.dmn"))));
+        Assertions.assertFalse(testee.testFiles(List.of(getFile("duplicate_collect.dmn"))));
     }
 
     @Test
     void shouldAcceptDishDecisionExample() {
-        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision.dmn"))));
+        Assertions.assertFalse(testee.testFiles(List.of(getFile("dish-decision.dmn"))));
     }
 
     @Test
     void shouldAcceptDishDecisionDmnStandard13Example() {
-        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("dish-decision-1-3.dmn"))));
+        Assertions.assertFalse(testee.testFiles(List.of(getFile("dish-decision-1-3.dmn"))));
     }
 
     @Test
     void shouldHandleInvalidDMNFiles() {
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("empty.dmn"))));
+        Assertions.assertTrue(testee.testFiles(List.of(getFile("empty.dmn"))));
     }
 
     @Test
     void shouldLoadNoValidatorFromConfig() {
         when(testee.getValidatorClasses()).thenReturn(new String[] {});
 
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
+        Assertions.assertTrue(testee.testFiles(List.of(getFile("duplicate_unique.dmn"))));
     }
 
     @Test
@@ -133,33 +133,33 @@ class PluginBaseTest {
                 .thenReturn(
                         new String[] {InputEntryTypeValidator.class.getPackage().getName()});
 
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("duplicate_unique.dmn"))));
+        Assertions.assertTrue(testee.testFiles(List.of(getFile("duplicate_unique.dmn"))));
     }
 
     @Test
     void shouldDetectLoopsInDiagrams() {
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("diagram-with-a-loop.dmn"))));
+        Assertions.assertTrue(testee.testFiles(List.of(getFile("diagram-with-a-loop.dmn"))));
     }
 
     @Test
     void shouldFailOnWarningIfFailOnWarningIsTrue() {
         when(testee.failOnWarning()).thenReturn(true);
 
-        Assertions.assertTrue(testee.testFiles(Collections.singletonList(getFile("no-decision.dmn"))));
+        Assertions.assertTrue(testee.testFiles(List.of(getFile("no-decision.dmn"))));
     }
 
     @Test
     void shouldSucceedOnWarningIfFailOnWarningIsFalse() {
         when(testee.failOnWarning()).thenReturn(false);
 
-        Assertions.assertFalse(testee.testFiles(Collections.singletonList(getFile("no-decision.dmn"))));
+        Assertions.assertFalse(testee.testFiles(List.of(getFile("no-decision.dmn"))));
     }
 
     @Test
     void shouldAddExternalArtifactsFromProjectToProjectClassloader() throws IOException {
         String filename = "/foo.jar";
 
-        Assertions.assertDoesNotThrow(() -> testee.loadProjectClasspath(Collections.singletonList(filename)));
+        Assertions.assertDoesNotThrow(() -> testee.loadProjectClasspath(List.of(filename)));
 
         Assertions.assertNotNull(ProjectClassLoader.INSTANCE.classLoader);
         Assertions.assertEquals("/foo.jar",

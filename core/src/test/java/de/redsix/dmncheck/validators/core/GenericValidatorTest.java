@@ -48,7 +48,7 @@ class GenericValidatorTest {
                 .severity(Severity.ERROR)
                 .element(modelElementInstance)
                 .build();
-        when(genericValidator.validate(any(), any())).thenReturn(Collections.singletonList(error));
+        when(genericValidator.validate(any(), any())).thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -98,7 +98,7 @@ class GenericValidatorTest {
                 .element(definitions)
                 .build();
         when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
-                .thenReturn(Collections.singletonList(error));
+                .thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -126,7 +126,7 @@ class GenericValidatorTest {
                 .element(definitions)
                 .build();
         when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
-                .thenReturn(Collections.singletonList(error));
+                .thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -155,7 +155,7 @@ class GenericValidatorTest {
                 .element(definitions)
                 .build();
         when(genericValidator.validate(any(Definitions.class), any(ValidationContext.class)))
-                .thenReturn(Collections.singletonList(error));
+                .thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -196,7 +196,7 @@ class GenericValidatorTest {
                 .element(question)
                 .build();
         when(genericValidator.validate(any(Question.class), any(ValidationContext.class)))
-                .thenReturn(Collections.singletonList(error));
+                .thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);
@@ -242,7 +242,7 @@ class GenericValidatorTest {
                 .element(ruleDescription)
                 .build();
         when(genericValidator.validate(any(Description.class), any(ValidationContext.class)))
-                .thenReturn(Collections.singletonList(error));
+                .thenReturn(List.of(error));
 
         // Act
         final List<ValidationResult> validationResults = genericValidator.apply(dmnModelInstance);

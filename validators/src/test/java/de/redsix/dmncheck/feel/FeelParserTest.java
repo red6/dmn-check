@@ -5,6 +5,7 @@ import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.LiteralExpression;
 import org.jparsec.error.ParserException;
@@ -337,8 +338,8 @@ class FeelParserTest {
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
             true,
-            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)))),
-            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
+            new NaryExpression(Operator.DATE, List.of(new DateLiteral(LocalDate.of(2015, Month.NOVEMBER, 30)))),
+            new NaryExpression(Operator.DATE, List.of(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
             true);
         assertEquals(expectedExpression, expression);
     }
@@ -350,8 +351,8 @@ class FeelParserTest {
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
             true,
-            new NaryExpression(Operator.DATE, Collections.singletonList(new QuestionMark())),
-            new NaryExpression(Operator.DATE, Collections.singletonList(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
+            new NaryExpression(Operator.DATE, List.of(new QuestionMark())),
+            new NaryExpression(Operator.DATE, List.of(new DateLiteral(LocalDate.of(2015, Month.DECEMBER, 1)))),
             true);
         assertEquals(expectedExpression, expression);
     }
@@ -363,8 +364,8 @@ class FeelParserTest {
 
         final FeelExpression expectedExpression = new FeelExpression.RangeExpression(
                 true,
-                new NaryExpression(Operator.DATE_AND_TIME, Collections.singletonList(new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)))),
-                new NaryExpression(Operator.DATE_AND_TIME, Collections.singletonList(new DateTimeLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)))),
+                new NaryExpression(Operator.DATE_AND_TIME, List.of(new DateTimeLiteral(LocalDateTime.of(2015, Month.NOVEMBER, 30, 12, 0)))),
+                new NaryExpression(Operator.DATE_AND_TIME, List.of(new DateTimeLiteral(LocalDateTime.of(2015, Month.DECEMBER, 1, 12, 0)))),
                 true);
         assertEquals(expectedExpression, expression);
     }

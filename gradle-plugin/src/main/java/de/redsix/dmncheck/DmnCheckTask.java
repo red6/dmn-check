@@ -60,7 +60,7 @@ public class DmnCheckTask extends DefaultTask implements PluginBase, Verificatio
     @Override
     public List<String> getSearchPathList() {
         return Objects.requireNonNullElseGet(
-                getDmnCheckExtension().searchPathList, () -> Collections.singletonList(""));
+                getDmnCheckExtension().searchPathList, () -> List.of(""));
     }
 
     @Input

@@ -60,8 +60,7 @@ public class ValidationServer {
                                 Collections.singleton(new JSONObject()
                                         .put(
                                                 "message",
-                                                nullsafeError(ExceptionUtils.getRootCause(e)
-                                                        .getMessage()))));
+                                                nullsafeError(ExceptionUtils.getRootCauseMessage(e)))));
             } catch (Exception e) {
                 logger.error(nullsafeError(e.getMessage()));
                 return new JSONObject()

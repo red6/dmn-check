@@ -82,13 +82,13 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                             });
 
                     return doInAndOutputsMatch.match(
-                            elementStep -> Collections.singletonList(
+                            elementStep -> List.of(
                                     elementStep.element(targetDecision).build()),
                             matching -> {
                                 if (matching) {
                                     return Collections.emptyList();
                                 } else {
-                                    return Collections.singletonList(ValidationResult.init
+                                    return List.of(ValidationResult.init
                                             .message("Inputs and outputs do not match in connected decisions.")
                                             .element(sourceDecision)
                                             .build());
@@ -104,7 +104,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         if (decisionTables.size() == 1) {
             return validate.apply(decisionTables.iterator().next());
         } else {
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message("There is either no or more than one decision table.")
                     .element(decision)
                     .build());
@@ -121,7 +121,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
             final List<Set<DrgElement>> subgraphs = connectivityInspector.connectedSets().stream()
                     .filter(connectedSet -> connectedSet.size() > 1)
                     .toList();
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message("Found unconnected requirement graphs: " + subgraphs)
                     .element(drg.getDefinitions())
                     .build());

@@ -27,7 +27,7 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
         if (numberLeafNodes < 2) {
             return Collections.emptyList();
         } else {
-            return Collections.singletonList(ValidationResult.init
+            return List.of(ValidationResult.init
                     .message("Requirement graphs may only contain one leaf node")
                     .element(drg.getDefinitions())
                     .build());
