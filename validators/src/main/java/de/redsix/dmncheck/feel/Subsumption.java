@@ -4,20 +4,29 @@ import de.redsix.dmncheck.feel.FeelExpression.DateLiteral;
 import de.redsix.dmncheck.feel.FeelExpression.DateTimeLiteral;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
+import java.util.function.IntPredicate;
 
 final class Subsumption {
 
-    private interface Comparison<A extends Comparable> extends BiPredicate<A, A> {
+    private interface Comparison {
+        <T extends Comparable<? super T>> boolean test(T a, T b);
     }
 
-    static final Comparison<?> eq = (a, b) -> a.compareTo(b) == 0;
-    private static final Comparison<?> nq = (a, b) -> a.compareTo(b) != 0;
-    private static final Comparison<?> gt = (a, b) -> a.compareTo(b) > 0;
-    private static final Comparison<?> lt = (a, b) -> a.compareTo(b) < 0;
-    private static final Comparison<?> ge = (a, b) -> a.compareTo(b) == 0 || a.compareTo(b) > 0;
-    private static final Comparison<?> le = (a, b) -> a.compareTo(b) == 0 || a.compareTo(b) < 0;
+    private static Comparison compareBy(final IntPredicate result) {
+        return new Comparison() {
+            @Override
+            public <T extends Comparable<? super T>> boolean test(final T a, final T b) {
+                return result.test(a.compareTo(b));
+            }
+        };
+    }
+
+    static final Comparison eq = compareBy(r -> r == 0);
+    private static final Comparison nq = compareBy(r -> r != 0);
+    private static final Comparison gt = compareBy(r -> r > 0);
+    private static final Comparison lt = compareBy(r -> r < 0);
+    private static final Comparison ge = compareBy(r -> r >= 0);
+    private static final Comparison le = compareBy(r -> r <= 0);
 
     static Optional<Boolean> subsumes(
             final FeelExpression expression, final FeelExpression otherExpression, final Comparison comparison) {
