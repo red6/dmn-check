@@ -3,7 +3,6 @@ package de.redsix.dmncheck.validators;
 import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +31,7 @@ public class OutputValuesTypeValidator extends TypeValidator<Output> {
                                         Stream.of(output.getOutputValues())
                                                 .map(toplevelExpressionLanguage::toExpression),
                                         Stream.of(inputType))
-                                .collect(Collectors.toList()));
+                                .toList());
     }
 
     @Override

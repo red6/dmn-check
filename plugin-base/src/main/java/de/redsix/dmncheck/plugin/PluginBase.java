@@ -38,7 +38,7 @@ public interface PluginBase {
 
     default boolean validate() {
         final List<Path> searchPathObjects =
-                getSearchPathList().stream().map(Paths::get).collect(Collectors.toList());
+                getSearchPathList().stream().map(Paths::get).toList();
         final List<File> filesToTest = fetchFilesToTestFromSearchPaths(searchPathObjects);
 
         return testFiles(filesToTest);
@@ -98,7 +98,7 @@ public interface PluginBase {
                         return true;
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     default List<Path> getFileNames(final List<Path> dirs) {
@@ -112,7 +112,7 @@ public interface PluginBase {
                         throw new RuntimeException("Could not determine DMN files.", e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     default List<Validator> getValidators() {

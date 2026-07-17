@@ -74,7 +74,7 @@ public class ValidationServer {
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return ValidatorLoader.getValidators().stream()
                 .flatMap(validator -> validator.apply(dmnModelInstance).stream())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private JSONObject validationResultsToJson(final List<ValidationResult> validationResults) {
@@ -90,7 +90,7 @@ public class ValidationServer {
                                                         .getAttributeValue("id"))
                                         .put("message", vr.getMessage())
                                         .put("severity", vr.getSeverity().toString()))
-                                .collect(Collectors.toList()));
+                                .toList());
     }
 
     private DrgElement getDrgElementParent(final ModelElementInstance elementInstance) {

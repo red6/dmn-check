@@ -4,7 +4,6 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.camunda.bpm.model.dmn.instance.LiteralExpression;

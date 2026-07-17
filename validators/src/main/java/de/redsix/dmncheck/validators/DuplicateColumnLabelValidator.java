@@ -26,7 +26,7 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
         return Stream.concat(
                         validateColumn(decisionTable, decisionTable.getInputs(), Input::getLabel).stream(),
                         validateColumn(decisionTable, decisionTable.getOutputs(), Output::getLabel).stream())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private <T> List<ValidationResult> validateColumn(
@@ -41,7 +41,7 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
                         .severity(Severity.WARNING)
                         .element(decisionTable)
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

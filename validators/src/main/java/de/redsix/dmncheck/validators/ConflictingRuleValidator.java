@@ -48,13 +48,13 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                                         : Severity.ERROR)
                         .element(rules.first())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static List<String> extractInputEntriesTextContent(final Rule rule) {
         return rule.getInputEntries().stream()
                 .map(ModelElementInstance::getTextContent)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static String extractInputAndOutputEntriesTextContent(final Rule rule) {

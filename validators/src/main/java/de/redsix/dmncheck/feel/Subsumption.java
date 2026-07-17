@@ -164,16 +164,6 @@ final class Subsumption {
         };
     }
 
-    private static <R extends Comparable> Optional<Boolean> compareLiterals(
-            final R value,
-            final Function<FeelExpression, Optional<R>> extractOtherValue,
-            final FeelExpression otherExpression,
-            final Comparison comparison) {
-        return Optional.of(extractOtherValue.apply(otherExpression)
-                .map(otherValue -> comparison.test(value, otherValue))
-                .orElse(false));
-    }
-
     private static Comparison fromOperator(final Operator operator) {
         return switch (operator) {
             case LE -> le;

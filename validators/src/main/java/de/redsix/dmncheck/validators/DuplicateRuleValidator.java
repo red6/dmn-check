@@ -36,7 +36,7 @@ public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
             final List<String> rowElements = Stream.concat(
                             rule.getInputEntries().stream(), rule.getOutputEntries().stream())
                     .map(ModelElementInstance::getTextContent)
-                    .collect(Collectors.toList());
+                    .toList();
             if (!expressions.contains(rowElements)) {
                 expressions.add(rowElements);
             } else {

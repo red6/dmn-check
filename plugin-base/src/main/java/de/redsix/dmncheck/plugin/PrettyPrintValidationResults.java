@@ -39,7 +39,7 @@ public final class PrettyPrintValidationResults {
         validationResults.sort(
                 Comparator.comparing(ValidationResult::getSeverity).reversed());
 
-        for (ValidationResult validationResult : validationResults) {
+        for (final ValidationResult validationResult : validationResults) {
             final String errorMessage = "Element '" + delegate(validationResult.getElement()) + "'" + " of type '"
                     + validationResult.getElement().getElementType().getTypeName() + "'"
                     + " has the following validation result: " + validationResult.getMessage();
@@ -48,8 +48,8 @@ public final class PrettyPrintValidationResults {
     }
 
     private static String delegate(final ModelElementInstance element) {
-        if (element instanceof Rule) {
-            return prettify((Rule) element);
+        if (element instanceof final Rule rule) {
+            return prettify(rule);
         } else {
             return element.getRawTextContent().trim();
         }
@@ -63,10 +63,9 @@ public final class PrettyPrintValidationResults {
     }
 
     private static Consumer<CharSequence> getLoggingMethod(final Severity severity, final PluginLogger logger) {
-        if (severity == Severity.WARNING) {
-            return logger.warn;
-        }
-
-        return logger.error;
+        return switch (severity) {
+            case WARNING -> logger.warn;
+            case ERROR -> logger.error;
+        };
     }
 }

@@ -11,7 +11,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -76,7 +75,7 @@ class PluginBaseTest {
         final List<String> result = testee.getFileNames(List.of(temporaryFolder)).stream()
                 .map(Path::toAbsolutePath)
                 .map(Path::toString)
-                .collect(Collectors.toList());
+                .toList();
 
         MatcherAssert.assertThat(result, Matchers.containsInAnyOrder(dmnFileNames.toArray()));
     }
@@ -156,7 +155,7 @@ class PluginBaseTest {
     }
 
     @Test
-    void shouldAddExternalArtifactsFromProjectToProjectClassloader() throws IOException {
+    void shouldAddExternalArtifactsFromProjectToProjectClassloader() {
         String filename = "/foo.jar";
 
         Assertions.assertDoesNotThrow(() -> testee.loadProjectClasspath(List.of(filename)));

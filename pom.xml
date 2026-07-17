@@ -87,7 +87,8 @@
                     <version>${compiler-plugin.version}</version>
                     <configuration>
                         <release>${java.version}</release>
-
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <useIncrementalCompilation>false</useIncrementalCompilation>
                     </configuration>
                 </plugin>

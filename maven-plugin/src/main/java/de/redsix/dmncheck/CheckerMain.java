@@ -102,7 +102,7 @@ public class CheckerMain extends AbstractMojo implements PluginBase {
         List<String> classpath = project.getArtifacts().stream()
                 .map(Artifact::getFile)
                 .map(File::getAbsolutePath)
-                .collect(Collectors.toList());
+                .toList();
 
         loadProjectClasspath(classpath);
     }

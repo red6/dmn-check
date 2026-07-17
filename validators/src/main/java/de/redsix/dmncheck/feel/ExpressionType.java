@@ -33,8 +33,12 @@ public sealed interface ExpressionType {
     }
 
     static boolean isNumeric(final ExpressionType givenType) {
-        return !new TOP().equals(givenType)
-                && Arrays.asList(new INTEGER(), new LONG(), new DOUBLE()).contains(givenType);
+        return switch (givenType) {
+            case INTEGER() -> true;
+            case DOUBLE() -> true;
+            case LONG() -> true;
+            default -> false;
+        };
     }
 
     static boolean isComparable(final ExpressionType givenType) {

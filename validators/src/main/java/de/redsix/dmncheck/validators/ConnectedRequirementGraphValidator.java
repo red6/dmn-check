@@ -40,7 +40,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
         if (connectivityInspector.isConnected()) {
             return drg.edgeSet().stream()
                     .flatMap(edge -> checkInAndOuputs(drg.getEdgeSource(edge), drg.getEdgeTarget(edge)).stream())
-                    .collect(Collectors.toList());
+                    .toList();
         } else if (connectivityInspector.connectedSets().isEmpty()) {
             // Although an empty graph is not connected, we do not warn in this case as this is the responsibility of
             // another validator
@@ -131,7 +131,7 @@ public class ConnectedRequirementGraphValidator extends RequirementGraphValidato
                             .message("Element is not connected to requirement graph")
                             .element(connectedSetOfSizeOne.iterator().next())
                             .build())
-                    .collect(Collectors.toList());
+                    .toList();
         }
     }
 }

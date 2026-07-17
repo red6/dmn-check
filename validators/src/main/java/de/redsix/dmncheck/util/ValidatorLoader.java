@@ -49,7 +49,7 @@ public class ValidatorLoader {
                     .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
                     .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                     .map(ValidatorLoader::instantiateValidator)
-                    .collect(Collectors.toList());
+                    .toList();
 
             return validators;
         }

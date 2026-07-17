@@ -68,12 +68,12 @@ public final class FeelTypecheck {
                     );
                 }
             }
-            case BooleanLiteral(final var bool) -> new Right<>(new BOOLEAN());
-            case DateLiteral(final var date) -> new Right<>(new DATE());
-            case DateTimeLiteral(final var dateTime) -> new Right<>(new DATE());
-            case DoubleLiteral(final var aDouble) -> new Right<>(new DOUBLE());
-            case IntegerLiteral(final var integer) -> new Right<>(new INTEGER());
-            case StringLiteral(final var string) -> new Right<>(new STRING());
+            case BooleanLiteral(final var __) -> new Right<>(new BOOLEAN());
+            case DateLiteral(final var __) -> new Right<>(new DATE());
+            case DateTimeLiteral(final var __) -> new Right<>(new DATE());
+            case DoubleLiteral(final var __) -> new Right<>(new DOUBLE());
+            case IntegerLiteral(final var __) -> new Right<>(new INTEGER());
+            case StringLiteral(final var __) -> new Right<>(new STRING());
             case VariableLiteral(final var name) -> {
                 if (context.containsKey(name)) {
                     yield new Right<>(context.get(name));

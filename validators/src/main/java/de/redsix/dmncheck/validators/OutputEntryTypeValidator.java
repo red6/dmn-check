@@ -38,7 +38,7 @@ public class OutputEntryTypeValidator extends TypeValidator<DecisionTable> {
                                 rule,
                                 rule.getOutputEntries().stream().map(toplevelExpressionLanguage::toExpression),
                                 outputTypes.stream())))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

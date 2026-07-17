@@ -44,7 +44,7 @@ public class InputEntryTypeValidator extends TypeValidator<DecisionTable> {
                                     inputVariables,
                                     inputTypes.stream()));
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

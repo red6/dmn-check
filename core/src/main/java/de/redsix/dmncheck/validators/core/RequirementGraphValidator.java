@@ -2,7 +2,6 @@ package de.redsix.dmncheck.validators.core;
 
 import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
-import java.util.Collections;
 import java.util.List;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 

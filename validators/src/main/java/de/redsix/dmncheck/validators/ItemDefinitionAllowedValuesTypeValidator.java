@@ -4,7 +4,6 @@ import de.redsix.dmncheck.feel.ExpressionTypeParser;
 import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +53,7 @@ public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<Item
                                                 Stream.of(inputType)));
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

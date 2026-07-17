@@ -86,7 +86,7 @@ public final class FeelParser {
                     .toScanner("strict-decimal")
                     .source()
                     .map(s -> Tokens.fragment(s, Tokens.Tag.DECIMAL)),
-            Terminals.IntegerLiteral.TOKENIZER.or(Terminals.IntegerLiteral.TOKENIZER));
+            Terminals.IntegerLiteral.TOKENIZER);
 
     private static final Parser<FeelExpression> INTEGER =
             Terminals.IntegerLiteral.PARSER.map(Integer::valueOf).map(FeelExpression.IntegerLiteral::new);

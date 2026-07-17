@@ -70,7 +70,7 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
                 .filter(element -> isApplicable(element, validationContext))
                 .flatMap(this::getElementsUnderValidation)
                 .flatMap(element -> validate(element, validationContext).stream())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Stream<T> getElementsUnderValidation(final S element) {
@@ -78,7 +78,7 @@ public abstract class GenericValidator<S extends ModelElementInstance, T extends
                 element.getChildElementsByType(getClassUnderValidation()).stream();
 
         if (getClassUnderValidation().isInstance(element)) {
-            return Stream.concat(childElementsUnderValidation, Stream.of((T) element));
+            return Stream.concat(childElementsUnderValidation, Stream.of(getClassUnderValidation().cast(element)));
         } else {
             return childElementsUnderValidation;
         }
