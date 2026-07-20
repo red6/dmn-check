@@ -2,16 +2,17 @@ package de.redsix.dmncheck.validators;
 
 import de.redsix.dmncheck.feel.FeelParser;
 import de.redsix.dmncheck.result.ValidationResult;
-import de.redsix.dmncheck.util.*;
+import de.redsix.dmncheck.util.Either;
+import de.redsix.dmncheck.util.TopLevelExpressionLanguage;
+import de.redsix.dmncheck.util.Util;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
@@ -38,7 +39,7 @@ public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
     @Override
     public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
-        return !Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
+        return !EnumSet.of(HitPolicy.COLLECT, HitPolicy.RULE_ORDER).contains(decisionTable.getHitPolicy());
     }
 
     @Override

@@ -4,8 +4,8 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
                         .message("Rule is conflicting with rules "
                                 + rules.stream().skip(1).map(Rule::getId).toList())
                         .severity(
-                                Arrays.asList(HitPolicy.COLLECT, HitPolicy.RULE_ORDER)
+                                EnumSet.of(HitPolicy.COLLECT, HitPolicy.RULE_ORDER)
                                                 .contains(decisionTable.getHitPolicy())
                                         ? Severity.WARNING
                                         : Severity.ERROR)

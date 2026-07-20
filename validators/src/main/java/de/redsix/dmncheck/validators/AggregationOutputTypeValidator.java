@@ -7,8 +7,8 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.GenericValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
@@ -20,7 +20,7 @@ public class AggregationOutputTypeValidator extends GenericValidator<DecisionTab
     @Override
     public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {
         return Objects.nonNull(decisionTable.getAggregation())
-                && Arrays.asList(BuiltinAggregator.MAX, BuiltinAggregator.MIN, BuiltinAggregator.SUM)
+                && EnumSet.of(BuiltinAggregator.MAX, BuiltinAggregator.MIN, BuiltinAggregator.SUM)
                         .contains(decisionTable.getAggregation());
     }
 

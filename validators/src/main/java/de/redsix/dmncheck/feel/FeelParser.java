@@ -10,7 +10,7 @@ import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.util.Expression;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Set;
 import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
 import org.jparsec.OperatorTable;
 import org.jparsec.Parser;
@@ -199,7 +199,7 @@ public final class FeelParser {
     }
 
     private static boolean expressionLanguageIsFeel(final String expressionLanguage) {
-        return Arrays.asList(DmnModelConstants.FEEL_NS, DmnModelConstants.FEEL12_NS, DmnModelConstants.FEEL13_NS)
+        return Set.of(DmnModelConstants.FEEL_NS, DmnModelConstants.FEEL12_NS, DmnModelConstants.FEEL13_NS)
                         .contains(expressionLanguage)
                 || expressionLanguage.equalsIgnoreCase("feel");
     }

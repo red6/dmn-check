@@ -1,5 +1,6 @@
 package de.redsix.dmncheck.feel;
 
+import java.util.Set;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public sealed interface ExpressionType {
 
     static boolean isComparable(final ExpressionType givenType) {
         return !new TOP().equals(givenType)
-            && Arrays.asList(new INTEGER(), new LONG(), new DOUBLE(), new DATE()).contains(givenType);
+            && Set.of(new INTEGER(), new LONG(), new DOUBLE(), new DATE()).contains(givenType);
     }
 
     default boolean isSubtypeOf(final ExpressionType supertype) {

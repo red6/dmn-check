@@ -7,6 +7,8 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
@@ -99,9 +101,9 @@ public abstract class TypeValidator<T extends ModelElementInstance> extends Simp
     private Either<ValidationResult.Builder.ElementStep, Class<?>> doesStringBelongToEnum(
             final String className, final String stringValue, final Class<? extends Enum<?>> clazz) {
         final Enum<?>[] enumConstants = clazz.getEnumConstants();
-        final List<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants)
+        final Set<String> enumConstantNames = Arrays.stream(enumConstants == null ? new Enum<?>[] {} : enumConstants)
                 .map(Enum::name)
-                .toList();
+                .collect(Collectors.toSet());
         final String value = stringValue.substring(1, stringValue.length() - 1);
 
         if (enumConstantNames.contains(value)) {

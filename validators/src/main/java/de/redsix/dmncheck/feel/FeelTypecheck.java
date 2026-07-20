@@ -25,13 +25,12 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.result.ValidationResult.Builder.ElementStep;
 import de.redsix.dmncheck.result.ValidationResult.Builder.SeverityStep;
 import de.redsix.dmncheck.util.Either;
-
 import de.redsix.dmncheck.util.Either.Left;
 import de.redsix.dmncheck.util.Either.Right;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public final class FeelTypecheck {
 
@@ -135,7 +134,7 @@ public final class FeelTypecheck {
 
     private static Either<ElementStep, ExpressionType> typecheckRangeExpression(
             final Context context, final FeelExpression lowerBound, final FeelExpression upperBound) {
-        final List<ExpressionType> allowedTypes = Arrays.asList(
+        final Set<ExpressionType> allowedTypes = Set.of(
                 new INTEGER(), new DOUBLE(), new LONG(), new DATE());
         return typecheck(context, lowerBound)
                 .bind(lowerBoundType -> typecheck(context, upperBound)
