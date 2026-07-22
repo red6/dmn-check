@@ -1,6 +1,5 @@
 package de.redsix.dmncheck.plugin;
 
-import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.util.ValidatorLoader;
@@ -15,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +32,9 @@ public interface PluginBase {
 
     String[] getValidatorClasses();
 
-    boolean failOnWarning();
+    default boolean failOnWarning() {
+        return false;
+    }
 
     default boolean validate() {
         final List<Path> searchPathObjects =
@@ -62,15 +62,8 @@ public interface PluginBase {
 
             if (!validationResults.isEmpty()) {
                 PrettyPrintValidationResults.logPrettified(file, validationResults, getPluginLogger());
-
-                List<Severity> errors = new ArrayList<>();
-                errors.add(Severity.ERROR);
-
-                if (failOnWarning()) {
-                    errors.add(Severity.WARNING);
-                }
-
-                encounteredError = validationResults.stream().anyMatch(result -> errors.contains(result.getSeverity()));
+                encounteredError = validationResults.stream()
+                    .anyMatch(result -> result.getSeverity().isError() || failOnWarning());
             }
         } catch (Exception e) {
             getPluginLogger().error.accept(Optional.ofNullable(e.getMessage()).orElse("Unknown Error"));
