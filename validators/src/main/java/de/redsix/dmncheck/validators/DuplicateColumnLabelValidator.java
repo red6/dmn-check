@@ -5,9 +5,9 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,17 +34,20 @@ public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable
             final DecisionTable decisionTable, final Collection<T> columns, final Function<T, String> getLabel) {
         final List<String> labels = columns.stream().map(getLabel).toList();
 
-        return labels.stream()
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-            .entrySet().stream()
+        final Map<String, Long> labelCounts =
+                labels.stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        return labelCounts.entrySet().stream()
             .filter(e -> e.getValue() > 1)
             .map(Map.Entry::getKey)
-             .map(label -> ValidationResult.init
-                     .message("Column with label '" + label + "' is used more than once")
-                     .severity(Severity.WARNING)
-                     .element(decisionTable)
-                     .build())
-             .toList();
+            .map(label -> ValidationResult.init
+                    .message("Column with label '" + label + "' is used more than once")
+                    .severity(Severity.WARNING)
+                    .element(decisionTable)
+                    .build())
+            .toList();
     }
 
     @Override
