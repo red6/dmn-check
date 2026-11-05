@@ -11,7 +11,7 @@ performs various static analyses to detect inconsistencies and bugs in your deci
 You can use `dmn-check` in six ways.
 
 * As a [Maven](https://maven.apache.org/) or [Gradle](https://gradle.org/) plugin that can be integrated into your build
-  process and continues integration to prevent bugs from slipping into your artifacts.
+  process and continuous integration to prevent bugs from slipping into your artifacts.
 * Integrated into the [Camunda Modeler](https://camunda.com/products/modeler/) via the dmn-check plugin.
 * Integrated into your custom tools by using the artifacts [dmn-check-core](https://search.maven.org/artifact/de.redsix/dmn-check-core) or
   [dmn-check-validators](https://search.maven.org/search?q=a:dmn-check-validators).
@@ -43,13 +43,13 @@ might not work for different DMN implementations.
 
 ### Usage
 
-`dmn-check` can be used either as a normal Maven plugin inside your projects `pom.xml` or as a standalone program.
+`dmn-check` can be used either as a normal Maven plugin inside your project's `pom.xml` or as a standalone program.
 
 #### Configuration in POM
 
 The following example shows the basic configuration of the plugin:
 
-	        <plugin>
+            <plugin>
                 <groupId>de.redsix</groupId>
                 <artifactId>dmn-check-maven-plugin</artifactId>
                 <version>...</version>
@@ -91,7 +91,7 @@ validation errors with Warning severity.
 
 #### Standalone Usage
 
-To use `dmn-check` without or outside a Maven project, you can invoke it in the following way
+To use `dmn-check` without or outside a Maven project, you can invoke it in the following way:
 
         mvn de.redsix:dmn-check-maven-plugin:check-dmn
 
@@ -99,13 +99,13 @@ To use `dmn-check` without or outside a Maven project, you can invoke it in the 
 
 ### Prerequisites
 
-This plugin requires Java 11 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
+This plugin requires Java 21 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
 might not work for different DMN implementations.
 
 ## Integrated in dmnmgr
 
-Dmnmgr is _a toolkit incoperating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams.
-It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. you need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
+Dmnmgr is _a toolkit incorporating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams_.
+It ships with a `dmn-check` integration and visualizes the warnings and errors in the graphical representation of the DMN model. You need to install the [dmnmgr-client](https://github.com/davidibl/dmnmgr-client) and [dmnmgr-server](https://github.com/davidibl/dmnmgr-server) to use it.
 
 ## As a Docker container
 
@@ -114,15 +114,15 @@ A Docker image containing `dmn-check` is available from the GitHub Container Reg
     docker pull ghcr.io/red6/dmn-check:latest
 
 If you want to use `docker run` to execute `dmn-check` you have to mount the directory containing the DMN files into
-the container and set the search path appropriately, e.g.
+the container and set the search path appropriately, e.g.,
 
     docker run -v ~/dmn-files:/dmn-files ghcr.io/red6/dmn-check:latest --searchPath=/dmn-files
 
-If you want to use the Docker image in a Gitlab pipeline, you have to overwrite the entrypoint and call `dmn-check` directly.
-In the following example of a Gitlab Pipeline, we specify the project classpath as well to make the enum validation possible.
+If you want to use the Docker image in a GitLab pipeline, you have to overwrite the entrypoint and call `dmn-check` directly.
+In the following example of a GitLab pipeline, we specify the project classpath as well to make the enum validation possible.
 
     variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+      MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
     
     default:
       artifacts:
@@ -134,8 +134,8 @@ In the following example of a Gitlab Pipeline, we specify the project classpath 
       - analysis
     
     image:
-    name: ghcr.io/red6/dmn-check:latest
-    entrypoint: [ "" ]
+      name: ghcr.io/red6/dmn-check:latest
+      entrypoint: [ "" ]
     
     create-classpath-for-dmn-check:
       image: adoptopenjdk/maven-openjdk11
@@ -171,7 +171,7 @@ and thus an error.
 
 **Definition**: A rule is a duplicate of another rule if and only if all inputs and outputs of those rules are identical.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT`.
+`dmn-check` will report duplicate rules for all decision tables, except for those with hit policy `COLLECT`.
 
 ### Conflicting Rules
 
@@ -185,13 +185,13 @@ Conflicting rules are somewhat similar to duplicate rules. Consider the followin
 |  4  | "Winter"      | <= 8                  | "Stew"      |
 
 We look again at rules two and four. This time, all their inputs are identical, but they differ in the output. This is arguably worse than a
-duplicate rule, since it may produce different results depending on the evaluation order of the decision table. Assuming that the runtime
+duplicate rule, since it may produce different results depending on the evaluation order of the decision table, assuming that the runtime
 does not detect those inconsistencies.
 
 **Definition**: Rule `r` is in conflict with rule `s` if and only if all inputs of rules `r` and `s` are identical and if they differ
-in at lease one output.
+in at least one output.
 
-`dmn-check` will report duplicate rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
+`dmn-check` will report conflicting rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
 ### Shadowed Rules
 
@@ -205,22 +205,22 @@ Some rules prevent others from even being considered. Have a look at the followi
 |  4  | "Spring"      | [5..8]                | "Steak"     |
 
 This example contains no duplicate rules and no conflicting rules. However, all inputs of rule three are empty (represented with a dash in
-this example). As empty inputs match everything and since we assume hit policy `FIRST` rule four will never match as rule three matches for
-all possible inputs. Therefore, stew is served to the guests of 5 to 8 in Spring. Assuming that each rule serves a purpose, shadowed rules are
+this example). As empty inputs match everything and since we assume hit policy `FIRST`, rule four will never match as rule three matches for
+all possible inputs. Therefore, stew is served to groups of 5 to 8 guests in spring. Assuming that each rule serves a purpose, shadowed rules are
 always an error as they will never be matched.
 
-**Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` matches at least for all values for which the inputs of
+**Definition**: Rule `r` shadows rule `s` if and only if the inputs of rule `r` match at least for all values for which the inputs of
 rule `s` match.
 
-`dmn-check` will report duplicate rules for all decision tables except for those with hit policy `COLLECT` and `RULE_ORDER`.
+`dmn-check` will report shadowed rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
 ### Types of Expressions
 
 DMN offers a rich expression language called [Friendly Enough Expression Language](https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/) (FEEL) that can be used to describe the conditions for the input entries. However, as with most
-expression languages, not all syntactically possible expressions are valid (have semantic). `dmn-check` integrates a type checker for the
+expression languages, not all syntactically possible expressions are valid (have a meaning). `dmn-check` integrates a type checker for the
 FEEL expression language that ensures that a decision table contains only well-typed expressions.
 
-An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at lease in FEEL) not a
+An example of an ill-typed expression is `[1..true]` which would describe the range between `1` and `true` which is (at least in FEEL) not a
 valid expression. In contrast, `[1..9]` is well-typed and describes the numbers from 1 to 9. 
 
 | FEEL-Expression  |  Type   |
@@ -232,16 +232,16 @@ valid expression. In contrast, `[1..9]` is well-typed and describes the numbers 
 | > 5              | integer |
 | > true           | ✘       |
 
-Of course the type declaration is validated as well.
+Of course, the type declaration is validated as well.
 
 ### Correct use of Enumerations
 
 Decision-making often involves a fixed set of values (e.g., a list of supported currencies), and therefore those values are used in DMN
-decision tables. Those values are often implemented in the form of Java enums. `dmn-check` also to specify the fully qualified class name of an
+decision tables. Those values are often implemented in the form of Java enums. `dmn-check` allows you to specify the fully qualified class name of an
 enum in the type declaration of the input- / output-column and checks the values in the DMN decision table against the enum implementation.
 
-By default `dmn-check` uses the project dependencies to resolve the enums. As this is not possible in the Maven 
-standalone mode, you can specify the classpath that is used to resolve the enums
+By default, `dmn-check` uses the project dependencies to resolve the enums. As this is not possible in the Maven 
+standalone mode, you can specify the classpath that is used to resolve the enums:
 
     mvn de.redsix:dmn-check-maven-plugin:check-dmn -Dclasspath=foo.jar,bar.jar
 
@@ -278,33 +278,33 @@ aggregations are only used when hit policy collect is used.
 
 ### Missing Ids and Names
 
-Usually you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring, it
+Usually, you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring, it
 might happen that an id or a name is lost. Those errors usually stay unnoticed for a long time. Depending on the scenario, 
 missing ids or names might break your decision model or make error analysis tricky.
 
 `dmn-check` validates that the following DMN elements always have an id and a name:
 - Decision
-- Definition
+- Definitions
 - InputData
 - ItemDefinition
 - KnowledgeSource
 
 ### Allowed Values from `ItemDefinition`s 
 
-`ItemDefinition`s are DMNs way to express enumeration. In the definition of an `ItemDefinition` you declare which
-values are allowed. Currently, we only validate if the expressions from an `ItemDefintion` is well-typed.
+`ItemDefinition`s are DMN's way to express enumerations. In the definition of an `ItemDefinition` you declare which
+values are allowed. Currently, we only validate whether the expressions of an `ItemDefinition` are well-typed.
 
 ## Related work
 
-When we started to work on `dmn-check` we were not are of analysis tools for DMN files that suited our needs and worked in our Camunda flavored
-environment. Since then DMN became more popular, and other tools started to provide some analysis capabilities as well. If you want to know how
-`dmn-check` compares to other tools, you can read a comparision in [GCD](#GCD).
+When we started to work on `dmn-check` we were not aware of any analysis tools for DMN files that suited our needs and worked in our Camunda flavored
+environment. Since then, DMN has become more popular, and other tools started to provide some analysis capabilities as well. If you want to know how
+`dmn-check` compares to other tools, you can read a comparison in [GCD](#GCD).
 
 ### A Tool for the Analysis of DMN Decision Tables
 
 Ülari Laurson and Fabrizio Maria Maggi extended the `dmn-js` editing toolkit of Camunda with analysis capabilities and published it
 at [github.com/ulaurson/dmn-js](https://github.com/ulaurson/dmn-js). The tool is able to detect syntax and type errors and to identify
-overlapping and missing rules. It also is able to simplify decision tables by merging rules. In the demo paper [LM16](#LM16) they describe
+overlapping and missing rules. It is also able to simplify decision tables by merging rules. In the demo paper [LM16](#LM16) they describe
 the tool. Further details about the analyses performed by the tool are published in [CDL+16](#CDL+16).
 
 ## References
@@ -327,6 +327,6 @@ Enterprise Modelling and Information Systems Architectures, 13, pp.2-1.
 <b id="HDSV17">HDSV17</b> Hasic, F., De Smedt, J. and Vanthienen, J., 2017. Towards assessing the theoretical complexity of the decision
 model and notation (dmn). Enterprise, Business-Process and Information Systems Modeling. Springer International Publishing.
 
-<b id="GCD">GCD</b> Grohé, C., Corea, C. and Delfmann P, 2021. [DMN 1.0 Verification Capabilities: An Analysis of Current Tool Support](https://www.researchgate.net/publication/353906682_DMN_10_Verification_Capabilities_An_Analysis_of_Current_Tool_Support). Business Process Management Forum, BPM Forum 2021, Rome, Italy.
+<b id="GCD">GCD</b> Grohé, C., Corea, C. and Delfmann, P., 2021. [DMN 1.0 Verification Capabilities: An Analysis of Current Tool Support](https://www.researchgate.net/publication/353906682_DMN_10_Verification_Capabilities_An_Analysis_of_Current_Tool_Support). Business Process Management Forum, BPM Forum 2021, Rome, Italy.
 
-<b id="VPVCG"></b> Valencia-Parra, A., Parody, L., Varela-Vaca, A., Caballero, I., and Gómez-López M., 2020. DMN4DQ: When data quality meets DMN. Journal 'Decision Support Systems'.
+<b id="VPVCG">VPVCG</b> Valencia-Parra, A., Parody, L., Varela-Vaca, A., Caballero, I., and Gómez-López, M., 2020. DMN4DQ: When data quality meets DMN. Journal 'Decision Support Systems'.
