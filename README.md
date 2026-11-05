@@ -38,7 +38,7 @@ skimming the specification.
 
 ### Prerequisites
 
-This plugin requires Java 21 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and
+This plugin requires Java 25 or later and Apache Maven 3 or later. Some analyses are tailored towards the Camunda DMN implementation and
 might not work for different DMN implementations.
 
 ### Usage
@@ -99,7 +99,7 @@ To use `dmn-check` without or outside a Maven project, you can invoke it in the 
 
 ### Prerequisites
 
-This plugin requires Java 21 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
+This plugin requires Java 25 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
 might not work for different DMN implementations.
 
 ## Integrated in dmnmgr

@@ -24,7 +24,7 @@ jobs:
         uses: pSub/jib-container-publish.yml@6048132e3c43e6257bfe1acdce328532c0c86807 # main
         with:
           PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          java-version: 21
+          java-version: 25
           java-distribution: temurin
           module: cli
           main-class: de.redsix.dmncheck.cli.Main

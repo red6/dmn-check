@@ -1,3 +1,9 @@
+## 1.5.0 (unreleased)
+
+Breaking changes:
+
+ - Java 25 is now required to run dmn-check, including the Maven and Gradle plugins
+
 ## 1.4.0 (2026-04-06)
 
 Features:

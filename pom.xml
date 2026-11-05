@@ -58,7 +58,7 @@
     </scm>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 
