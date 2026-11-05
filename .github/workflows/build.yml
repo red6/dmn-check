@@ -77,5 +77,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+      # Gradle resolves dmn-check-plugin-base from mavenLocal, which is empty on a fresh runner
+      - name: Install Maven artifacts
+        run: mvn -B install -DskipTests
       - name: Build with Gradle
         run: cd gradle-plugin && ./gradlew build
