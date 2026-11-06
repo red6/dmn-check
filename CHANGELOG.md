@@ -4,6 +4,10 @@ Breaking changes:
 
  - Java 25 is now required to run dmn-check, including the Maven and Gradle plugins
 
+Features:
+
+ - Validate that input and output entries only use the allowed values of their `ItemDefinition` (#85)
+
 ## 1.4.0 (2026-04-06)
 
 Features:

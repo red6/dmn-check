@@ -292,7 +292,10 @@ missing ids or names might break your decision model or make error analysis tric
 ### Allowed Values from `ItemDefinition`s 
 
 `ItemDefinition`s are DMN's way to express enumerations. In the definition of an `ItemDefinition` you declare which
-values are allowed. Currently, we only validate whether the expressions of an `ItemDefinition` are well-typed.
+values are allowed. `dmn-check` validates that the allowed values are well-typed and that input and output entries
+of columns, whose type is an `ItemDefinition`, only use allowed values. Only entries that are literals, e.g., `"Fall"`
+or `5`, are checked against allowed values that are literals, ranges or negations, e.g., `"Fall", "Winter"`, `[1..10]`
+or `not("Summer")`.
 
 ## Related work
 
