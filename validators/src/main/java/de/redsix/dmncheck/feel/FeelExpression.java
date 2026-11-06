@@ -50,6 +50,10 @@ public sealed interface FeelExpression {
         return Subsumption.subsumes(this, expression, Subsumption.eq);
     }
 
+    default Optional<Boolean> overlaps(final FeelExpression expression) {
+        return Overlap.overlaps(this, expression);
+    }
+
     default boolean containsVariable(final String name) {
         return switch (this) {
             case Empty() -> false;
