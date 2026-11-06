@@ -4,6 +4,10 @@ Breaking changes:
 
  - Java 25 is now required to run dmn-check, including the Maven and Gradle plugins
 
+Features:
+
+ - Report overlapping rules in decision tables with hit policy `UNIQUE` (#78)
+
 ## 1.4.0 (2026-04-06)
 
 Features:

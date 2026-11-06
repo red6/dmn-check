@@ -40,7 +40,7 @@
           <text>"Spring"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1bbbmvu">
-          <text>&lt;= 7</text>
+          <text>&lt;= 4</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1bewepn">
           <text>"Dry Aged Gourmet Steak"</text>
