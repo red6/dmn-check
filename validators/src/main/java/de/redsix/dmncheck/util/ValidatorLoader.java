@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,7 +36,17 @@ public class ValidatorLoader {
 
         inputParameterHash = Objects.hash(Arrays.hashCode(packages), Arrays.hashCode(classes));
 
+        // ClassGraph 6 neither scans nor loads classes by default, so we use the class loaders ClassGraph 4 used:
+        // the context class loader and our own one, e.g., the plugin class loader in Maven and Gradle
+        final List<ClassLoader> classLoaders = Stream.of(
+                        Thread.currentThread().getContextClassLoader(), ValidatorLoader.class.getClassLoader())
+                .<ClassLoader>flatMap(Stream::ofNullable)
+                .distinct()
+                .toList();
+
         try (ScanResult scanResult = new ClassGraph()
+                .enableClassInfo()
+                .enableClassLoaders(classLoaders.toArray(ClassLoader[]::new))
                 .acceptClasses(Validator.class.getName())
                 .acceptPackages(VALIDATOR_CORE_PACKAGE)
                 .acceptPackagesNonRecursive(
@@ -43,9 +54,10 @@ public class ValidatorLoader {
                 .acceptClasses(classes == null ? new String[] {} : classes)
                 .scan()) {
 
-            final ClassInfoList allValidatorClasses = scanResult.getClassesImplementing(Validator.class.getName());
+            final ClassInfoList allValidatorClasses = scanResult.getAllClassesImplementing(Validator.class);
 
-            validators = allValidatorClasses.loadClasses(Validator.class).stream()
+            validators = allValidatorClasses.getNames().stream()
+                    .map(className -> loadValidatorClass(className, classLoaders))
                     .filter(validatorClass -> !Modifier.isAbstract(validatorClass.getModifiers()))
                     .filter(validatorClass -> !Modifier.isInterface(validatorClass.getModifiers()))
                     .map(ValidatorLoader::instantiateValidator)
@@ -53,6 +65,18 @@ public class ValidatorLoader {
 
             return validators;
         }
+    }
+
+    private static Class<? extends Validator> loadValidatorClass(
+            final String className, final List<ClassLoader> classLoaders) {
+        for (final ClassLoader classLoader : classLoaders) {
+            try {
+                return Class.forName(className, false, classLoader).asSubclass(Validator.class);
+            } catch (ClassNotFoundException e) {
+                // Try the next class loader
+            }
+        }
+        throw new RuntimeException("Failed to load validator " + className);
     }
 
     private static Validator instantiateValidator(final Class<? extends Validator> validator) {
