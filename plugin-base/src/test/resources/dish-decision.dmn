@@ -30,7 +30,7 @@
       <rule id="row-950612891-3">
         <inputEntry id="UnaryTests_1vn9t5c">        <text><![CDATA["Spring"]]></text>
 </inputEntry>
-        <inputEntry id="UnaryTests_1bbbmvu">        <text><![CDATA[<= 7]]></text>
+        <inputEntry id="UnaryTests_1bbbmvu">        <text><![CDATA[<= 4]]></text>
 </inputEntry>
         <outputEntry id="LiteralExpression_1bewepn">        <text><![CDATA["Dry Aged Gourmet Steak"]]></text>
 </outputEntry>
