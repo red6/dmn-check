@@ -6,11 +6,17 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.bpm.model.dmn.instance.ItemDefinition;
 
 public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<ItemDefinition> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#allowed-values-from-itemdefinitions");
+    }
 
     @Override
     public boolean isApplicable(final ItemDefinition itemDefinition, final ValidationContext validationContext) {

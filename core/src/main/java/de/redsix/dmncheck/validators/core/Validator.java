@@ -2,6 +2,7 @@ package de.redsix.dmncheck.validators.core;
 
 import de.redsix.dmncheck.result.ValidationResult;
 import java.util.List;
+import java.util.Optional;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 
 /**
@@ -18,4 +19,25 @@ public interface Validator {
      * @return A possibly empty list of validation results
      */
     List<ValidationResult> apply(final DmnModelInstance dmnModelInstance);
+
+    /**
+     * Link to a detailed description of the problems reported by this validator and how to solve them.
+     *
+     * @return URL of the documentation, if available
+     */
+    default Optional<String> documentation() {
+        return Optional.empty();
+    }
+
+    /**
+     * Validates the given DMN model instance and attaches the documentation of this validator to the results.
+     *
+     * @param dmnModelInstance DMN model instance used for validation
+     * @return A possibly empty list of validation results
+     */
+    default List<ValidationResult> applyWithDocumentation(final DmnModelInstance dmnModelInstance) {
+        return apply(dmnModelInstance).stream()
+                .map(result -> documentation().map(result::withDocumentation).orElse(result))
+                .toList();
+    }
 }

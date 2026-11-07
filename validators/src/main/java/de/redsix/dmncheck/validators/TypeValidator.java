@@ -21,6 +21,11 @@ import java.util.stream.Stream;
 
 public abstract class TypeValidator<T extends ModelElementInstance> extends SimpleValidator<T> {
 
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#types-of-expressions");
+    }
+
     TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
 
     abstract String errorMessage();

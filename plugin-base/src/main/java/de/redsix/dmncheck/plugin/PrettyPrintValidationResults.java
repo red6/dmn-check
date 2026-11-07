@@ -42,7 +42,8 @@ public final class PrettyPrintValidationResults {
         for (final ValidationResult validationResult : validationResults) {
             final String errorMessage = "Element '" + delegate(validationResult.getElement()) + "'" + " of type '"
                     + validationResult.getElement().getElementType().getTypeName() + "'"
-                    + " has the following validation result: " + validationResult.getMessage();
+                    + " has the following validation result: " + validationResult.getMessage()
+                    + validationResult.getDocumentation().map(url -> " (see " + url + ")").orElse("");
             getLoggingMethod(validationResult.getSeverity(), log).accept(errorMessage);
         }
     }

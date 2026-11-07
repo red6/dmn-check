@@ -73,7 +73,7 @@ public class ValidationServer {
 
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return ValidatorLoader.getValidators().stream()
-                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
+                .flatMap(validator -> validator.applyWithDocumentation(dmnModelInstance).stream())
                 .toList();
     }
 
@@ -82,14 +82,18 @@ public class ValidationServer {
                 .put(
                         "items",
                         validationResults.stream()
-                                .map(vr -> new JSONObject()
-                                        .put("id", vr.getElement().getAttributeValue("id"))
-                                        .put(
-                                                "drgElementId",
-                                                getDrgElementParent(vr.getElement())
-                                                        .getAttributeValue("id"))
-                                        .put("message", vr.getMessage())
-                                        .put("severity", vr.getSeverity().toString()))
+                                .map(vr -> {
+                                    final JSONObject item = new JSONObject()
+                                            .put("id", vr.getElement().getAttributeValue("id"))
+                                            .put(
+                                                    "drgElementId",
+                                                    getDrgElementParent(vr.getElement())
+                                                            .getAttributeValue("id"))
+                                            .put("message", vr.getMessage())
+                                            .put("severity", vr.getSeverity().toString());
+                                    vr.getDocumentation().ifPresent(url -> item.put("documentation", url));
+                                    return item;
+                                })
                                 .toList());
     }
 

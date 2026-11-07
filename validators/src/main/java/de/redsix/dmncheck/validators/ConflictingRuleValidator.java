@@ -7,6 +7,7 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +17,11 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class ConflictingRuleValidator extends SimpleValidator<DecisionTable> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#conflicting-rules");
+    }
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {

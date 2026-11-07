@@ -11,11 +11,17 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.camunda.bpm.model.dmn.BuiltinAggregator;
 import org.camunda.bpm.model.dmn.instance.DecisionTable;
 import org.camunda.bpm.model.dmn.instance.Output;
 
 public class AggregationOutputTypeValidator extends GenericValidator<DecisionTable, Output> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#correct-use-of-aggregations");
+    }
 
     @Override
     public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {

@@ -153,7 +153,8 @@ In the following example of a GitLab pipeline, we specify the project classpath 
 
 ## Validations
 
-The following subsections describe the available validations in detail. The DMN decision tables used in this section are derived from an
+The following subsections describe the available validations in detail and how to fix the reported problems. Every
+error and warning reported by `dmn-check` links to the corresponding subsection. The DMN decision tables used in this section are derived from an
 example on [camunda.org](https://camunda.org/).
 
 ### Duplicate Rules
@@ -174,6 +175,8 @@ and thus an error.
 
 `dmn-check` will report duplicate rules for all decision tables, except for those with hit policy `COLLECT`.
 
+**How to fix**: Delete one of the duplicate rules. If both rules are needed, e.g., to count matches, use hit policy `COLLECT`.
+
 ### Conflicting Rules
 
 Conflicting rules are somewhat similar to duplicate rules. Consider the following example with hit policy `UNIQUE`:
@@ -193,6 +196,9 @@ does not detect those inconsistencies.
 in at least one output.
 
 `dmn-check` will report conflicting rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
+
+**How to fix**: Decide which output is correct and delete the other rule, or refine the inputs so that the rules no
+longer match the same values. If all outputs are intended, use hit policy `COLLECT` or `RULE_ORDER`.
 
 ### Shadowed Rules
 
@@ -215,6 +221,9 @@ rule `s` match.
 
 `dmn-check` will report shadowed rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
 
+**How to fix**: Move the more specific rule above the more general one, or delete it if it is not needed. Rules with
+only empty inputs (catch-all rules) should be the last rule of a decision table with hit policy `FIRST`.
+
 ### Overlapping Rules
 
 The hit policy `UNIQUE`, which is the default hit policy, requires that at most one rule matches. Consider the following
@@ -233,6 +242,9 @@ both rules match.
 
 `dmn-check` will report overlapping rules for decision tables with hit policy `UNIQUE`. Rules whose overlap cannot be
 decided, e.g., because their inputs refer to variables, are not reported.
+
+**How to fix**: Adjust the inputs so that the rules match disjoint values, e.g., change `<= 7` to `< 5` in the example above.
+If overlapping rules are intended, choose a hit policy that allows multiple matches, e.g., `FIRST`, `PRIORITY` or `COLLECT`.
 
 ### Types of Expressions
 
@@ -254,6 +266,11 @@ valid expression. In contrast, `[1..9]` is well-typed and describes the numbers 
 
 Of course, the type declaration is validated as well.
 
+**How to fix**: Make sure that every input and output column declares a type (`string`, `boolean`, `integer`, `long`,
+`double`, `date` or the fully qualified name of an enum) and that all entries and predefined values of the column are expressions of
+that type. For example, use `"Spring"` instead of `Spring` in a `string` column. The type `TOP` is used internally by
+`dmn-check` and must not be declared.
+
 ### Correct use of Enumerations
 
 Decision-making often involves a fixed set of values (e.g., a list of supported currencies), and therefore those values are used in DMN
@@ -264,6 +281,9 @@ By default, `dmn-check` uses the project dependencies to resolve the enums. As t
 standalone mode, you can specify the classpath that is used to resolve the enums:
 
     mvn de.redsix:dmn-check-maven-plugin:check-dmn -Dclasspath=foo.jar,bar.jar
+
+**How to fix**: Use only values that are constants of the enum. If `dmn-check` reports that a class is not found or is no
+enum, check the fully qualified class name in the type declaration and make sure that the class is on the classpath.
 
 ### Correctly Connected Requirement Graphs
 
@@ -288,6 +308,10 @@ input `Lunar phase` connected to the decision table.
       z(Guests with children)-->Beverages;
 ```
 
+**How to fix**: Connect every input data, knowledge source and decision to the graph or remove it. Make sure that the
+inputs of a decision match the outputs of the decisions it requires, and that exactly one decision is not required by
+another decision. In the example above, replace the input `Lunar phase` with `Season`.
+
 ### Correct use of Aggregations
 
 The DMN standard allows the aggregation of values for hit policy collect. For example, you can compute the sum of all
@@ -295,6 +319,9 @@ matching rows in a decision table. You could use this feature to calculate a cre
 
 We ensure that those aggregations are only applied to columns with a numeric type. In addition, we validate that
 aggregations are only used when hit policy collect is used.
+
+**How to fix**: Either change the hit policy to `COLLECT` or remove the aggregation. For `SUM`, `MIN` and `MAX` declare
+a numeric output type (`integer`, `long` or `double`).
 
 ### Missing Ids and Names
 
@@ -309,6 +336,8 @@ missing ids or names might break your decision model or make error analysis tric
 - ItemDefinition
 - KnowledgeSource
 
+**How to fix**: Add the missing id or name to the element, either in the Camunda Modeler or in the XML of the DMN file.
+
 ### Allowed Values from `ItemDefinition`s 
 
 `ItemDefinition`s are DMN's way to express enumerations. In the definition of an `ItemDefinition` you declare which
@@ -316,6 +345,24 @@ values are allowed. `dmn-check` validates that the allowed values are well-typed
 of columns, whose type is an `ItemDefinition`, only use allowed values. Only entries that are literals, e.g., `"Fall"`
 or `5`, are checked against allowed values that are literals, ranges or negations, e.g., `"Fall", "Winter"`, `[1..10]`
 or `not("Summer")`.
+
+**How to fix**: Declare a type for the `ItemDefinition` and make sure that all allowed values are expressions of that type.
+If an entry uses a value that is not allowed, either correct the entry or add the value to the allowed values of the
+`ItemDefinition`.
+
+### Duplicate Column Labels
+
+Each column of a decision table should have a unique label. Otherwise, it is easy to confuse the columns while
+editing the decision table.
+
+**How to fix**: Rename one of the columns.
+
+### Missing Decisions
+
+A DMN file without any decision does not decide anything. Most likely, the decisions were deleted accidentally or the
+file is not used at all.
+
+**How to fix**: Add a decision or delete the DMN file.
 
 ## Related work
 

@@ -1,6 +1,8 @@
 package de.redsix.dmncheck.result;
 
+import java.util.Optional;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A validation result consists of the following:
@@ -16,11 +18,31 @@ public class ValidationResult {
     private final Severity severity;
     private final String message;
     private final ModelElementInstance element;
+    private final @Nullable String documentation;
 
     private ValidationResult(final String message, final ModelElementInstance element, final Severity severity) {
+        this(message, element, severity, null);
+    }
+
+    private ValidationResult(
+            final String message,
+            final ModelElementInstance element,
+            final Severity severity,
+            final @Nullable String documentation) {
         this.message = message;
         this.element = element;
         this.severity = severity;
+        this.documentation = documentation;
+    }
+
+    /**
+     * Returns a copy of this validation result that links to the given documentation.
+     *
+     * @param documentation URL of a detailed description of the result and possible solutions
+     * @return validation result with documentation
+     */
+    public ValidationResult withDocumentation(final String documentation) {
+        return new ValidationResult(message, element, severity, documentation);
     }
 
     public Severity getSeverity() {
@@ -33,6 +55,10 @@ public class ValidationResult {
 
     public ModelElementInstance getElement() {
         return element;
+    }
+
+    public Optional<String> getDocumentation() {
+        return Optional.ofNullable(documentation);
     }
 
     @Override

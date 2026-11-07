@@ -22,6 +22,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /** Checks that input and output entries only use the allowed values of the item definition of their column. */
 public class AllowedValuesValidator extends SimpleValidator<DecisionTable> {
 
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#allowed-values-from-itemdefinitions");
+    }
+
     private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
 
     @Override

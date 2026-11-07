@@ -8,6 +8,7 @@ Features:
 
  - Validate that input and output entries only use the allowed values of their `ItemDefinition` (#85)
  - Report overlapping rules in decision tables with hit policy `UNIQUE` (#78)
+ - Link every error and warning to a detailed description including how to fix it (#402)
 
 ## 1.4.0 (2026-04-06)
 
