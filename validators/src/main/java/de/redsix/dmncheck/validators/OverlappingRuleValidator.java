@@ -21,6 +21,11 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 /** Hit policy {@code UNIQUE} requires that the rules of a decision table do not overlap. */
 public class OverlappingRuleValidator extends SimpleValidator<DecisionTable> {
 
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#overlapping-rules");
+    }
+
     private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
 
     @Override

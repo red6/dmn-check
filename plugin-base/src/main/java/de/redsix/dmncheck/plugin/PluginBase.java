@@ -75,7 +75,7 @@ public interface PluginBase {
 
     default List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return getValidators().stream()
-                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
+                .flatMap(validator -> validator.applyWithDocumentation(dmnModelInstance).stream())
                 .collect(Collectors.toList());
     }
 

@@ -10,9 +10,15 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 
 public abstract class ElementTypeDeclarationValidator<T extends DmnElement> extends SimpleValidator<T> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#types-of-expressions");
+    }
 
     abstract String getTypeRef(T expression);
 

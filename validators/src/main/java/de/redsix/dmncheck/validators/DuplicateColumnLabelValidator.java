@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +17,11 @@ import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.dmn.instance.Output;
 
 public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#duplicate-column-labels");
+    }
 
     @Override
     public boolean isApplicable(final DecisionTable decisionTable, final ValidationContext validationContext) {

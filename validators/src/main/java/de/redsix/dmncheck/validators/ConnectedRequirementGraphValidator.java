@@ -10,6 +10,7 @@ import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,6 +24,11 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 
 public class ConnectedRequirementGraphValidator extends RequirementGraphValidator {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#correctly-connected-requirement-graphs");
+    }
 
     private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
 

@@ -7,10 +7,16 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.camunda.bpm.model.dmn.instance.DmnElement;
 import org.camunda.bpm.model.dmn.instance.NamedElement;
 
 public abstract class IdAndNameValidator<T extends DmnElement & NamedElement> extends SimpleValidator<T> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#missing-ids-and-names");
+    }
 
     protected abstract String getName();
 

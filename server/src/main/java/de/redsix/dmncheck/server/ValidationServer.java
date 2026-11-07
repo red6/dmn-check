@@ -73,7 +73,7 @@ public class ValidationServer {
 
     private List<ValidationResult> runValidators(final DmnModelInstance dmnModelInstance) {
         return ValidatorLoader.getValidators().stream()
-                .flatMap(validator -> validator.apply(dmnModelInstance).stream())
+                .flatMap(validator -> validator.applyWithDocumentation(dmnModelInstance).stream())
                 .toList();
     }
 
@@ -89,7 +89,8 @@ public class ValidationServer {
                                                 getDrgElementParent(vr.getElement())
                                                         .getAttributeValue("id"))
                                         .put("message", vr.getMessage())
-                                        .put("severity", vr.getSeverity().toString()))
+                                        .put("severity", vr.getSeverity().toString())
+                                        .put("documentation", vr.getDocumentation().orElse(null)))
                                 .toList());
     }
 

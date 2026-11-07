@@ -23,6 +23,11 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 
 public class ShadowedRuleValidator extends SimpleValidator<DecisionTable> {
 
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#shadowed-rules");
+    }
+
     private TopLevelExpressionLanguage toplevelExpressionLanguage = new TopLevelExpressionLanguage(null);
 
     @Override

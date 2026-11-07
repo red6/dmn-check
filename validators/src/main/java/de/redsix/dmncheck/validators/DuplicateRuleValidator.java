@@ -7,6 +7,7 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.bpm.model.dmn.HitPolicy;
@@ -15,6 +16,11 @@ import org.camunda.bpm.model.dmn.instance.Rule;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
+
+    @Override
+    public Optional<String> documentation() {
+        return Optional.of("https://github.com/red6/dmn-check#duplicate-rules");
+    }
 
     @Override
     public Class<DecisionTable> getClassUnderValidation() {
