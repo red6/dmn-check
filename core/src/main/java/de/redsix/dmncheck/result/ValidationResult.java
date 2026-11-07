@@ -2,6 +2,7 @@ package de.redsix.dmncheck.result;
 
 import java.util.Optional;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A validation result consists of the following:
@@ -17,7 +18,7 @@ public class ValidationResult {
     private final Severity severity;
     private final String message;
     private final ModelElementInstance element;
-    private final String documentation;
+    private final @Nullable String documentation;
 
     private ValidationResult(final String message, final ModelElementInstance element, final Severity severity) {
         this(message, element, severity, null);
@@ -27,7 +28,7 @@ public class ValidationResult {
             final String message,
             final ModelElementInstance element,
             final Severity severity,
-            final String documentation) {
+            final @Nullable String documentation) {
         this.message = message;
         this.element = element;
         this.severity = severity;

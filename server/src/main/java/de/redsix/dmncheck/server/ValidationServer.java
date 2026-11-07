@@ -82,15 +82,18 @@ public class ValidationServer {
                 .put(
                         "items",
                         validationResults.stream()
-                                .map(vr -> new JSONObject()
-                                        .put("id", vr.getElement().getAttributeValue("id"))
-                                        .put(
-                                                "drgElementId",
-                                                getDrgElementParent(vr.getElement())
-                                                        .getAttributeValue("id"))
-                                        .put("message", vr.getMessage())
-                                        .put("severity", vr.getSeverity().toString())
-                                        .put("documentation", vr.getDocumentation().orElse(null)))
+                                .map(vr -> {
+                                    final JSONObject item = new JSONObject()
+                                            .put("id", vr.getElement().getAttributeValue("id"))
+                                            .put(
+                                                    "drgElementId",
+                                                    getDrgElementParent(vr.getElement())
+                                                            .getAttributeValue("id"))
+                                            .put("message", vr.getMessage())
+                                            .put("severity", vr.getSeverity().toString());
+                                    vr.getDocumentation().ifPresent(url -> item.put("documentation", url));
+                                    return item;
+                                })
                                 .toList());
     }
 
