@@ -345,6 +345,24 @@ The DMN specification (chapter 8) defines how a decision table is structured. `d
 was most likely edited by hand or by a tool that does not keep rules and columns in sync. Add the missing entries,
 using `-` for inputs that should match any value, or remove the surplus entries in the XML of the DMN file.
 
+### Mergeable Rules
+
+Decision tables grow fast. Consider the following example with hit policy `UNIQUE`:
+
+|     | Season ᴵᴺᴾᵁᵀ  | How many guests ᴵᴺᴾᵁᵀ | Dish ᴼᵁᵀᴾᵁᵀ |
+| --- | ------------- | --------------------- | ----------- |
+|  1  | "Fall"        | <= 8                  | "Stew"      |
+|  2  | "Spring"      | > 8                   | "Steak"     |
+|  3  | "Winter"      | <= 8                  | "Stew"      |
+
+Rules one and three have the same output and only differ in the season. They can be merged into a single rule with
+the input entry `"Fall", "Winter"`. `dmn-check` proposes such merges as warnings for decision tables with hit policy
+`UNIQUE` or `ANY`. For other hit policies, merging rules may change the result, as the order or the number of matching
+rules matters.
+
+**How to fix**: Replace both rules by a single rule that combines the differing input entries with a comma, as
+proposed in the warning.
+
 ### Missing Ids and Names
 
 Usually, you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring, it
