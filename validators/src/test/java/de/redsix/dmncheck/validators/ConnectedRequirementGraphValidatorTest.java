@@ -296,4 +296,96 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
 
         assertEquals(0, validationResults.size());
     }
+
+    @Test
+    void shouldAllowLiteralExpressionThatUsesOutputOfRequiredDecision() {
+        addOutput("dish");
+        addLiteralExpressionDecision("beverage", "if dish = \"Steak\" then \"Wine\" else \"Water\"");
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(List.of(), validationResults);
+    }
+
+    @Test
+    void shouldDetectLiteralExpressionThatDoesNotUseOutputOfRequiredDecision() {
+        addOutput("dish");
+        addLiteralExpressionDecision("beverage", "dishes + 1");
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.getFirst();
+        assertAll(
+                () -> assertEquals(
+                        "Inputs and outputs do not match in connected decisions.", validationResult.getMessage()),
+                () -> assertEquals(decision, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+    }
+
+    @Test
+    void shouldAllowDecisionTableThatUsesResultOfLiteralExpression() {
+        final Decision literalExpressionDecision = modelInstance.newInstance(Decision.class);
+        final Variable variable = modelInstance.newInstance(Variable.class);
+        variable.setName("season");
+        literalExpressionDecision.setVariable(variable);
+        literalExpressionDecision.addChildElement(modelInstance.newInstance(LiteralExpression.class));
+        definitions.addChildElement(literalExpressionDecision);
+        connect(literalExpressionDecision, decision);
+        addInput("season");
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(List.of(), validationResults);
+    }
+
+    @Test
+    void shouldIgnoreLiteralExpressionWithoutVariable() {
+        final Decision literalExpressionDecision = modelInstance.newInstance(Decision.class);
+        literalExpressionDecision.addChildElement(modelInstance.newInstance(LiteralExpression.class));
+        definitions.addChildElement(literalExpressionDecision);
+        connect(literalExpressionDecision, decision);
+        addInput("season");
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(List.of(), validationResults);
+    }
+
+    private void addOutput(final String name) {
+        final Output output = modelInstance.newInstance(Output.class);
+        output.setName(name);
+        decisionTable.getOutputs().add(output);
+    }
+
+    private void addInput(final String inputExpressionText) {
+        final Input input = modelInstance.newInstance(Input.class);
+        final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
+        inputExpression.setTextContent(inputExpressionText);
+        input.setInputExpression(inputExpression);
+        decisionTable.getInputs().add(input);
+    }
+
+    private Decision addLiteralExpressionDecision(final String variableName, final String expression) {
+        final Decision literalExpressionDecision = modelInstance.newInstance(Decision.class);
+        final Variable variable = modelInstance.newInstance(Variable.class);
+        variable.setName(variableName);
+        literalExpressionDecision.setVariable(variable);
+
+        final LiteralExpression literalExpression = modelInstance.newInstance(LiteralExpression.class);
+        final Text text = modelInstance.newInstance(Text.class);
+        text.setTextContent(expression);
+        literalExpression.setText(text);
+        literalExpressionDecision.addChildElement(literalExpression);
+
+        definitions.addChildElement(literalExpressionDecision);
+        connect(decision, literalExpressionDecision);
+        return literalExpressionDecision;
+    }
+
+    private void connect(final Decision requiredDecision, final Decision requiringDecision) {
+        final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);
+        informationRequirement.setRequiredDecision(requiredDecision);
+        requiringDecision.addChildElement(informationRequirement);
+    }
 }

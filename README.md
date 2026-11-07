@@ -323,6 +323,16 @@ aggregations are only used when hit policy collect is used.
 **How to fix**: Either change the hit policy to `COLLECT` or remove the aggregation. For `SUM`, `MIN` and `MAX` declare
 a numeric output type (`integer`, `long` or `double`).
 
+### Literal Expressions
+
+Instead of a decision table, a decision can use a [literal expression](https://docs.camunda.io/docs/components/modeler/dmn/decision-literal-expression/)
+to compute its result. The result is named by the `variable` of the decision. `dmn-check` validates that such a variable
+with a name exists and checks the in- and outputs of decisions with literal expressions in requirement graphs as well.
+A literal expression uses the result of a required decision if its text mentions the name of that result.
+
+**How to fix**: Add a variable with a name to the decision, e.g., `<variable name="season" typeRef="string" />`, and
+reference the results of required decisions by their name in the literal expression.
+
 ### Structure of Decision Tables
 
 The DMN specification (chapter 8) defines how a decision table is structured. `dmn-check` validates that
