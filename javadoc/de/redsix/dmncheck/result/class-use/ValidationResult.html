@@ -105,6 +105,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">ValidationResult.Builder.BuildStep.</span><code><a href="../ValidationResult.Builder.BuildStep.html#build()" class="member-name-link">build</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ValidationResult.</span><code><a href="../ValidationResult.html#withDocumentation(java.lang.String)" class="member-name-link">withDocumentation</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;documentation)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Returns a copy of this validation result that links to the given documentation.</div>
+</div>
 </div>
 </section>
 </li>
@@ -223,15 +228,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Validates the given DMN model instance and returns the validation results as a list.</div>
 </div>
-<div class="col-first odd-row-color"><code>protected abstract <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">GenericValidator.</span><code><a href="../../validators/core/GenericValidator.html#validate(T,de.redsix.dmncheck.validators.core.ValidationContext)" class="member-name-link">validate</a><wbr>(<a href="../../validators/core/GenericValidator.html#type-param-T" title="type parameter in GenericValidator">T</a>&nbsp;element,
- <a href="../../validators/core/ValidationContext.html" title="class in de.redsix.dmncheck.validators.core">ValidationContext</a>&nbsp;validationContext)</code></div>
+<div class="col-first odd-row-color"><code>default <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Validator.</span><code><a href="../../validators/core/Validator.html#applyWithDocumentation(org.camunda.bpm.model.dmn.DmnModelInstance)" class="member-name-link">applyWithDocumentation</a><wbr>(org.camunda.bpm.model.dmn.DmnModelInstance&nbsp;dmnModelInstance)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Validates a given element of type T.</div>
+<div class="block">Validates the given DMN model instance and attaches the documentation of this validator to the results.</div>
 </div>
 <div class="col-first even-row-color"><code>protected abstract <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RequirementGraphValidator.</span><code><a href="../../validators/core/RequirementGraphValidator.html#validate(de.redsix.dmncheck.drg.RequirementGraph)" class="member-name-link">validate</a><wbr>(<a href="../../drg/RequirementGraph.html" title="class in de.redsix.dmncheck.drg">RequirementGraph</a>&nbsp;drg)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GenericValidator.</span><code><a href="../../validators/core/GenericValidator.html#validate(T,de.redsix.dmncheck.validators.core.ValidationContext)" class="member-name-link">validate</a><wbr>(<a href="../../validators/core/GenericValidator.html#type-param-T" title="type parameter in GenericValidator">T</a>&nbsp;element,
+ <a href="../../validators/core/ValidationContext.html" title="class in de.redsix.dmncheck.validators.core">ValidationContext</a>&nbsp;validationContext)</code></div>
 <div class="col-last even-row-color">
+<div class="block">Validates a given element of type T.</div>
+</div>
+<div class="col-first odd-row-color"><code>protected abstract <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../ValidationResult.html" title="class in de.redsix.dmncheck.result">ValidationResult</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RequirementGraphValidator.</span><code><a href="../../validators/core/RequirementGraphValidator.html#validate(de.redsix.dmncheck.drg.RequirementGraph)" class="member-name-link">validate</a><wbr>(<a href="../../drg/RequirementGraph.html" title="class in de.redsix.dmncheck.drg">RequirementGraph</a>&nbsp;drg)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Returns a list of validation results for a requirement graph (see <a href="../../drg/RequirementGraph.html" title="class in de.redsix.dmncheck.drg"><code>RequirementGraph</code></a>).</div>
 </div>
 </div>
