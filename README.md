@@ -333,6 +333,18 @@ A literal expression uses the result of a required decision if its text mentions
 **How to fix**: Add a variable with a name to the decision, e.g., `<variable name="season" typeRef="string" />`, and
 reference the results of required decisions by their name in the literal expression.
 
+### Structure of Decision Tables
+
+The DMN specification (chapter 8) defines how a decision table is structured. `dmn-check` validates that
+- a decision table has at least one output
+- every output has a name if a decision table has more than one output
+- every rule has exactly one input entry per input and one output entry per output
+- a decision table has at least one rule (reported as a warning)
+
+**How to fix**: Add the missing output, output name or rule. If a rule has too few or too many entries, the DMN file
+was most likely edited by hand or by a tool that does not keep rules and columns in sync. Add the missing entries,
+using `-` for inputs that should match any value, or remove the surplus entries in the XML of the DMN file.
+
 ### Missing Ids and Names
 
 Usually, you do not have to care much about ids and names of DMN elements. However, during upgrades and refactoring, it
