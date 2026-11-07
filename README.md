@@ -24,6 +24,7 @@ Currently, dmn-check checks among others for the following:
 * Duplicate rules
 * Conflicting rules
 * Shadowed rules
+* Overlapping rules for hit policy `UNIQUE`
 * Types of the expressions
 * Correct use of enumerations
 * Correctly connected requirement graphs
@@ -213,6 +214,25 @@ always an error as they will never be matched.
 rule `s` match.
 
 `dmn-check` will report shadowed rules for all decision tables, except for those with hit policy `COLLECT` and `RULE_ORDER`.
+
+### Overlapping Rules
+
+The hit policy `UNIQUE`, which is the default hit policy, requires that at most one rule matches. Consider the following
+example with hit policy `UNIQUE`:
+
+|     | Season ᴵᴺᴾᵁᵀ  | How many guests ᴵᴺᴾᵁᵀ | Dish ᴼᵁᵀᴾᵁᵀ |
+| --- | ------------- | --------------------- | ----------- |
+|  1  | "Fall"        | <= 8                  | "Spareribs" |
+|  2  | "Spring"      | <= 7                  | "Stew"      |
+|  3  | "Spring"      | [5..8]                | "Steak"     |
+
+Rules two and three are neither duplicates nor in conflict, but both match if 5 to 7 guests are expected in spring.
+
+**Definition**: Rules `r` and `s` overlap if and only if there is a value for every input such that the inputs of
+both rules match.
+
+`dmn-check` will report overlapping rules for decision tables with hit policy `UNIQUE`. Rules whose overlap cannot be
+decided, e.g., because their inputs refer to variables, are not reported.
 
 ### Types of Expressions
 
