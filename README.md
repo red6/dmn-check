@@ -347,6 +347,8 @@ or `5`, are checked against allowed values that are literals, ranges or negation
 or `not("Summer")`.
 
 **How to fix**: Declare a type for the `ItemDefinition` and make sure that all allowed values are expressions of that type.
+If an entry uses a value that is not allowed, either correct the entry or add the value to the allowed values of the
+`ItemDefinition`.
 
 ### Duplicate Column Labels
 
