@@ -59,6 +59,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#subsumes(de.redsix.dmncheck.feel.FeelExpression)" tabindex="0">subsumes(FeelExpression)</a></li>
+<li><a href="#overlaps(de.redsix.dmncheck.feel.FeelExpression)" tabindex="0">overlaps(FeelExpression)</a></li>
 <li><a href="#containsVariable(java.lang.String)" tabindex="0">containsVariable(String)</a></li>
 <li><a href="#isLiteral()" tabindex="0">isLiteral()</a></li>
 <li><a href="#isDate()" tabindex="0">isDate()</a></li>
@@ -167,12 +168,15 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#isLiteral()" class="member-name-link">isLiteral</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#subsumes(de.redsix.dmncheck.feel.FeelExpression)" class="member-name-link">subsumes</a><wbr>(<a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;expression)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#overlaps(de.redsix.dmncheck.feel.FeelExpression)" class="member-name-link">overlaps</a><wbr>(<a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;expression)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1"><code>static <a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1"><code><a href="#unaryExpression(de.redsix.dmncheck.feel.Operator,de.redsix.dmncheck.feel.FeelExpression)" class="member-name-link">unaryExpression</a><wbr>(<a href="Operator.html" title="enum class in de.redsix.dmncheck.feel">Operator</a>&nbsp;operator,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#subsumes(de.redsix.dmncheck.feel.FeelExpression)" class="member-name-link">subsumes</a><wbr>(<a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;expression)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1"><code>static <a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1"><code><a href="#unaryExpression(de.redsix.dmncheck.feel.Operator,de.redsix.dmncheck.feel.FeelExpression)" class="member-name-link">unaryExpression</a><wbr>(<a href="Operator.html" title="enum class in de.redsix.dmncheck.feel">Operator</a>&nbsp;operator,
  <a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;operand)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -192,6 +196,14 @@ loadScripts(document, 'script');</script>
 <h3>subsumes</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">subsumes</span><wbr><span class="parameters">(<a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;expression)</span></div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="overlaps(de.redsix.dmncheck.feel.FeelExpression)">
+<h3>overlaps</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">overlaps</span><wbr><span class="parameters">(<a href="FeelExpression.html" title="interface in de.redsix.dmncheck.feel">FeelExpression</a>&nbsp;expression)</span></div>
 </div>
 </section>
 </li>
