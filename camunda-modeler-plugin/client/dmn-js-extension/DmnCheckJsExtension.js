@@ -37,12 +37,17 @@ function DmnCheckJsExtension(eventBus, drd, elementRegistry, moddle, overlays, c
                         const shape = elementRegistry.get(result.drgElementId);
 
                         if (typeof shape !== "undefined") {
+                            // Build via DOM: messages contain text from the DMN file and must not be parsed as HTML
+                            const badge = document.createElement('div');
+                            badge.title = result.message;
+                            badge.className = 'badge badge-' + result.severity.toLowerCase();
+
                             overlays.add(shape, 'badge', {
                                 position: {
                                     bottom: 0,
                                     left: 21 * map[result.drgElementId]
                                 },
-                                html: '<div title="' + result.message + '" class="badge badge-' + result.severity.toLowerCase() + '"></div>'
+                                html: badge
                             });
 
                             map[result.drgElementId] = ~~map[result.drgElementId] + 1;
