@@ -25,6 +25,14 @@
             <version>6.0.1</version>
         </dependency>
 
+        <!-- Needed by the Checker Framework to read the signatures of classgraph -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.jparsec</groupId>
             <artifactId>jparsec</artifactId>
