@@ -3,6 +3,7 @@
 Breaking changes:
 
  - Java 25 is now required to run dmn-check, including the Maven and Gradle plugins
+ - The validation server only listens on `127.0.0.1` by default; use `-host` to bind to another address
 
 Features:
 
@@ -12,6 +13,11 @@ Features:
  - Support decisions with literal expressions (#82)
  - Propose to merge rules that only differ in one input (#81)
  - Validate the structure of decision tables as defined in the DMN specification (#84)
+
+Security:
+
+ - Escape validation messages in the Camunda Modeler plugin
+ - Replace the unmaintained Spark/Jetty 9.4 stack of the validation server with the JDK HTTP server and limit request bodies to 10 MB
 
 ## 1.4.0 (2026-04-06)
 
