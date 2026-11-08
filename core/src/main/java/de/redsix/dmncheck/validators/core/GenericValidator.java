@@ -3,7 +3,6 @@ package de.redsix.dmncheck.validators.core;
 import de.redsix.dmncheck.result.ValidationResult;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
