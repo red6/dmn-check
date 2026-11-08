@@ -6,6 +6,7 @@ import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.camunda.bpm.model.dmn.DmnModelInstance;
 import org.camunda.bpm.model.dmn.instance.DrgElement;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
@@ -15,6 +16,16 @@ public class RequirementGraphLeafValidator extends RequirementGraphValidator {
     @Override
     public Optional<String> documentation() {
         return Optional.of("https://github.com/red6/dmn-check#correctly-connected-requirement-graphs");
+    }
+
+    @Override
+    public List<ValidationResult> apply(final DmnModelInstance dmnModelInstance) {
+        try {
+            return validate(RequirementGraph.from(dmnModelInstance));
+        } catch (IllegalArgumentException exception) {
+            // Already reported by ConnectedRequirementGraphValidator, e.g. if the graph contains a cycle
+            return Collections.emptyList();
+        }
     }
 
     @Override

@@ -88,4 +88,20 @@ class RequirementGraphLeafValidatorTest extends WithRequirementGraph {
                 () -> assertEquals(definitions, validationResult.getElement()),
                 () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
     }
+
+    @Test
+    void shouldLeaveCyclesToConnectedRequirementGraphValidator() {
+        final Decision decision1 = modelInstance.newInstance(Decision.class);
+        definitions.addChildElement(decision1);
+
+        final Decision decision2 = modelInstance.newInstance(Decision.class);
+        definitions.addChildElement(decision2);
+
+        connect(decision1, decision2);
+        connect(decision2, decision1);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(0, validationResults.size());
+    }
 }

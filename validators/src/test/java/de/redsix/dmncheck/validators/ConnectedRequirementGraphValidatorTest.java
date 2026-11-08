@@ -352,6 +352,24 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         assertEquals(List.of(), validationResults);
     }
 
+    @Test
+    void shouldDetectCycle() {
+        final Decision otherDecision = modelInstance.newInstance(Decision.class);
+        definitions.addChildElement(otherDecision);
+
+        connect(decision, otherDecision);
+        connect(otherDecision, decision);
+
+        final List<ValidationResult> validationResults = testee.apply(modelInstance);
+
+        assertEquals(1, validationResults.size());
+        final ValidationResult validationResult = validationResults.getFirst();
+        assertAll(
+                () -> assertTrue(validationResult.getMessage().startsWith("Error while construction requirement graph")),
+                () -> assertEquals(definitions, validationResult.getElement()),
+                () -> assertEquals(Severity.ERROR, validationResult.getSeverity()));
+    }
+
     private void addOutput(final String name) {
         final Output output = modelInstance.newInstance(Output.class);
         output.setName(name);
