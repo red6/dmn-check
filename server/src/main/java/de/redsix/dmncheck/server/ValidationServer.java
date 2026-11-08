@@ -124,22 +124,21 @@ public class ValidationServer {
                                 .map(vr -> {
                                     final JSONObject item = new JSONObject()
                                             .put("id", vr.getElement().getAttributeValue("id"))
-                                            .put(
-                                                    "drgElementId",
-                                                    getDrgElementParent(vr.getElement())
-                                                            .getAttributeValue("id"))
                                             .put("message", vr.getMessage())
                                             .put("severity", vr.getSeverity().toString());
+                                    getDrgElementParent(vr.getElement())
+                                            .ifPresent(drgElement ->
+                                                    item.put("drgElementId", drgElement.getAttributeValue("id")));
                                     vr.getDocumentation().ifPresent(url -> item.put("documentation", url));
                                     return item;
                                 })
                                 .toList());
     }
 
-    private DrgElement getDrgElementParent(final ModelElementInstance elementInstance) {
-
-        if (elementInstance instanceof DrgElement) {
-            return (DrgElement) elementInstance;
+    // Results on the definitions element itself, e.g. from DefinitionsIdAndNameValidator, have no DRG element
+    private Optional<DrgElement> getDrgElementParent(final @Nullable ModelElementInstance elementInstance) {
+        if (elementInstance == null || elementInstance instanceof DrgElement) {
+            return Optional.ofNullable((DrgElement) elementInstance);
         } else {
             return this.getDrgElementParent(elementInstance.getParentElement());
         }
