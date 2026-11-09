@@ -1,3 +1,9 @@
+## 1.6.0 (unreleased)
+
+Bug fixes:
+
+ - Camunda Modeler plugin: enable the plugin in the plugins menu, replace outdated badges after every change and report an unreachable validation server (#405)
+
 ## 1.5.0 (2026-11-09)
 
 Breaking changes:

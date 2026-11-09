@@ -103,6 +103,21 @@ To use `dmn-check` without or outside a Maven project, you can invoke it in the 
 This plugin requires Java 25 or later and Gradle 6.5 or later. Some analyses are tailored towards the Camunda DMN implementation and
 might not work for different DMN implementations.
 
+## Camunda Modeler Plugin
+
+The plugin shows warnings and errors as badges on the elements of the decision requirements diagram (DRD) in the
+[Camunda Modeler](https://camunda.com/products/modeler/). Hover over a badge to see the message. Errors that cannot be
+attached to an element of the DRD are shown in the bottom left corner. The decision table view is not supported yet.
+
+1. Build the plugin by running `npm install && npm run bundle` in `camunda-modeler-plugin`.
+2. Copy the `camunda-modeler-plugin` folder into `resources/plugins` of your Camunda Modeler and restart it.
+3. Build the validation server with `mvn package -pl server -am` and start it with
+
+        java -jar server/target/dmn-check-server-*-jar-with-dependencies.jar
+
+   The plugin expects the server at `http://localhost:42000`.
+4. Open a DMN file in the Camunda Modeler. The plugin validates the diagram on opening and after every change.
+
 ## Integrated in dmnmgr
 
 Dmnmgr is _a toolkit incorporating the Camunda DMN implementation and providing tools to develop DMN-based applications in cross-functional teams_.
