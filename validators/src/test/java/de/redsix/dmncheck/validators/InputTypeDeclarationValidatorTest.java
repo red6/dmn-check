@@ -8,8 +8,8 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputExpression;
+import org.operaton.bpm.model.dmn.instance.Input;
+import org.operaton.bpm.model.dmn.instance.InputExpression;
 import org.junit.jupiter.api.Test;
 
 class InputTypeDeclarationValidatorTest extends WithDecisionTable {

@@ -1,9 +1,9 @@
 package de.redsix.dmncheck.util;
 
 import java.util.Objects;
-import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
-import org.camunda.bpm.model.dmn.instance.LiteralExpression;
-import org.camunda.bpm.model.dmn.instance.UnaryTests;
+import org.operaton.bpm.model.dmn.impl.DmnModelConstants;
+import org.operaton.bpm.model.dmn.instance.LiteralExpression;
+import org.operaton.bpm.model.dmn.instance.UnaryTests;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class Expression {

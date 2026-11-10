@@ -8,7 +8,7 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.InputData;
+import org.operaton.bpm.model.dmn.instance.InputData;
 import org.junit.jupiter.api.Test;
 
 class InputDataIdAndNameValidatorTest extends WithDecisionTable {
@@ -24,7 +24,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         // InputDataReferenceImpl. This issue
         // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
-        // the parser of camunda-dmn-model everything is fine.
+        // the parser of operaton-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
         inputData.setId(null);
@@ -49,7 +49,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         // InputDataReferenceImpl. This issue
         // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
-        // the parser of camunda-dmn-model everything is fine.
+        // the parser of operaton-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
         inputData.setId("1");
@@ -74,7 +74,7 @@ class InputDataIdAndNameValidatorTest extends WithDecisionTable {
         // InputDataReferenceImpl. This issue
         // seems to be related to CAM-8888 and CAM-8889. However, this issue only occurs when creating a DMN model
         // programmatically using
-        // the parser of camunda-dmn-model everything is fine.
+        // the parser of operaton-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
         inputData.setId("1");

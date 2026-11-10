@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.OutputEntry;
-import org.camunda.bpm.model.dmn.instance.Rule;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.instance.InputEntry;
+import org.operaton.bpm.model.dmn.instance.OutputEntry;
+import org.operaton.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 public final class PrettyPrintValidationResults {
 

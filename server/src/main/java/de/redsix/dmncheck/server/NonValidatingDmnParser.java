@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.server;
 
-import org.camunda.bpm.model.dmn.impl.DmnParser;
-import org.camunda.bpm.model.xml.instance.DomDocument;
+import org.operaton.bpm.model.dmn.impl.DmnParser;
+import org.operaton.bpm.model.xml.instance.DomDocument;
 
 public class NonValidatingDmnParser extends DmnParser {
 

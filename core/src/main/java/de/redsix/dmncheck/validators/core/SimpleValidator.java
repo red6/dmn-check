@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators.core;
 
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 /**
  * A simple validator is a {@link GenericValidator} where the validation (T) and applicability check (S) type are always

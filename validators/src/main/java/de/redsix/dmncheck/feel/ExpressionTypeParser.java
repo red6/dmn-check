@@ -5,8 +5,8 @@ import de.redsix.dmncheck.util.Either;
 
 import java.util.Collection;
 import java.util.Objects;
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
-import org.camunda.bpm.model.dmn.instance.NamedElement;
+import org.operaton.bpm.model.dmn.instance.ItemDefinition;
+import org.operaton.bpm.model.dmn.instance.NamedElement;
 import org.jparsec.Parser;
 import org.jparsec.Parsers;
 import org.jparsec.Scanners;

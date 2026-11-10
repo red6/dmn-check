@@ -6,7 +6,7 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
+import org.operaton.bpm.model.dmn.instance.KnowledgeSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

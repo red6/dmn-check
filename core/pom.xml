@@ -15,9 +15,9 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.camunda.bpm.model</groupId>
-            <artifactId>camunda-dmn-model</artifactId>
-            <version>7.24.0</version>
+            <groupId>org.operaton.bpm.model</groupId>
+            <artifactId>operaton-dmn-model</artifactId>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>

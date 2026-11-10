@@ -9,9 +9,9 @@ import de.redsix.dmncheck.util.*;
 import de.redsix.dmncheck.validators.core.SimpleValidator;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DmnElement;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.DmnElement;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.Arrays;
 import java.util.List;

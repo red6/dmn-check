@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.feel;
 
 import java.util.Set;
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
+import org.operaton.bpm.model.dmn.instance.ItemDefinition;
 
 
 public sealed interface ExpressionType {

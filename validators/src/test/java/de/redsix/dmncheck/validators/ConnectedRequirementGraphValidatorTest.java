@@ -8,9 +8,9 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.*;
+import org.operaton.bpm.model.dmn.Dmn;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.*;
 import org.junit.jupiter.api.Test;
 
 class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
@@ -49,7 +49,7 @@ class ConnectedRequirementGraphValidatorTest extends WithDecisionTable {
         // with an
         // InputDataReferenceImpl object. This issue seems to be related to CAM-8888 and CAM-8889. However, this issue
         // only occurs when
-        // creating a DMN model programmatically using the parser of camunda-dmn-model everything is fine.
+        // creating a DMN model programmatically using the parser of operaton-dmn-model everything is fine.
         modelInstance.getModelElementsByType(InputData.class);
 
         final InformationRequirement informationRequirement = modelInstance.newInstance(InformationRequirement.class);

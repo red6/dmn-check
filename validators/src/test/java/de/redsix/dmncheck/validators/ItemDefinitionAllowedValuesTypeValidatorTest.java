@@ -7,9 +7,9 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithItemDefinition;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.AllowedValues;
-import org.camunda.bpm.model.dmn.instance.ItemComponent;
-import org.camunda.bpm.model.dmn.instance.TypeRef;
+import org.operaton.bpm.model.dmn.instance.AllowedValues;
+import org.operaton.bpm.model.dmn.instance.ItemComponent;
+import org.operaton.bpm.model.dmn.instance.TypeRef;
 import org.junit.jupiter.api.Test;
 
 class ItemDefinitionAllowedValuesTypeValidatorTest extends WithItemDefinition {

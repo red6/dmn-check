@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.BuiltinAggregator;
+import org.operaton.bpm.model.dmn.HitPolicy;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
 
 public class AggregationValidator extends SimpleValidator<DecisionTable> {
 

@@ -12,9 +12,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.Output;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Input;
+import org.operaton.bpm.model.dmn.instance.Output;
 
 public class DuplicateColumnLabelValidator extends SimpleValidator<DecisionTable> {
 

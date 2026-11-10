@@ -12,9 +12,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Output;
+import org.operaton.bpm.model.dmn.BuiltinAggregator;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Output;
 
 public class AggregationOutputTypeValidator extends GenericValidator<DecisionTable, Output> {
 

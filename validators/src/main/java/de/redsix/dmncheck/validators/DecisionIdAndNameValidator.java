@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.Decision;
+import org.operaton.bpm.model.dmn.instance.Decision;
 
 public class DecisionIdAndNameValidator extends IdAndNameValidator<Decision> {
 

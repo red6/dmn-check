@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.InputExpression;
+import org.operaton.bpm.model.dmn.instance.InputExpression;
 
 public class InputTypeDeclarationValidator extends ElementTypeDeclarationValidator<InputExpression> {
 

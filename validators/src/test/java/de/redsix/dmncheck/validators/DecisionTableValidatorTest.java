@@ -7,11 +7,11 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.Output;
-import org.camunda.bpm.model.dmn.instance.OutputEntry;
-import org.camunda.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.dmn.instance.Input;
+import org.operaton.bpm.model.dmn.instance.InputEntry;
+import org.operaton.bpm.model.dmn.instance.Output;
+import org.operaton.bpm.model.dmn.instance.OutputEntry;
+import org.operaton.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
 
 class DecisionTableValidatorTest extends WithDecisionTable {

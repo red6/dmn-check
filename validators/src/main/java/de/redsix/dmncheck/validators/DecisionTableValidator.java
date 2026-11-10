@@ -7,9 +7,9 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Output;
-import org.camunda.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Output;
+import org.operaton.bpm.model.dmn.instance.Rule;
 
 /** Checks the structure of a decision table as defined in chapter 8 of the DMN specification. */
 public class DecisionTableValidator extends SimpleValidator<DecisionTable> {

@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.validators.util;
 
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Decision;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
 import org.junit.jupiter.api.BeforeEach;
 
 public class WithDecisionTable extends WithDefinitions {

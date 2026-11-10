@@ -5,7 +5,7 @@ import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.List;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.instance.Output;
+import org.operaton.bpm.model.dmn.instance.Output;
 
 public class OutputValuesTypeValidator extends TypeValidator<Output> {
 

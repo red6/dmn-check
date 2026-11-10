@@ -6,8 +6,8 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.BuiltinAggregator;
-import org.camunda.bpm.model.dmn.HitPolicy;
+import org.operaton.bpm.model.dmn.BuiltinAggregator;
+import org.operaton.bpm.model.dmn.HitPolicy;
 import org.junit.jupiter.api.Test;
 
 class AggregationValidatorTest extends WithDecisionTable {

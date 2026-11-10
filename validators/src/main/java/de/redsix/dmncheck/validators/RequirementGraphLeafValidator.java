@@ -6,8 +6,8 @@ import de.redsix.dmncheck.validators.core.RequirementGraphValidator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DrgElement;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.DrgElement;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 

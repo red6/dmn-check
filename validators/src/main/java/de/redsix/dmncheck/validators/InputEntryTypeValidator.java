@@ -7,8 +7,8 @@ import de.redsix.dmncheck.util.Either;
 import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.List;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Input;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Input;
 
 public class InputEntryTypeValidator extends TypeValidator<DecisionTable> {
 
@@ -32,7 +32,7 @@ public class InputEntryTypeValidator extends TypeValidator<DecisionTable> {
         return decisionTable.getRules().stream()
                 .flatMap(rule -> {
                     final Stream<String> inputVariables =
-                            decisionTable.getInputs().stream().map(Input::getCamundaInputVariable);
+                            decisionTable.getInputs().stream().map(Input::getOperatonInputVariable);
 
                     return eitherInputTypes.match(
                             validationResult ->

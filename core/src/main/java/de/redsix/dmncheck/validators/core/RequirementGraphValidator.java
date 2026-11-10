@@ -3,7 +3,7 @@ package de.redsix.dmncheck.validators.core;
 import de.redsix.dmncheck.drg.RequirementGraph;
 import de.redsix.dmncheck.result.ValidationResult;
 import java.util.List;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
 
 /** Generic validator that facilitates writing validations on graph-based representation of the DMN model instance. */
 public abstract class RequirementGraphValidator implements Validator {

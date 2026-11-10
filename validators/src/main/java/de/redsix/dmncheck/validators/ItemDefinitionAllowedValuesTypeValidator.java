@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
+import org.operaton.bpm.model.dmn.instance.ItemDefinition;
 
 public class ItemDefinitionAllowedValuesTypeValidator extends TypeValidator<ItemDefinition> {
 
