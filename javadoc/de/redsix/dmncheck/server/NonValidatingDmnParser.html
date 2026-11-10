@@ -64,7 +64,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
-<li><a href="#validateModel(org.camunda.bpm.model.xml.instance.DomDocument)" tabindex="0">validateModel(DomDocument)</a></li>
+<li><a href="#validateModel(org.operaton.bpm.model.xml.instance.DomDocument)" tabindex="0">validateModel(DomDocument)</a></li>
 </ol>
 </li>
 </ol>
@@ -75,8 +75,8 @@ loadScripts(document, 'script');</script>
 <h1 title="Class NonValidatingDmnParser" class="title">Class NonValidatingDmnParser</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">org.camunda.bpm.model.xml.impl.parser.AbstractModelParser
-<div class="inheritance">org.camunda.bpm.model.dmn.impl.DmnParser
+<div class="inheritance">org.operaton.bpm.model.xml.impl.parser.AbstractModelParser
+<div class="inheritance">org.operaton.bpm.model.dmn.impl.DmnParser
 <div class="inheritance">de.redsix.dmncheck.server.NonValidatingDmnParser</div>
 </div>
 </div>
@@ -85,7 +85,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="horizontal-scroll">
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">NonValidatingDmnParser</span>
-<span class="extends-implements">extends org.camunda.bpm.model.dmn.impl.DmnParser</span></div>
+<span class="extends-implements">extends org.operaton.bpm.model.dmn.impl.DmnParser</span></div>
 </div>
 </section>
 <section class="summary">
@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 <section class="field-summary" id="field-summary">
 <h2>Field Summary</h2>
 <div class="inherited-list">
-<h3 id="fields-inherited-from-class-org.camunda.bpm.model.xml.impl.parser.AbstractModelParser">Fields inherited from class&nbsp;org.camunda.bpm.model.xml.impl.parser.AbstractModelParser</h3>
+<h3 id="fields-inherited-from-class-org.operaton.bpm.model.xml.impl.parser.AbstractModelParser">Fields inherited from class&nbsp;org.operaton.bpm.model.xml.impl.parser.AbstractModelParser</h3>
 <code>JAXP_ACCESS_EXTERNAL_SCHEMA, JAXP_ACCESS_EXTERNAL_SCHEMA_ALL, JAXP_ACCESS_EXTERNAL_SCHEMA_SYSTEM_PROPERTY, schemaFactory, schemas</code></div>
 </section>
 </li>
@@ -124,17 +124,17 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#validateModel(org.camunda.bpm.model.xml.instance.DomDocument)" class="member-name-link">validateModel</a><wbr>(org.camunda.bpm.model.xml.instance.DomDocument&nbsp;document)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#validateModel(org.operaton.bpm.model.xml.instance.DomDocument)" class="member-name-link">validateModel</a><wbr>(org.operaton.bpm.model.xml.instance.DomDocument&nbsp;document)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.camunda.bpm.model.dmn.impl.DmnParser">Methods inherited from class&nbsp;org.camunda.bpm.model.dmn.impl.DmnParser</h3>
+<h3 id="methods-inherited-from-class-org.operaton.bpm.model.dmn.impl.DmnParser">Methods inherited from class&nbsp;org.operaton.bpm.model.dmn.impl.DmnParser</h3>
 <code>configureFactory, createModelInstance, getEmptyModel, parseModelFromStream</code></div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.camunda.bpm.model.xml.impl.parser.AbstractModelParser">Methods inherited from class&nbsp;org.camunda.bpm.model.xml.impl.parser.AbstractModelParser</h3>
-<code>addSchema, createSchema, getSchema, resolveAccessExternalSchemaProperty</code></div>
+<h3 id="methods-inherited-from-class-org.operaton.bpm.model.xml.impl.parser.AbstractModelParser">Methods inherited from class&nbsp;org.operaton.bpm.model.xml.impl.parser.AbstractModelParser</h3>
+<code>addSchema, createSchema, createSchemaFactory, getDocumentBuilderSchema, getSchema, resolveAccessExternalSchemaProperty</code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#method-summary" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
@@ -166,13 +166,13 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="validateModel(org.camunda.bpm.model.xml.instance.DomDocument)">
+<section class="detail" id="validateModel(org.operaton.bpm.model.xml.instance.DomDocument)">
 <h3>validateModel</h3>
 <div class="horizontal-scroll">
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">validateModel</span><wbr><span class="parameters">(org.camunda.bpm.model.xml.instance.DomDocument&nbsp;document)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">validateModel</span><wbr><span class="parameters">(org.operaton.bpm.model.xml.instance.DomDocument&nbsp;document)</span></div>
 <dl class="notes">
 <dt>Overrides:</dt>
-<dd><code>validateModel</code>&nbsp;in class&nbsp;<code>org.camunda.bpm.model.xml.impl.parser.AbstractModelParser</code></dd>
+<dd><code>validateModel</code>&nbsp;in class&nbsp;<code>org.operaton.bpm.model.xml.impl.parser.AbstractModelParser</code></dd>
 </dl>
 </div>
 </section>
