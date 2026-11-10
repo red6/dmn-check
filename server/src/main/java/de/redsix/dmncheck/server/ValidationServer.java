@@ -42,9 +42,13 @@ public class ValidationServer {
     public static void main(String[] args) throws IOException {
         final ValidationServer validationServer = new ValidationServer();
 
-        final Logger logger = LoggerFactory.getLogger(ValidationServer.class);
-
         JCommander.newBuilder().addObject(validationServer).build().parse(args);
+
+        start(validationServer);
+    }
+
+    static HttpServer start(final ValidationServer validationServer) throws IOException {
+        final Logger logger = LoggerFactory.getLogger(ValidationServer.class);
 
         final HttpServer server =
                 HttpServer.create(new InetSocketAddress(validationServer.host, validationServer.portNumber), 0);
@@ -68,6 +72,7 @@ public class ValidationServer {
             }
         });
         server.start();
+        return server;
     }
 
     private String validate(final byte[] body, final Logger logger) {
