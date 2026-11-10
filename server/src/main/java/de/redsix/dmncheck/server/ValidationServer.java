@@ -18,12 +18,10 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelException;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DrgElement;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.DmnModelException;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.DrgElement;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +35,9 @@ public class ValidationServer {
     public String host = "127.0.0.1";
 
     private static final int MAX_BODY_BYTES = 10 * 1024 * 1024;
+
+    // Do not validate against the xml schema now. Errors from the xml validation are hard to map back into the editor.
+    private static final NonValidatingDmnParser DMN_PARSER = new NonValidatingDmnParser();
 
     public static void main(String[] args) throws IOException {
         final ValidationServer validationServer = new ValidationServer();
@@ -73,11 +74,7 @@ public class ValidationServer {
         final ByteArrayInputStream dmnXmlStream = new ByteArrayInputStream(body);
 
         try {
-            // Do not validate against the xml schema now. Errors from the xml validation are hard to map back into
-            // the editor.
-            FieldUtils.writeField(Dmn.INSTANCE, "dmnParser", new NonValidatingDmnParser(), true);
-
-            final DmnModelInstance modelInstance = Dmn.readModelFromStream(dmnXmlStream);
+            final DmnModelInstance modelInstance = DMN_PARSER.parseModelFromStream(dmnXmlStream);
             final List<ValidationResult> validationResults = runValidators(modelInstance);
             return validationResultsToJson(validationResults).toString();
         } catch (DmnModelException e) {
@@ -122,12 +119,14 @@ public class ValidationServer {
                         validationResults.stream()
                                 .map(vr -> {
                                     final JSONObject item = new JSONObject()
-                                            .put("id", vr.getElement().getAttributeValue("id"))
                                             .put("message", vr.getMessage())
                                             .put("severity", vr.getSeverity().toString());
+                                    // Elements without an id are valid input, e.g. for the id validators
+                                    Optional.ofNullable(vr.getElement().getAttributeValue("id"))
+                                            .ifPresent(id -> item.put("id", id));
                                     getDrgElementParent(vr.getElement())
-                                            .ifPresent(drgElement ->
-                                                    item.put("drgElementId", drgElement.getAttributeValue("id")));
+                                            .map(drgElement -> drgElement.getAttributeValue("id"))
+                                            .ifPresent(id -> item.put("drgElementId", id));
                                     vr.getDocumentation().ifPresent(url -> item.put("documentation", url));
                                     return item;
                                 })

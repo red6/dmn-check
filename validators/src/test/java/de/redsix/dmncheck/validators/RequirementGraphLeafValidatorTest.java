@@ -7,7 +7,7 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithRequirementGraph;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.Decision;
+import org.operaton.bpm.model.dmn.instance.Decision;
 import org.junit.jupiter.api.Test;
 
 class RequirementGraphLeafValidatorTest extends WithRequirementGraph {

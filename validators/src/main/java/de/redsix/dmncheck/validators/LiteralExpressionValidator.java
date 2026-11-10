@@ -6,9 +6,9 @@ import de.redsix.dmncheck.validators.core.ValidationContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.LiteralExpression;
-import org.camunda.bpm.model.dmn.instance.Variable;
+import org.operaton.bpm.model.dmn.instance.Decision;
+import org.operaton.bpm.model.dmn.instance.LiteralExpression;
+import org.operaton.bpm.model.dmn.instance.Variable;
 
 /** Checks that decisions with a literal expression name their result with a variable. */
 public class LiteralExpressionValidator extends SimpleValidator<Decision> {

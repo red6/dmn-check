@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
+import org.operaton.bpm.model.dmn.instance.KnowledgeSource;
 
 public class KnowledgeSourceIdAndNameValidator extends IdAndNameValidator<KnowledgeSource> {
 

@@ -11,7 +11,7 @@ import de.redsix.dmncheck.util.Expression;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
-import org.camunda.bpm.model.dmn.impl.DmnModelConstants;
+import org.operaton.bpm.model.dmn.impl.DmnModelConstants;
 import org.jparsec.OperatorTable;
 import org.jparsec.Parser;
 import org.jparsec.Parsers;

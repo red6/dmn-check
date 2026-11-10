@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
+import org.operaton.bpm.model.dmn.instance.ItemDefinition;
 
 public class ItemDefinitionIdAndNameValidator extends IdAndNameValidator<ItemDefinition> {
     @Override

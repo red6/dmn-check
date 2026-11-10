@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.Rule;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.HitPolicy;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 public class DuplicateRuleValidator extends SimpleValidator<DecisionTable> {
 

@@ -10,10 +10,10 @@ import de.redsix.dmncheck.util.ProjectClassLoader;
 import de.redsix.dmncheck.validators.util.TestEnum;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.Input;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.InputExpression;
-import org.camunda.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.dmn.instance.Input;
+import org.operaton.bpm.model.dmn.instance.InputEntry;
+import org.operaton.bpm.model.dmn.instance.InputExpression;
+import org.operaton.bpm.model.dmn.instance.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -64,7 +64,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     void shouldAcceptBoundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-        input.setCamundaInputVariable("x");
+        input.setOperatonInputVariable("x");
         input.setInputExpression(inputExpression);
         inputExpression.setTypeRef("integer");
         decisionTable.getInputs().add(input);
@@ -160,7 +160,7 @@ class InputEntryTypeValidatorTest extends WithDecisionTable {
     void shouldRejectUnboundVariable() {
         final Input input = modelInstance.newInstance(Input.class);
         final InputExpression inputExpression = modelInstance.newInstance(InputExpression.class);
-        input.setCamundaInputVariable("y");
+        input.setOperatonInputVariable("y");
         input.setInputExpression(inputExpression);
         inputExpression.setTypeRef("integer");
         decisionTable.getInputs().add(input);

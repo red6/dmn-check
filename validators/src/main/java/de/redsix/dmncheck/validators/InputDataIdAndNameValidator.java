@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.InputData;
+import org.operaton.bpm.model.dmn.instance.InputData;
 
 public class InputDataIdAndNameValidator extends IdAndNameValidator<InputData> {
 

@@ -3,7 +3,7 @@ package de.redsix.dmncheck.validators.core;
 import de.redsix.dmncheck.result.ValidationResult;
 import java.util.List;
 import java.util.Optional;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
 
 /**
  * Generic interface for the validation of DMN model instances.

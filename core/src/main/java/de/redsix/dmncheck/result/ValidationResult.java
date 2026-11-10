@@ -1,7 +1,7 @@
 package de.redsix.dmncheck.result;
 
 import java.util.Optional;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**

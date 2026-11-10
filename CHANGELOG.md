@@ -1,5 +1,11 @@
 ## 1.6.0 (unreleased)
 
+Breaking changes:
+
+ - Replace the Camunda 7 DMN model (end of life) with the [Operaton](https://operaton.org/) DMN model. Custom validators
+   need to import `org.operaton.bpm.model` instead of `org.camunda.bpm.model`. DMN files using the `camunda` namespace
+   are still supported.
+
 Bug fixes:
 
  - Camunda Modeler plugin: enable the plugin in the plugins menu, replace outdated badges after every change and report an unreachable validation server (#405)

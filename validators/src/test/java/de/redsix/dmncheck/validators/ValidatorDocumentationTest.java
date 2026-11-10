@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.Definitions;
+import org.operaton.bpm.model.dmn.Dmn;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.Definitions;
 import org.junit.jupiter.api.Test;
 
 class ValidatorDocumentationTest {

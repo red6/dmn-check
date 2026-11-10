@@ -6,10 +6,10 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDecisionTable;
 import java.util.List;
-import org.camunda.bpm.model.dmn.Dmn;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.Definitions;
-import org.camunda.bpm.model.dmn.instance.KnowledgeSource;
+import org.operaton.bpm.model.dmn.Dmn;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.Definitions;
+import org.operaton.bpm.model.dmn.instance.KnowledgeSource;
 import org.junit.jupiter.api.Test;
 
 class NoDecisionPresentValidatorTest extends WithDecisionTable {

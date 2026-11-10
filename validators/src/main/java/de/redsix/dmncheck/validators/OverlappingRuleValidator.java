@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.HitPolicy;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.InputEntry;
-import org.camunda.bpm.model.dmn.instance.Rule;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.HitPolicy;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.InputEntry;
+import org.operaton.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 /** Hit policy {@code UNIQUE} requires that the rules of a decision table do not overlap. */
 public class OverlappingRuleValidator extends SimpleValidator<DecisionTable> {

@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.ItemDefinition;
-import org.camunda.bpm.model.dmn.instance.Rule;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.ItemDefinition;
+import org.operaton.bpm.model.dmn.instance.Rule;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Checks that input and output entries only use the allowed values of the item definition of their column. */

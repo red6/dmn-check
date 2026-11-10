@@ -7,10 +7,10 @@ import de.redsix.dmncheck.result.Severity;
 import de.redsix.dmncheck.result.ValidationResult;
 import de.redsix.dmncheck.validators.util.WithDefinitions;
 import java.util.List;
-import org.camunda.bpm.model.dmn.instance.Decision;
-import org.camunda.bpm.model.dmn.instance.DecisionTable;
-import org.camunda.bpm.model.dmn.instance.LiteralExpression;
-import org.camunda.bpm.model.dmn.instance.Variable;
+import org.operaton.bpm.model.dmn.instance.Decision;
+import org.operaton.bpm.model.dmn.instance.DecisionTable;
+import org.operaton.bpm.model.dmn.instance.LiteralExpression;
+import org.operaton.bpm.model.dmn.instance.Variable;
 import org.junit.jupiter.api.Test;
 
 class LiteralExpressionValidatorTest extends WithDefinitions {

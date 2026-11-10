@@ -4,14 +4,14 @@ import de.redsix.dmncheck.result.ValidationResult;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-import org.camunda.bpm.model.dmn.DmnModelInstance;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
+import org.operaton.bpm.model.dmn.DmnModelInstance;
+import org.operaton.bpm.model.xml.instance.ModelElementInstance;
 
 /**
  * Generic validator that facilitates writing validations directly on the structure of the DMN model instance.
  *
  * <p>Note: We are using the Camunda implementation of the DMN model (<a
- * href="https://github.com/camunda/camunda-dmn-model">...</a>).
+ * href="https://github.com/operaton/operaton/tree/main/model-api/dmn-model">...</a>).
  *
  * <p>To write a validation using this validator you have to specify:
  *

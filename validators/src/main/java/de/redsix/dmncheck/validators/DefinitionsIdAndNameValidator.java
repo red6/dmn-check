@@ -1,6 +1,6 @@
 package de.redsix.dmncheck.validators;
 
-import org.camunda.bpm.model.dmn.instance.Definitions;
+import org.operaton.bpm.model.dmn.instance.Definitions;
 
 public class DefinitionsIdAndNameValidator extends IdAndNameValidator<Definitions> {
 
